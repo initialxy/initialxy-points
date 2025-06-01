@@ -1,6 +1,7 @@
-# initialxy-points
+# initialxy-points (Work in Progress)
 
 A simple web app that helps track points earned by kids and allows them to redeem points for rewards.
+I wanted to play with fully local vibe coding on my Radeon RX 7900 XTX. So I will try to generate as much code with local LLMs as possible. But don't worry, I'm a prideful software engineer. I will review every line of code to ensure it meets my expectations exactly. Though it is currently completely broken, so don't bother using it.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
