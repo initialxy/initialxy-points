@@ -29,17 +29,7 @@ initialxy-points is designed to help parents track their kids' progress through 
 Make sure to install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
 ## Development Server
@@ -47,17 +37,7 @@ bun install
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
@@ -65,33 +45,13 @@ bun run dev
 Build the application for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
 ## Usage
@@ -105,16 +65,6 @@ bun run preview
 
 For detailed information about the available API endpoints, request/response formats, and authentication, see the [API Documentation](docs/api.md).
 
-## Contributing
-
-We welcome contributions to improve the initialxy-points project. Please follow these steps:
-
-1. Fork the repository
-2. Create a new branch for your feature or bugfix
-3. Make your changes and commit them
-4. Push to your branch and submit a pull request
-
-Please ensure your code follows the project's coding standards and includes appropriate tests.
 
 ## License
 
