@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { data, error } = await useFetch('/api/auth/login', {
         method: 'POST',
-        body: { username, passcode }
+        body: { username, passcode },
       });
 
       if (error.value) {

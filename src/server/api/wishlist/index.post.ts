@@ -9,7 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!user || user.role !== 'kid') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!rewardId) {
     return {
       statusCode: 400,
-      body: { message: 'Reward ID is required' }
+      body: { message: 'Reward ID is required' },
     };
   }
 
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!reward) {
     return {
       statusCode: 404,
-      body: { message: 'Reward not found' }
+      body: { message: 'Reward not found' },
     };
   }
 
@@ -39,6 +39,9 @@ export default defineEventHandler(async (event: H3Event) => {
 
   return {
     statusCode: 201,
-    body: { message: 'Item added to wishlist successfully', wishlistId: result.lastID }
+    body: {
+      message: 'Item added to wishlist successfully',
+      wishlistId: result.lastID,
+    },
   };
 });

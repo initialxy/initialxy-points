@@ -10,24 +10,27 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!wishlistId) {
     return {
       statusCode: 400,
-      body: { message: 'Invalid wishlist ID' }
+      body: { message: 'Invalid wishlist ID' },
     };
   }
 
   if (!user || user.role !== 'parent') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
   // Check if the wishlist item exists
-  const wishlistItem = await db.get('SELECT * FROM wishlist WHERE id = ?', wishlistId);
+  const wishlistItem = await db.get(
+    'SELECT * FROM wishlist WHERE id = ?',
+    wishlistId
+  );
 
   if (!wishlistItem) {
     return {
       statusCode: 404,
-      body: { message: 'Wishlist item not found' }
+      body: { message: 'Wishlist item not found' },
     };
   }
 
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (wishlistItem.approved) {
     return {
       statusCode: 400,
-      body: { message: 'Wishlist item already approved' }
+      body: { message: 'Wishlist item already approved' },
     };
   }
 
@@ -44,6 +47,6 @@ export default defineEventHandler(async (event: H3Event) => {
 
   return {
     statusCode: 200,
-    body: { message: 'Wishlist item approved successfully' }
+    body: { message: 'Wishlist item approved successfully' },
   };
 });

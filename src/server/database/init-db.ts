@@ -7,7 +7,7 @@ async function initDb() {
   const dbPath = path.resolve(__dirname, 'database.sqlite');
   const db = await open({
     filename: dbPath,
-    driver: sqlite3.Database
+    driver: sqlite3.Database,
   });
 
   await db.exec(`

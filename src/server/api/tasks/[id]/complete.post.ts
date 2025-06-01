@@ -10,24 +10,27 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!taskId) {
     return {
       statusCode: 400,
-      body: { message: 'Invalid task ID' }
+      body: { message: 'Invalid task ID' },
     };
   }
 
   if (!user || user.role !== 'kid') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
   // Check if the task exists and belongs to the user
-  const task = await db.get('SELECT * FROM tasks WHERE id = ? AND kid_id = ?', [taskId, user.id]);
+  const task = await db.get('SELECT * FROM tasks WHERE id = ? AND kid_id = ?', [
+    taskId,
+    user.id,
+  ]);
 
   if (!task) {
     return {
       statusCode: 404,
-      body: { message: 'Task not found' }
+      body: { message: 'Task not found' },
     };
   }
 
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (task.completed) {
     return {
       statusCode: 400,
-      body: { message: 'Task already completed' }
+      body: { message: 'Task already completed' },
     };
   }
 
@@ -43,10 +46,13 @@ export default defineEventHandler(async (event: H3Event) => {
   await db.run('UPDATE tasks SET completed = TRUE WHERE id = ?', taskId);
 
   // Update the user's points balance
-  await db.run('UPDATE users SET points = points + ? WHERE id = ?', [task.points, user.id]);
+  await db.run('UPDATE users SET points = points + ? WHERE id = ?', [
+    task.points,
+    user.id,
+  ]);
 
   return {
     statusCode: 200,
-    body: { message: 'Task completed successfully', pointsEarned: task.points }
+    body: { message: 'Task completed successfully', pointsEarned: task.points },
   };
 });

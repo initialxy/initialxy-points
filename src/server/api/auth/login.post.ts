@@ -16,16 +16,19 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!validatedUsername || !validatedPasscode) {
     return {
       statusCode: 400,
-      body: { message: 'Username and passcode are required' }
+      body: { message: 'Username and passcode are required' },
     };
   }
 
-  const user = await db.get('SELECT * FROM users WHERE username = ?', validatedUsername);
+  const user = await db.get(
+    'SELECT * FROM users WHERE username = ?',
+    validatedUsername
+  );
 
   if (!user) {
     return {
       statusCode: 401,
-      body: { message: 'Invalid username or passcode' }
+      body: { message: 'Invalid username or passcode' },
     };
   }
 
@@ -34,14 +37,18 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!isValid) {
     return {
       statusCode: 401,
-      body: { message: 'Invalid username or passcode' }
+      body: { message: 'Invalid username or passcode' },
     };
   }
 
   // Generate JWT token
-  const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', {
-    expiresIn: '1h'
-  });
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET || 'your-secret-key',
+    {
+      expiresIn: '1h',
+    }
+  );
 
   return {
     statusCode: 200,
@@ -51,8 +58,8 @@ export default defineEventHandler(async (event: H3Event) => {
         id: user.id,
         username: user.username,
         role: user.role,
-        points: user.points
-      }
-    }
+        points: user.points,
+      },
+    },
   };
 });

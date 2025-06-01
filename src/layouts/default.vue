@@ -3,9 +3,21 @@
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink to="/tasks" v-if="authStore.isAuthenticated && authStore.user.role === 'kid'">Tasks</NuxtLink>
-        <NuxtLink to="/rewards" v-if="authStore.isAuthenticated && authStore.user.role === 'parent'">Rewards</NuxtLink>
-        <NuxtLink to="/wishlist" v-if="authStore.isAuthenticated && authStore.user.role === 'kid'">Wishlist</NuxtLink>
+        <NuxtLink
+          to="/tasks"
+          v-if="authStore.isAuthenticated && authStore.user.role === 'kid'"
+          >Tasks</NuxtLink
+        >
+        <NuxtLink
+          to="/rewards"
+          v-if="authStore.isAuthenticated && authStore.user.role === 'parent'"
+          >Rewards</NuxtLink
+        >
+        <NuxtLink
+          to="/wishlist"
+          v-if="authStore.isAuthenticated && authStore.user.role === 'kid'"
+          >Wishlist</NuxtLink
+        >
         <NuxtLink to="/login" v-if="!authStore.isAuthenticated">Login</NuxtLink>
         <button @click="logout" v-if="authStore.isAuthenticated">Logout</button>
       </nav>
@@ -55,7 +67,8 @@ main {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  header, main {
+  header,
+  main {
     padding: 0.5rem;
   }
 
@@ -70,7 +83,8 @@ main {
 }
 
 @media (max-width: 480px) {
-  header, main {
+  header,
+  main {
     padding: 0.2rem;
   }
 

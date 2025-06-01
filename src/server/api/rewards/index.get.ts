@@ -8,10 +8,13 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!user || user.role !== 'parent') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
-  const rewards = await db.all('SELECT * FROM rewards WHERE parent_id = ?', user.id);
+  const rewards = await db.all(
+    'SELECT * FROM rewards WHERE parent_id = ?',
+    user.id
+  );
   return { rewards };
 });

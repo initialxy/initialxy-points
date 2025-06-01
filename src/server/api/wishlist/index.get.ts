@@ -8,16 +8,19 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!user || user.role !== 'kid') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
-  const wishlist = await db.all(`
+  const wishlist = await db.all(
+    `
     SELECT wishlist.*, rewards.title AS reward_title, rewards.description AS reward_description, rewards.points AS reward_points
     FROM wishlist
     JOIN rewards ON wishlist.reward_id = rewards.id
     WHERE wishlist.kid_id = ?
-  `, user.id);
+  `,
+    user.id
+  );
 
   return { wishlist };
 });

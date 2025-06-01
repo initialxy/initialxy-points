@@ -9,7 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!user || user.role !== 'parent') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!title || !points) {
     return {
       statusCode: 400,
-      body: { message: 'Title and points are required' }
+      body: { message: 'Title and points are required' },
     };
   }
 
@@ -32,6 +32,6 @@ export default defineEventHandler(async (event: H3Event) => {
 
   return {
     statusCode: 201,
-    body: { message: 'Reward created successfully', rewardId: result.lastID }
+    body: { message: 'Reward created successfully', rewardId: result.lastID },
   };
 });

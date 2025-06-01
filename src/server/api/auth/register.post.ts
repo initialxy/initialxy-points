@@ -17,23 +17,26 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!validatedUsername || !validatedPasscode || !validatedRole) {
     return {
       statusCode: 400,
-      body: { message: 'Username, passcode, and role are required' }
+      body: { message: 'Username, passcode, and role are required' },
     };
   }
 
   if (validatedRole !== 'parent' && validatedRole !== 'kid') {
     return {
       statusCode: 400,
-      body: { message: 'Role must be either "parent" or "kid"' }
+      body: { message: 'Role must be either "parent" or "kid"' },
     };
   }
 
-  const existingUser = await db.get('SELECT * FROM users WHERE username = ?', validatedUsername);
+  const existingUser = await db.get(
+    'SELECT * FROM users WHERE username = ?',
+    validatedUsername
+  );
 
   if (existingUser) {
     return {
       statusCode: 409,
-      body: { message: 'Username already exists' }
+      body: { message: 'Username already exists' },
     };
   }
 
@@ -47,16 +50,20 @@ export default defineEventHandler(async (event: H3Event) => {
   );
 
   // Generate JWT token
-  const token = jwt.sign({ id: result.lastID, role: validatedRole }, process.env.JWT_SECRET || 'your-secret-key', {
-    expiresIn: '1h'
-  });
+  const token = jwt.sign(
+    { id: result.lastID, role: validatedRole },
+    process.env.JWT_SECRET || 'your-secret-key',
+    {
+      expiresIn: '1h',
+    }
+  );
 
   return {
     statusCode: 201,
     body: {
       message: 'User registered successfully',
       token,
-      userId: result.lastID
-    }
+      userId: result.lastID,
+    },
   };
 });

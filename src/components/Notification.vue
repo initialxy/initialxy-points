@@ -11,17 +11,18 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   message: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
     default: 'info',
-    validator: (value: string) => ['info', 'success', 'warning', 'error'].includes(value)
+    validator: (value: string) =>
+      ['info', 'success', 'warning', 'error'].includes(value),
   },
   duration: {
     type: Number,
-    default: 3000
-  }
+    default: 3000,
+  },
 });
 
 const visible = ref(true);

@@ -11,18 +11,21 @@ async function initDb() {
   const dbPath = path.resolve(__dirname, 'database.sqlite');
   db = await open({
     filename: dbPath,
-    driver: sqlite3.Database
+    driver: sqlite3.Database,
   });
 
   // Check if tables exist, if not initialize them
-  const tables = await db.all('SELECT name FROM sqlite_master WHERE type="table"');
+  const tables = await db.all(
+    'SELECT name FROM sqlite_master WHERE type="table"'
+  );
   const tableNames = tables.map((t: any) => t.name);
 
-  if (!tableNames.includes('users') ||
-      !tableNames.includes('tasks') ||
-      !tableNames.includes('rewards') ||
-      !tableNames.includes('wishlist')) {
-
+  if (
+    !tableNames.includes('users') ||
+    !tableNames.includes('tasks') ||
+    !tableNames.includes('rewards') ||
+    !tableNames.includes('wishlist')
+  ) {
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

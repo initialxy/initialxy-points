@@ -39,7 +39,7 @@ const rewards = ref([]);
 const newReward = ref({
   title: '',
   description: '',
-  points: 0
+  points: 0,
 });
 const authStore = useAuthStore();
 
@@ -47,8 +47,8 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/rewards', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
 
   if (error.value) {
@@ -63,9 +63,9 @@ const createReward = async () => {
   const { error } = await useFetch('/api/rewards', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
+      Authorization: `Bearer ${authStore.user.token}`,
     },
-    body: newReward.value
+    body: newReward.value,
   });
 
   if (error.value) {
@@ -78,15 +78,17 @@ const createReward = async () => {
   const { data } = await useFetch('/api/rewards', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
   rewards.value = data.value;
 };
 </script>
 
 <style scoped>
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -126,7 +128,9 @@ li {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-size: 1.25rem;
   }
 
@@ -146,7 +150,9 @@ li {
 }
 
 @media (max-width: 480px) {
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-size: 1rem;
   }
 

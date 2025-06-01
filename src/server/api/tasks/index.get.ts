@@ -9,7 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!user || user.role !== 'kid') {
     return {
       statusCode: 403,
-      body: { message: 'Forbidden' }
+      body: { message: 'Forbidden' },
     };
   }
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!userId) {
     return {
       statusCode: 400,
-      body: { message: 'Invalid user ID' }
+      body: { message: 'Invalid user ID' },
     };
   }
 

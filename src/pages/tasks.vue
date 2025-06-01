@@ -1,13 +1,19 @@
 <template>
   <div>
     <h1>My Tasks</h1>
-    <Notification v-if="notification" :message="notification.message" :type="notification.type" />
+    <Notification
+      v-if="notification"
+      :message="notification.message"
+      :type="notification.type"
+    />
     <ul v-if="tasks.length">
       <li v-for="task in tasks" :key="task.id">
         <h2>{{ task.title }}</h2>
         <p>{{ task.description }}</p>
         <p>Points: {{ task.points }}</p>
-        <button @click="completeTask(task.id)" :disabled="task.completed">Complete</button>
+        <button @click="completeTask(task.id)" :disabled="task.completed">
+          Complete
+        </button>
       </li>
     </ul>
     <p v-else>No tasks available</p>
@@ -28,8 +34,8 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/tasks', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
 
   if (error.value) {
@@ -44,8 +50,8 @@ const completeTask = async (taskId: number) => {
   const { data, error } = await useFetch(`/api/tasks/${taskId}/complete`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
 
   if (error.value) {
@@ -54,7 +60,7 @@ const completeTask = async (taskId: number) => {
   }
 
   // Update task status locally
-  const task = tasks.value.find(t => t.id === taskId);
+  const task = tasks.value.find((t) => t.id === taskId);
   if (task) {
     task.completed = true;
   }
@@ -62,7 +68,7 @@ const completeTask = async (taskId: number) => {
   // Show notification
   notification.value = {
     message: `Task completed! You earned ${data.value.pointsEarned} points.`,
-    type: 'success'
+    type: 'success',
   };
 
   // Clear notification after 3 seconds

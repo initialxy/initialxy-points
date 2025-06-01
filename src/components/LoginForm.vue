@@ -4,11 +4,23 @@
     <form @submit.prevent="login">
       <div>
         <label for="username">Username:</label>
-        <input v-model="username" type="text" id="username" required aria-label="Username" />
+        <input
+          v-model="username"
+          type="text"
+          id="username"
+          required
+          aria-label="Username"
+        />
       </div>
       <div>
         <label for="passcode">Passcode:</label>
-        <input v-model="passcode" type="password" id="passcode" required aria-label="Passcode" />
+        <input
+          v-model="passcode"
+          type="password"
+          id="passcode"
+          required
+          aria-label="Passcode"
+        />
       </div>
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
@@ -40,7 +52,8 @@ const login = async () => {
     // Redirect to dashboard or home page
   } catch (error) {
     console.error('Login failed:', error);
-    errorMessage.value = 'Login failed. Please check your credentials and try again.';
+    errorMessage.value =
+      'Login failed. Please check your credentials and try again.';
   } finally {
     isLoading.value = false;
   }
@@ -56,7 +69,9 @@ const login = async () => {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .login-form:hover {
@@ -87,7 +102,9 @@ const login = async () => {
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
   font-size: 1rem;
 }
 
@@ -105,7 +122,9 @@ const login = async () => {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
   font-size: 1.1rem;
   font-weight: 600;
 }

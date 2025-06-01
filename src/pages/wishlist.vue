@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1>My Wishlist</h1>
-    <Notification v-if="notification" :message="notification.message" :type="notification.type" />
+    <Notification
+      v-if="notification"
+      :message="notification.message"
+      :type="notification.type"
+    />
     <form @submit.prevent="addToWishlist">
       <h2>Add to Wishlist</h2>
       <div>
@@ -39,8 +43,8 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/wishlist', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
 
   if (error.value) {
@@ -55,16 +59,16 @@ const addToWishlist = async () => {
   const { error } = await useFetch('/api/wishlist', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
+      Authorization: `Bearer ${authStore.user.token}`,
     },
-    body: { rewardId: rewardId.value }
+    body: { rewardId: rewardId.value },
   });
 
   if (error.value) {
     console.error('Error adding to wishlist:', error.value);
     notification.value = {
       message: 'Failed to add to wishlist. Please try again.',
-      type: 'error'
+      type: 'error',
     };
     return;
   }
@@ -74,15 +78,15 @@ const addToWishlist = async () => {
   const { data } = await useFetch('/api/wishlist', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`
-    }
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
   wishlist.value = data.value;
 
   // Show notification
   notification.value = {
     message: 'Item added to wishlist successfully!',
-    type: 'success'
+    type: 'success',
   };
 
   // Clear notification after 3 seconds
@@ -93,7 +97,9 @@ const addToWishlist = async () => {
 </script>
 
 <style scoped>
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -133,7 +139,9 @@ li {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-size: 1.2rem;
   }
 
@@ -153,7 +161,9 @@ li {
 }
 
 @media (max-width: 480px) {
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-size: 1rem;
   }
 
