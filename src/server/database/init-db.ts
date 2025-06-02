@@ -1,14 +1,14 @@
-import { open } from 'sqlite';
-import sqlite3 from 'sqlite3';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { open } from 'sqlite'
+import sqlite3 from 'sqlite3'
+import { promises as fs } from 'fs'
+import path from 'path'
 
 async function initDb() {
-  const dbPath = path.resolve(__dirname, 'database.sqlite');
+  const dbPath = path.resolve(__dirname, 'database.sqlite')
   const db = await open({
     filename: dbPath,
     driver: sqlite3.Database,
-  });
+  })
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -46,9 +46,9 @@ async function initDb() {
       FOREIGN KEY(reward_id) REFERENCES rewards(id),
       FOREIGN KEY(kid_id) REFERENCES users(id)
     );
-  `);
+  `)
 
-  console.log('Database initialized successfully');
+  console.log('Database initialized successfully')
 }
 
-initDb().catch(console.error);
+initDb().catch(console.error)

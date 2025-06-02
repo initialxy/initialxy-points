@@ -1,15 +1,15 @@
-import { defineEventHandler, H3Event } from 'h3';
-import { initDb } from '../../database';
+import { defineEventHandler, H3Event } from 'h3'
+import { initDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await initDb();
-  const user = event.context.user;
+  const db = await initDb()
+  const user = event.context.user
 
   if (!user || user.role !== 'kid') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
-    };
+    }
   }
 
   const wishlist = await db.all(
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event: H3Event) => {
     WHERE wishlist.kid_id = ?
   `,
     user.id
-  );
+  )
 
-  return { wishlist };
-});
+  return { wishlist }
+})

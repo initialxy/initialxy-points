@@ -29,15 +29,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useAuthStore } from '@/store/auth';
-import { useFetch } from '#app';
-import Notification from '@/components/Notification.vue';
+import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/store/auth'
+import { useFetch } from '#app'
+import Notification from '@/components/Notification.vue'
 
-const wishlist = ref([]);
-const rewardId = ref(0);
-const authStore = useAuthStore();
-const notification = ref(null);
+const wishlist = ref([])
+const rewardId = ref(0)
+const authStore = useAuthStore()
+const notification = ref(null)
 
 onMounted(async () => {
   const { data, error } = await useFetch('/api/wishlist', {
@@ -45,15 +45,15 @@ onMounted(async () => {
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
+  })
 
   if (error.value) {
-    console.error('Error fetching wishlist:', error.value);
-    return;
+    console.error('Error fetching wishlist:', error.value)
+    return
   }
 
-  wishlist.value = data.value;
-});
+  wishlist.value = data.value
+})
 
 const addToWishlist = async () => {
   const { error } = await useFetch('/api/wishlist', {
@@ -62,38 +62,38 @@ const addToWishlist = async () => {
       Authorization: `Bearer ${authStore.user.token}`,
     },
     body: { rewardId: rewardId.value },
-  });
+  })
 
   if (error.value) {
-    console.error('Error adding to wishlist:', error.value);
+    console.error('Error adding to wishlist:', error.value)
     notification.value = {
       message: 'Failed to add to wishlist. Please try again.',
       type: 'error',
-    };
-    return;
+    }
+    return
   }
 
   // Clear input and refresh wishlist
-  rewardId.value = 0;
+  rewardId.value = 0
   const { data } = await useFetch('/api/wishlist', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
-  wishlist.value = data.value;
+  })
+  wishlist.value = data.value
 
   // Show notification
   notification.value = {
     message: 'Item added to wishlist successfully!',
     type: 'success',
-  };
+  }
 
   // Clear notification after 3 seconds
   setTimeout(() => {
-    notification.value = null;
-  }, 3000);
-};
+    notification.value = null
+  }, 3000)
+}
 </script>
 
 <style scoped>

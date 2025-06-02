@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   message: {
@@ -23,25 +23,25 @@ const props = defineProps({
     type: Number,
     default: 3000,
   },
-});
+})
 
-const visible = ref(true);
+const visible = ref(true)
 
-const typeClass = ref('');
+const typeClass = ref('')
 
 watch(
   () => props.type,
   (newType) => {
-    typeClass.value = `notification-${newType}`;
+    typeClass.value = `notification-${newType}`
   },
   { immediate: true }
-);
+)
 
 const close = () => {
-  visible.value = false;
-};
+  visible.value = false
+}
 
-setTimeout(close, props.duration);
+setTimeout(close, props.duration)
 </script>
 
 <style scoped>

@@ -34,30 +34,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useAuthStore } from '@/store/auth';
+import { ref } from 'vue'
+import { useAuthStore } from '@/store/auth'
 
-const username = ref('');
-const passcode = ref('');
-const authStore = useAuthStore();
-const errorMessage = ref('');
-const isLoading = ref(false);
+const username = ref('')
+const passcode = ref('')
+const authStore = useAuthStore()
+const errorMessage = ref('')
+const isLoading = ref(false)
 
 const login = async () => {
-  errorMessage.value = '';
-  isLoading.value = true;
+  errorMessage.value = ''
+  isLoading.value = true
 
   try {
-    await authStore.login(username.value, passcode.value);
+    await authStore.login(username.value, passcode.value)
     // Redirect to dashboard or home page
   } catch (error) {
-    console.error('Login failed:', error);
+    console.error('Login failed:', error)
     errorMessage.value =
-      'Login failed. Please check your credentials and try again.';
+      'Login failed. Please check your credentials and try again.'
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 </script>
 
 <style scoped>

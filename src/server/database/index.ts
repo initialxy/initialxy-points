@@ -1,24 +1,24 @@
-import { open } from 'sqlite';
-import sqlite3 from 'sqlite3';
-import path from 'path';
-import { promises as fs } from 'fs';
+import { open } from 'sqlite'
+import sqlite3 from 'sqlite3'
+import path from 'path'
+import { promises as fs } from 'fs'
 
-let db: any = null;
+let db: any = null
 
 async function initDb() {
-  if (db) return db;
+  if (db) return db
 
-  const dbPath = path.resolve(__dirname, 'database.sqlite');
+  const dbPath = path.resolve(__dirname, 'database.sqlite')
   db = await open({
     filename: dbPath,
     driver: sqlite3.Database,
-  });
+  })
 
   // Check if tables exist, if not initialize them
   const tables = await db.all(
     'SELECT name FROM sqlite_master WHERE type="table"'
-  );
-  const tableNames = tables.map((t: any) => t.name);
+  )
+  const tableNames = tables.map((t: any) => t.name)
 
   if (
     !tableNames.includes('users') ||
@@ -62,10 +62,10 @@ async function initDb() {
         FOREIGN KEY(reward_id) REFERENCES rewards(id),
         FOREIGN KEY(kid_id) REFERENCES users(id)
       );
-    `);
+    `)
   }
 
-  return db;
+  return db
 }
 
-export { initDb };
+export { initDb }

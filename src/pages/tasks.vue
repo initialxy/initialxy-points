@@ -21,14 +21,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useAuthStore } from '@/store/auth';
-import { useFetch } from '#app';
-import Notification from '@/components/Notification.vue';
+import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/store/auth'
+import { useFetch } from '#app'
+import Notification from '@/components/Notification.vue'
 
-const tasks = ref([]);
-const authStore = useAuthStore();
-const notification = ref(null);
+const tasks = ref([])
+const authStore = useAuthStore()
+const notification = ref(null)
 
 onMounted(async () => {
   const { data, error } = await useFetch('/api/tasks', {
@@ -36,15 +36,15 @@ onMounted(async () => {
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
+  })
 
   if (error.value) {
-    console.error('Error fetching tasks:', error.value);
-    return;
+    console.error('Error fetching tasks:', error.value)
+    return
   }
 
-  tasks.value = data.value;
-});
+  tasks.value = data.value
+})
 
 const completeTask = async (taskId: number) => {
   const { data, error } = await useFetch(`/api/tasks/${taskId}/complete`, {
@@ -52,30 +52,30 @@ const completeTask = async (taskId: number) => {
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
+  })
 
   if (error.value) {
-    console.error('Error completing task:', error.value);
-    return;
+    console.error('Error completing task:', error.value)
+    return
   }
 
   // Update task status locally
-  const task = tasks.value.find((t) => t.id === taskId);
+  const task = tasks.value.find((t) => t.id === taskId)
   if (task) {
-    task.completed = true;
+    task.completed = true
   }
 
   // Show notification
   notification.value = {
     message: `Task completed! You earned ${data.value.pointsEarned} points.`,
     type: 'success',
-  };
+  }
 
   // Clear notification after 3 seconds
   setTimeout(() => {
-    notification.value = null;
-  }, 3000);
-};
+    notification.value = null
+  }, 3000)
+}
 </script>
 
 <style scoped>

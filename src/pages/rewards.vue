@@ -31,17 +31,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useAuthStore } from '@/store/auth';
-import { useFetch } from '#app';
+import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/store/auth'
+import { useFetch } from '#app'
 
-const rewards = ref([]);
+const rewards = ref([])
 const newReward = ref({
   title: '',
   description: '',
   points: 0,
-});
-const authStore = useAuthStore();
+})
+const authStore = useAuthStore()
 
 onMounted(async () => {
   const { data, error } = await useFetch('/api/rewards', {
@@ -49,15 +49,15 @@ onMounted(async () => {
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
+  })
 
   if (error.value) {
-    console.error('Error fetching rewards:', error.value);
-    return;
+    console.error('Error fetching rewards:', error.value)
+    return
   }
 
-  rewards.value = data.value;
-});
+  rewards.value = data.value
+})
 
 const createReward = async () => {
   const { error } = await useFetch('/api/rewards', {
@@ -66,23 +66,23 @@ const createReward = async () => {
       Authorization: `Bearer ${authStore.user.token}`,
     },
     body: newReward.value,
-  });
+  })
 
   if (error.value) {
-    console.error('Error creating reward:', error.value);
-    return;
+    console.error('Error creating reward:', error.value)
+    return
   }
 
   // Clear form and refresh rewards list
-  newReward.value = { title: '', description: '', points: 0 };
+  newReward.value = { title: '', description: '', points: 0 }
   const { data } = await useFetch('/api/rewards', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${authStore.user.token}`,
     },
-  });
-  rewards.value = data.value;
-};
+  })
+  rewards.value = data.value
+}
 </script>
 
 <style scoped>
