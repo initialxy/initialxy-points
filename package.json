@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "prettier --write src/",
-    "init-db": "node ./src/scripts/init-db.ts"
+    "init-db": "node ./scripts/init-db.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.4.1",
