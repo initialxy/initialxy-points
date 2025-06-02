@@ -1,7 +1,11 @@
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 import { open } from 'sqlite'
-import sqlite3 from 'sqlite3'
 import path from 'path'
-import { promises as fs } from 'fs'
+import sqlite3 from 'sqlite3'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 let db: any = null
 
