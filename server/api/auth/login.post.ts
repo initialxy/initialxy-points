@@ -1,23 +1,26 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, readValidatedBody, createError } from 'h3'
+import { z } from 'zod'
 import { initDb } from '../../database'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import { validateString } from '../../utils/validation'
 
-export default defineEventHandler(async (event: H3Event) => {
-  const db = await initDb()
-  const body = await readBody(event)
+const bodySchema = z.object({
+  username: z.string(),
+  passcode: z.string().min(8)
+})
 
-  const { username, passcode } = body
+export default defineEventHandler(async (event) => {
+  const db = await initDb()
+  const { username, passcode } = await readValidatedBody(event, bodySchema.parse)
 
   const validatedUsername = validateString(username)
   const validatedPasscode = validateString(passcode)
 
   if (!validatedUsername || !validatedPasscode) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Username and passcode are required' },
-    }
+      message: 'Username and passcode are required',
+    })
   }
 
   const user = await db.get(
@@ -26,40 +29,30 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (!user) {
-    return {
+    throw createError({
       statusCode: 401,
-      body: { message: 'Invalid username or passcode' },
-    }
+      message: 'Invalid username or passcode',
+    })
   }
 
   const isValid = await bcrypt.compare(validatedPasscode, user.passcode)
 
   if (!isValid) {
-    return {
+    throw createError({
       statusCode: 401,
-      body: { message: 'Invalid username or passcode' },
-    }
+      message: 'Invalid username or passcode',
+    })
   }
 
-  // Generate JWT token
-  const token = jwt.sign(
-    { id: user.id, role: user.role },
-    process.env.JWT_SECRET || 'your-secret-key',
-    {
-      expiresIn: '1h',
+  // Set the user session
+  await setUserSession(event, {
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      points: user.points,
     }
-  )
+  })
 
-  return {
-    statusCode: 200,
-    body: {
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-        points: user.points,
-      },
-    },
-  }
+  return {}
 })

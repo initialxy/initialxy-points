@@ -5,21 +5,21 @@
         <NuxtLink to="/">Home</NuxtLink>
         <NuxtLink
           to="/tasks"
-          v-if="authStore.isAuthenticated && authStore.user.role === 'kid'"
+          v-if="authStore.isAuthenticated()"
           >Tasks</NuxtLink
         >
         <NuxtLink
           to="/rewards"
-          v-if="authStore.isAuthenticated && authStore.user.role === 'parent'"
+          v-if="authStore.isAuthenticated()"
           >Rewards</NuxtLink
         >
         <NuxtLink
           to="/wishlist"
-          v-if="authStore.isAuthenticated && authStore.user.role === 'kid'"
+          v-if="authStore.isAuthenticated()"
           >Wishlist</NuxtLink
         >
-        <NuxtLink to="/login" v-if="!authStore.isAuthenticated">Login</NuxtLink>
-        <button @click="logout" v-if="authStore.isAuthenticated">Logout</button>
+        <NuxtLink to="/login" v-if="!authStore.isAuthenticated()">Login</NuxtLink>
+        <button @click="logout" v-if="authStore.isAuthenticated()">Logout</button>
       </nav>
     </header>
     <main>

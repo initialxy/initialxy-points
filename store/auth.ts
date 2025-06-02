@@ -1,27 +1,14 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { useFetch } from '#app'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(null)
-  const isAuthenticated = ref(false)
-  const token = ref(null)
+  const { loggedIn, user, clear: clearSession, fetch: refreshSession } = useUserSession()
 
   const login = async (username: string, passcode: string) => {
     try {
-      const { data, error } = await useFetch('/api/auth/login', {
+      await $fetch('/api/auth/login', {
         method: 'POST',
         body: { username, passcode },
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Login failed')
-      }
-
-      const responseData = data.value as any
-      token.value = responseData.token
-      user.value = responseData.user
-      isAuthenticated.value = true
+      await refreshSession()
     } catch (err) {
       console.error('Login error:', err)
       throw err
@@ -29,10 +16,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
-    user.value = null
-    isAuthenticated.value = false
-    token.value = null
+    clearSession()
   }
 
-  return { user, isAuthenticated, token, login, logout }
+  const isAuthenticated = () => {
+    return loggedIn.value && user.value != null
+  }
+
+  return { user, loggedIn, login, logout, isAuthenticated }
 })
