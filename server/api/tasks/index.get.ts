@@ -1,9 +1,9 @@
 import { defineEventHandler, H3Event } from 'h3'
-import { initDb } from '../../database'
+import { getDb } from '../../database'
 import { validateId } from '../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await initDb()
+  const db = await getDb()
   const user = event.context.user
 
   if (!user || user.role !== 'kid') {

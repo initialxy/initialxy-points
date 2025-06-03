@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 
 const rewards = ref([])
@@ -41,7 +41,7 @@ const newReward = ref({
   description: '',
   points: 0,
 })
-const authStore = useAuthStore()
+const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 
 onMounted(async () => {
   const { data, error } = await useFetch('/api/rewards', {

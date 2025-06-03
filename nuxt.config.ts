@@ -10,6 +10,5 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/ui',
     'nuxt-auth-utils',
-    '@pinia/nuxt'
   ]
 })

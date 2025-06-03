@@ -1,6 +1,6 @@
 import { defineEventHandler, readValidatedBody, createError } from 'h3'
 import { z } from 'zod'
-import { initDb } from '../../database'
+import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 import { validateString } from '../../utils/validation'
 
@@ -10,7 +10,7 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const db = await initDb()
+  const db = await getDb()
   const { username, passcode } = await readValidatedBody(event, bodySchema.parse)
 
   const validatedUsername = validateString(username)

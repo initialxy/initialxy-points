@@ -1,6 +1,10 @@
+import { useState } from '#app'
 
-export const useAuthStore = defineStore('auth', () => {
-  const { loggedIn, user, clear: clearSession, fetch: refreshSession } = useUserSession()
+export const useAuth = () => {
+  const loggedIn = useState('loggedIn', () => false)
+  const user = useState('user', () => null)
+
+  const { clear: clearSession, fetch: refreshSession } = useUserSession()
 
   const login = async (username: string, passcode: string) => {
     try {
@@ -9,6 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
         body: { username, passcode },
       })
       await refreshSession()
+      loggedIn.value = true
     } catch (err) {
       console.error('Login error:', err)
       throw err
@@ -17,6 +22,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = () => {
     clearSession()
+    loggedIn.value = false
+    user.value = null
   }
 
   const isAuthenticated = () => {
@@ -24,4 +31,4 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return { user, loggedIn, login, logout, isAuthenticated }
-})
+}

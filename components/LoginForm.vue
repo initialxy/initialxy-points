@@ -1,7 +1,7 @@
 <template>
   <div class="login-form">
     <h2>Login</h2>
-    <form @submit.prevent="login">
+    <form @submit.prevent="loginClicked">
       <div>
         <label for="username">Username:</label>
         <input
@@ -35,15 +35,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/composables/useAuth'
 
 const username = ref('')
 const passcode = ref('')
-const authStore = useAuthStore()
+const { login } = useAuth()
 const errorMessage = ref('')
 const isLoading = ref(false)
 
-const login = async () => {
+const loginClicked = async () => {
   errorMessage.value = ''
   isLoading.value = true
 

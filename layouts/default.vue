@@ -5,21 +5,21 @@
         <NuxtLink to="/">Home</NuxtLink>
         <NuxtLink
           to="/tasks"
-          v-if="authStore.isAuthenticated()"
+          v-if="isAuthenticated()"
           >Tasks</NuxtLink
         >
         <NuxtLink
           to="/rewards"
-          v-if="authStore.isAuthenticated()"
+          v-if="isAuthenticated()"
           >Rewards</NuxtLink
         >
         <NuxtLink
           to="/wishlist"
-          v-if="authStore.isAuthenticated()"
+          v-if="isAuthenticated()"
           >Wishlist</NuxtLink
         >
-        <NuxtLink to="/login" v-if="!authStore.isAuthenticated()">Login</NuxtLink>
-        <button @click="logout" v-if="authStore.isAuthenticated()">Logout</button>
+        <NuxtLink to="/login" v-if="!isAuthenticated()">Login</NuxtLink>
+        <button @click="logoutClicked" v-if="isAuthenticated()">Logout</button>
       </nav>
     </header>
     <main>
@@ -29,14 +29,14 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/composables/useAuth'
 import { useRouter } from 'vue-router'
 
-const authStore = useAuthStore()
+const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const router = useRouter()
 
-const logout = () => {
-  authStore.logout()
+const logoutClicked = () => {
+  logout()
   router.push('/login')
 }
 </script>

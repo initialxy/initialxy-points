@@ -1,11 +1,11 @@
 import { defineEventHandler, H3Event } from 'h3'
-import { initDb } from '../../database'
+import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { validateString } from '../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await initDb()
+  const db = await getDb()
   const body = await readBody(event)
 
   const { username, passcode, role } = body
@@ -21,10 +21,10 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (validatedRole !== 'parent' && validatedRole !== 'kid') {
+  if (validatedRole !== 'parent' && validatedRole !== 'child') {
     return {
       statusCode: 400,
-      body: { message: 'Role must be either "parent" or "kid"' },
+      body: { message: 'Role must be either "parent" or "child"' },
     }
   }
 

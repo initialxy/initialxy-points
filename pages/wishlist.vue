@@ -30,13 +30,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 import Notification from '@/components/Notification.vue'
 
 const wishlist = ref([])
 const rewardId = ref(0)
-const authStore = useAuthStore()
+const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 
 onMounted(async () => {
