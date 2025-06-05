@@ -6,7 +6,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const user = event.context.user
   const body = await readBody(event)
 
-  if (!user || user.role !== 'kid') {
+  if (!user || user.role !== 'child') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const result = await db.run(
-    'INSERT INTO wishlist (reward_id, kid_id) VALUES (?, ?)',
+    'INSERT INTO wishlist (reward_id, child_id) VALUES (?, ?)',
     rewardId,
     user.id
   )

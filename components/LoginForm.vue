@@ -48,7 +48,7 @@ const loginClicked = async () => {
   isLoading.value = true
 
   try {
-    await authStore.login(username.value, passcode.value)
+    await login(username.value, passcode.value)
     // Redirect to dashboard or home page
   } catch (error) {
     console.error('Login failed:', error)

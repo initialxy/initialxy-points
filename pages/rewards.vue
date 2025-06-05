@@ -47,7 +47,7 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/rewards', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
 
@@ -63,7 +63,7 @@ const createReward = async () => {
   const { error } = await useFetch('/api/rewards', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
     body: newReward.value,
   })
@@ -78,7 +78,7 @@ const createReward = async () => {
   const { data } = await useFetch('/api/rewards', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
   rewards.value = data.value

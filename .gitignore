@@ -25,3 +25,6 @@ logs
 
 # Don't submit DB file
 *.sqlite
+
+# VS Code file
+.vscode

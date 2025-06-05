@@ -34,7 +34,6 @@ import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 import Notification from '@/components/Notification.vue'
 
-const wishlist = ref([])
 const rewardId = ref(0)
 const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
@@ -43,7 +42,7 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/wishlist', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
 
@@ -59,7 +58,7 @@ const addToWishlist = async () => {
   const { error } = await useFetch('/api/wishlist', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
     body: { rewardId: rewardId.value },
   })
@@ -78,7 +77,7 @@ const addToWishlist = async () => {
   const { data } = await useFetch('/api/wishlist', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
   wishlist.value = data.value

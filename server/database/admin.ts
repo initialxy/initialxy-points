@@ -1,21 +1,9 @@
-import { open, Database } from 'sqlite'
-import path from 'path'
-import sqlite3 from 'sqlite3'
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+import { Database } from 'sqlite'
 import readline from 'readline'
 import { getDb } from './index'
+import bcrypt from 'bcryptjs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-async function initializeDatabase(): Promise<Database> {
-  const dbPath = path.resolve(__dirname, 'database.sqlite')
-  const db = await open({
-    filename: dbPath,
-    driver: sqlite3.Database,
-  })
-
+async function initializeDatabase(db: Database): Promise<Database> {
   // Check if tables exist, if not initialize them
   const tables = await db.all(
     'SELECT name FROM sqlite_master WHERE type="table"'
@@ -42,9 +30,9 @@ async function initializeDatabase(): Promise<Database> {
         title TEXT NOT NULL,
         description TEXT,
         points INTEGER NOT NULL,
-        kid_id INTEGER,
+        child_id INTEGER,
         completed BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY(kid_id) REFERENCES users(id)
+        FOREIGN KEY(child_id) REFERENCES users(id)
       );
 
       CREATE TABLE IF NOT EXISTS rewards (
@@ -59,10 +47,10 @@ async function initializeDatabase(): Promise<Database> {
       CREATE TABLE IF NOT EXISTS wishlist (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         reward_id INTEGER,
-        kid_id INTEGER,
+        child_id INTEGER,
         approved BOOLEAN DEFAULT FALSE,
         FOREIGN KEY(reward_id) REFERENCES rewards(id),
-        FOREIGN KEY(kid_id) REFERENCES users(id)
+        FOREIGN KEY(child_id) REFERENCES users(id)
       );
     `)
   }
@@ -78,9 +66,18 @@ async function listUsers(db: Database) {
   })
 }
 
-async function addUser(db: Database, username: string, passcode: string, role: string = 'child') {
-  await db.run('INSERT INTO users (username, passcode, role) VALUES (?, ?, ?)',
-    [username, passcode, role])
+async function addUser(
+  db: Database,
+  username: string,
+  passcode: string,
+  role: string = 'child'
+) {
+  // Hash the passcode before saving
+  const hashedPasscode = await bcrypt.hash(passcode, 10)
+  await db.run(
+    'INSERT INTO users (username, passcode, role) VALUES (?, ?, ?)',
+    [username, hashedPasscode, role]
+  )
   console.log(`User ${username} added with role ${role}`)
 }
 
@@ -89,21 +86,30 @@ async function deleteUser(db: Database, username: string) {
   console.log(`User ${username} deleted`)
 }
 
-async function renameUser(db: Database, oldUsername: string, newUsername: string) {
-  await db.run('UPDATE users SET username = ? WHERE username = ?',
-    [newUsername, oldUsername])
+async function renameUser(
+  db: Database,
+  oldUsername: string,
+  newUsername: string
+) {
+  await db.run('UPDATE users SET username = ? WHERE username = ?', [
+    newUsername,
+    oldUsername,
+  ])
   console.log(`User ${oldUsername} renamed to ${newUsername}`)
 }
 
 async function changeUserRole(db: Database, username: string, role: string) {
-  await db.run('UPDATE users SET role = ? WHERE username = ?',
-    [role, username])
+  await db.run('UPDATE users SET role = ? WHERE username = ?', [role, username])
   console.log(`User ${username}'s role changed to ${role}`)
 }
 
 async function setPasscode(db: Database, username: string, passcode: string) {
-  await db.run('UPDATE users SET passcode = ? WHERE username = ?',
-    [passcode, username])
+  // Hash the passcode before saving
+  const hashedPasscode = await bcrypt.hash(passcode, 10)
+  await db.run('UPDATE users SET passcode = ? WHERE username = ?', [
+    hashedPasscode,
+    username,
+  ])
   console.log(`User ${username}'s passcode updated`)
 }
 
@@ -125,27 +131,35 @@ Admin Console Commands:
 async function main() {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   })
 
-  const db = await getDb()
+  let db: Database | null = null
 
   console.log('Welcome to the Admin Console')
-  showHelp()
+  console.log('Enter database file path to get started')
 
   rl.setPrompt('admin> ')
   rl.prompt()
 
   rl.on('line', async (input) => {
-    const [command, ...args] = input.trim().split(' ')
-
     try {
+      if (db == null) {
+        db = await getDb(input.trim())
+        showHelp()
+        rl.prompt()
+
+        return
+      }
+
+      const [command, ...args] = input.trim().split(' ')
+
       switch (command) {
         case 'help':
           showHelp()
           break
         case 'init-db':
-          const initDb = await initializeDatabase()
+          const initDb = await initializeDatabase(db)
           console.log('Database initialized')
           break
         case 'list':

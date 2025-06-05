@@ -34,7 +34,7 @@ onMounted(async () => {
   const { data, error } = await useFetch('/api/tasks', {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
 
@@ -50,7 +50,7 @@ const completeTask = async (taskId: number) => {
   const { data, error } = await useFetch(`/api/tasks/${taskId}/complete`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${authStore.user.token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
 

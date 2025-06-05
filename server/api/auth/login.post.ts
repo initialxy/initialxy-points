@@ -6,12 +6,15 @@ import { validateString } from '../../utils/validation'
 
 const bodySchema = z.object({
   username: z.string(),
-  passcode: z.string().min(8)
+  passcode: z.string().min(3),
 })
 
 export default defineEventHandler(async (event) => {
   const db = await getDb()
-  const { username, passcode } = await readValidatedBody(event, bodySchema.parse)
+  const { username, passcode } = await readValidatedBody(
+    event,
+    bodySchema.parse
+  )
 
   const validatedUsername = validateString(username)
   const validatedPasscode = validateString(passcode)
@@ -51,7 +54,7 @@ export default defineEventHandler(async (event) => {
       username: user.username,
       role: user.role,
       points: user.points,
-    }
+    },
   })
 
   return {}

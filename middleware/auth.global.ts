@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(to => {
+export default defineNuxtRouteMiddleware((to) => {
   console.log(to)
   if (to.path === '/login') {
     return

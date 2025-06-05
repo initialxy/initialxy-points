@@ -14,7 +14,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (!user || user.role !== 'kid') {
+  if (!user || user.role !== 'child') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
@@ -22,10 +22,10 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the task exists and belongs to the user
-  const task = await db.get('SELECT * FROM tasks WHERE id = ? AND kid_id = ?', [
-    taskId,
-    user.id,
-  ])
+  const task = await db.get(
+    'SELECT * FROM tasks WHERE id = ? AND child_id = ?',
+    [taskId, user.id]
+  )
 
   if (!task) {
     return {

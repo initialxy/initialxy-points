@@ -6,7 +6,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const user = event.context.user
 
-  if (!user || user.role !== 'kid') {
+  if (!user || user.role !== 'child') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
@@ -22,6 +22,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const tasks = await db.all('SELECT * FROM tasks WHERE kid_id = ?', userId)
+  const tasks = await db.all('SELECT * FROM tasks WHERE child_id = ?', userId)
   return { tasks }
 })

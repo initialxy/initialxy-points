@@ -3,21 +3,9 @@
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink
-          to="/tasks"
-          v-if="isAuthenticated()"
-          >Tasks</NuxtLink
-        >
-        <NuxtLink
-          to="/rewards"
-          v-if="isAuthenticated()"
-          >Rewards</NuxtLink
-        >
-        <NuxtLink
-          to="/wishlist"
-          v-if="isAuthenticated()"
-          >Wishlist</NuxtLink
-        >
+        <NuxtLink to="/tasks" v-if="isAuthenticated()">Tasks</NuxtLink>
+        <NuxtLink to="/rewards" v-if="isAuthenticated()">Rewards</NuxtLink>
+        <NuxtLink to="/wishlist" v-if="isAuthenticated()">Wishlist</NuxtLink>
         <NuxtLink to="/login" v-if="!isAuthenticated()">Login</NuxtLink>
         <button @click="logoutClicked" v-if="isAuthenticated()">Logout</button>
       </nav>
