@@ -19,8 +19,10 @@
     </form>
 
     <h2>Available Rewards</h2>
-    <ul v-if="rewards.length">
-      <li v-for="reward in rewards" :key="reward.id">
+    <div v-if="status === 'pending'">Loading...</div>
+    <div v-else-if="error">{{ error.message }}</div>
+    <ul v-else-if="data && data.length">
+      <li v-for="reward in data" :key="reward.id">
         <h3>{{ reward.title }}</h3>
         <p>{{ reward.description }}</p>
         <p>Points: {{ reward.points }}</p>
@@ -31,11 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 
-const rewards = ref([])
 const newReward = ref({
   title: '',
   description: '',
@@ -43,45 +44,22 @@ const newReward = ref({
 })
 const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 
-onMounted(async () => {
-  const { data, error } = await useFetch('/api/rewards', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-
-  if (error.value) {
-    console.error('Error fetching rewards:', error.value)
-    return
-  }
-
-  rewards.value = data.value
-})
+// Fetch rewards data using useFetch directly in setup
+const { data, error, status } = await useFetch('/api/rewards')
 
 const createReward = async () => {
-  const { error } = await useFetch('/api/rewards', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    body: newReward.value,
-  })
+  try {
+    await $fetch('/api/rewards', {
+      method: 'POST',
+      body: newReward.value,
+    })
 
-  if (error.value) {
-    console.error('Error creating reward:', error.value)
-    return
+    // Clear form and refresh rewards list
+    newReward.value = { title: '', description: '', points: 0 }
+    await refresh()
+  } catch (err) {
+    console.error('Error creating reward:', err)
   }
-
-  // Clear form and refresh rewards list
-  newReward.value = { title: '', description: '', points: 0 }
-  const { data } = await useFetch('/api/rewards', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-  rewards.value = data.value
 }
 </script>
 

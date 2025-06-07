@@ -16,20 +16,22 @@
     </form>
 
     <h2>Wishlist Items</h2>
-    <ul v-if="wishlist.length">
-      <li v-for="item in wishlist" :key="item.id">
+    <ul v-if="data && data.length">
+      <li v-for="item in data" :key="item.id">
         <h3>{{ item.reward.title }}</h3>
         <p>{{ item.reward.description }}</p>
         <p>Points: {{ item.reward.points }}</p>
         <p>Status: {{ item.approved ? 'Approved' : 'Pending' }}</p>
       </li>
     </ul>
+    <p v-else-if="status === 'pending'">Loading...</p>
+    <p v-else-if="error">{{ error.message }}</p>
     <p v-else>No wishlist items</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 import Notification from '@/components/Notification.vue'
@@ -38,60 +40,37 @@ const rewardId = ref(0)
 const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 
-onMounted(async () => {
-  const { data, error } = await useFetch('/api/wishlist', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-
-  if (error.value) {
-    console.error('Error fetching wishlist:', error.value)
-    return
-  }
-
-  wishlist.value = data.value
-})
+// Fetch wishlist data using useFetch directly in setup
+const { data, error, status, refresh } = await useFetch('/api/wishlist')
 
 const addToWishlist = async () => {
-  const { error } = await useFetch('/api/wishlist', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    body: { rewardId: rewardId.value },
-  })
+  try {
+    await $fetch('/api/wishlist', {
+      method: 'POST',
+      body: { rewardId: rewardId.value },
+    })
 
-  if (error.value) {
-    console.error('Error adding to wishlist:', error.value)
+    // Clear input and refresh wishlist
+    rewardId.value = 0
+    await refresh()
+
+    // Show notification
+    notification.value = {
+      message: 'Item added to wishlist successfully!',
+      type: 'success',
+    }
+
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      notification.value = null
+    }, 3000)
+  } catch (err) {
+    console.error('Error adding to wishlist:', err)
     notification.value = {
       message: 'Failed to add to wishlist. Please try again.',
       type: 'error',
     }
-    return
   }
-
-  // Clear input and refresh wishlist
-  rewardId.value = 0
-  const { data } = await useFetch('/api/wishlist', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-  wishlist.value = data.value
-
-  // Show notification
-  notification.value = {
-    message: 'Item added to wishlist successfully!',
-    type: 'success',
-  }
-
-  // Clear notification after 3 seconds
-  setTimeout(() => {
-    notification.value = null
-  }, 3000)
 }
 </script>
 

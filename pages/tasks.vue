@@ -6,7 +6,9 @@
       :message="notification.message"
       :type="notification.type"
     />
-    <ul v-if="tasks.length">
+    <div v-if="status === 'pending'">Loading...</div>
+    <div v-else-if="error">{{ error.message }}</div>
+    <ul v-else-if="tasks && tasks.length">
       <li v-for="task in tasks" :key="task.id">
         <h2>{{ task.title }}</h2>
         <p>{{ task.description }}</p>
@@ -21,60 +23,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { useFetch } from '#app'
 import Notification from '@/components/Notification.vue'
 
-const tasks = ref([])
 const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 
-onMounted(async () => {
-  const { data, error } = await useFetch('/api/tasks', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-
-  if (error.value) {
-    console.error('Error fetching tasks:', error.value)
-    return
-  }
-
-  tasks.value = data.value
-})
+// Fetch tasks data using useFetch directly in setup
+const { data: tasks, error, status, refresh } = await useFetch('/api/tasks')
 
 const completeTask = async (taskId: number) => {
-  const { data, error } = await useFetch(`/api/tasks/${taskId}/complete`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
+  try {
+    const response = await $fetch(`/api/tasks/${taskId}/complete`, {
+      method: 'POST',
+    })
 
-  if (error.value) {
-    console.error('Error completing task:', error.value)
-    return
+    // Update task status locally
+    const task = tasks.value.find((t) => t.id === taskId)
+    if (task) {
+      task.completed = true
+    }
+
+    // Show notification
+    notification.value = {
+      message: `Task completed! You earned ${response.pointsEarned} points.`,
+      type: 'success',
+    }
+
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      notification.value = null
+    }, 3000)
+
+    // Refresh the task list
+    await refresh()
+  } catch (err) {
+    console.error('Error completing task:', err)
   }
-
-  // Update task status locally
-  const task = tasks.value.find((t) => t.id === taskId)
-  if (task) {
-    task.completed = true
-  }
-
-  // Show notification
-  notification.value = {
-    message: `Task completed! You earned ${data.value.pointsEarned} points.`,
-    type: 'success',
-  }
-
-  // Clear notification after 3 seconds
-  setTimeout(() => {
-    notification.value = null
-  }, 3000)
 }
 </script>
 
