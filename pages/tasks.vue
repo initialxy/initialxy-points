@@ -23,11 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuth } from '@/composables/useAuth'
-import { useFetch } from '#app'
-import Notification from '@/components/Notification.vue'
-
 const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 

@@ -33,10 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuth } from '@/composables/useAuth'
-import { useFetch } from '#app'
-
 const newReward = ref({
   title: '',
   description: '',

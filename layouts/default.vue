@@ -3,6 +3,7 @@
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
+        <NuxtLink to="/dashboard" v-if="isAuthenticated()">Dashboard</NuxtLink>
         <NuxtLink to="/tasks" v-if="isAuthenticated()">Tasks</NuxtLink>
         <NuxtLink to="/rewards" v-if="isAuthenticated()">Rewards</NuxtLink>
         <NuxtLink to="/wishlist" v-if="isAuthenticated()">Wishlist</NuxtLink>
