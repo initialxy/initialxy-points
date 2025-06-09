@@ -15,9 +15,9 @@ export const useStore = defineStore('main', () => {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
     const { clear: clearSession } = useUserSession()
-    clearSession()
+    await clearSession()
   }
 
   return { login, logout }

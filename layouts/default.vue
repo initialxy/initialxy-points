@@ -21,9 +21,9 @@
 const { loggedIn } = useUserSession()
 const store = useStore()
 
-const logoutClicked = () => {
-  store.logout()
-  return navigateTo('/login')
+const logoutClicked = async () => {
+  await store.logout()
+  await navigateTo('/login')
 }
 </script>
 
