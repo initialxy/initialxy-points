@@ -37,6 +37,8 @@
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 
+const route = useRoute()
+
 const username = ref('')
 const passcode = ref('')
 const { login } = useAuth()
@@ -49,7 +51,7 @@ const loginClicked = async () => {
 
   try {
     await login(username.value, passcode.value)
-    // Redirect to dashboard or home page
+    return navigateTo('/dashboard')
   } catch (error) {
     console.error('Login failed:', error)
     errorMessage.value =
