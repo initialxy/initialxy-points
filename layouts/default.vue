@@ -3,12 +3,12 @@
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink to="/dashboard" v-if="isAuthenticated()">Dashboard</NuxtLink>
-        <NuxtLink to="/tasks" v-if="isAuthenticated()">Tasks</NuxtLink>
-        <NuxtLink to="/rewards" v-if="isAuthenticated()">Rewards</NuxtLink>
-        <NuxtLink to="/wishlist" v-if="isAuthenticated()">Wishlist</NuxtLink>
-        <NuxtLink to="/login" v-if="!isAuthenticated()">Login</NuxtLink>
-        <button @click="logoutClicked" v-if="isAuthenticated()">Logout</button>
+        <NuxtLink to="/dashboard" v-if="store.isLoggedIn">Dashboard</NuxtLink>
+        <NuxtLink to="/tasks" v-if="store.isLoggedIn">Tasks</NuxtLink>
+        <NuxtLink to="/rewards" v-if="store.isLoggedIn">Rewards</NuxtLink>
+        <NuxtLink to="/wishlist" v-if="store.isLoggedIn">Wishlist</NuxtLink>
+        <NuxtLink to="/login" v-if="!store.isLoggedIn">Login</NuxtLink>
+        <button @click="logoutClicked" v-if="store.isLoggedIn">Logout</button>
       </nav>
     </header>
     <main>
@@ -18,10 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '@/composables/useAuth'
-import { useRouter } from 'vue-router'
-
-const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
+const store = useStore()
 const router = useRouter()
 
 const logoutClicked = () => {

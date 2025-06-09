@@ -34,14 +34,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuth } from '@/composables/useAuth'
-
+const store = useStore()
 const route = useRoute()
 
 const username = ref('')
 const passcode = ref('')
-const { login } = useAuth()
 const errorMessage = ref('')
 const isLoading = ref(false)
 
@@ -50,7 +47,7 @@ const loginClicked = async () => {
   isLoading.value = true
 
   try {
-    await login(username.value, passcode.value)
+    await store.login(username.value, passcode.value)
     return navigateTo('/dashboard')
   } catch (error) {
     console.error('Login failed:', error)

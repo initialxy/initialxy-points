@@ -47,9 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '~/composables/useAuth'
-
-const { user } = useAuth()
+const { user } = useUserSession()
 
 // Fetch tasks using useFetch (reactive)
 const {

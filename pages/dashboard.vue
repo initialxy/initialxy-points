@@ -15,10 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '~/composables/useAuth'
 import { onMounted, ref } from 'vue'
 
-const { user } = useAuth()
+const { user } = useUserSession()
 const status = ref<'idle' | 'pending' | 'success' | 'error'>('pending')
 const error = ref(null)
 const isParent = ref(false)
