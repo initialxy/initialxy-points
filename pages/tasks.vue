@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 
 // Fetch tasks data using useFetch directly in setup

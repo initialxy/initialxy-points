@@ -15,8 +15,8 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const children: User[] = await db.all(
-    'SELECT * FROM users WHERE parent_id = ?',
-    user.id
+    'SELECT * FROM users WHERE role = ?',
+    'child'
   )
 
   return { users: children } as UsersResponse

@@ -38,8 +38,6 @@ const newReward = ref({
   description: '',
   points: 0,
 })
-const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
-
 // Fetch rewards data using useFetch directly in setup
 const { data, error, status } = await useFetch('/api/rewards')
 
