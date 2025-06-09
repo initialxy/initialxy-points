@@ -1,7 +1,7 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
-import { PostResponseBody } from '~/types'
+import { CreatedIdResponseBody } from '~/types'
 import { validateString } from '../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event: H3Event) => {
     validatedRole
   )
 
-  const postResponseBody: PostResponseBody = {
+  const postResponseBody: CreatedIdResponseBody = {
     message: 'User created successfully',
     createdId: result.id,
   }

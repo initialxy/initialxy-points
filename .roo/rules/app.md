@@ -9,4 +9,4 @@
 - TypeScript: Full TypeScript safety
 
 **RAG**
-This entire code base along with its documentation, some of Nuxt 3's documentation are stored in a vector database that can be looked up using the `codebase_search` tool. Do not hesitate to use it to find more context about this project.
+This entire code base along with its documentation, some of Nuxt 3's documentation are stored in a vector database that can be looked up using the `codebase_search` tool. Do not hesitate to use it to perform contextual search about this project.

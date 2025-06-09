@@ -1,7 +1,7 @@
 import { defineEventHandler, H3Event } from 'h3'
 
 export default defineEventHandler(async (event: H3Event) => {
-  if (['/api/auth/login', '/', '/login'].includes(event.path)) {
+  if (!event.path.startsWith('/api/') || event.path === '/api/auth/login') {
     return
   }
 

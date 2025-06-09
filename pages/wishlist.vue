@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 const rewardId = ref(0)
-const { user, loggedIn, login, logout, isAuthenticated } = useAuth()
 const notification = ref(null)
 
 // Fetch wishlist data using useFetch directly in setup

@@ -11,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
-const store = useStore()
-const isParent = computed(() => store.user?.role === 'parent')
+import type { User } from '~/types'
+const { user: sessionUser } = useUserSession()
+const user = sessionUser as Ref<User | null>
+const isParent = computed(() => user.value?.role === 'parent')
 </script>

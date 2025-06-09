@@ -1,13 +1,14 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
-import { PostResponseBody } from '~/types'
+import { CreatedIdResponseBody, User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
-  const user = event.context.user
+  const session = await requireUserSession(event)
+  const user = session.user as User
   const body = await readBody(event)
 
-  if (!user || user.role !== 'child') {
+  if (user.role !== 'child') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
@@ -38,7 +39,7 @@ export default defineEventHandler(async (event: H3Event) => {
     user.id
   )
 
-  const postResponseBody: PostResponseBody = {
+  const postResponseBody: CreatedIdResponseBody = {
     message: 'Wishlist created successfully',
     createdId: result.id,
   }

@@ -1,6 +1,6 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
-import { Reward, User, RewardsResponse } from '~/types'
+import { User, UsersResponse } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -14,9 +14,10 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const rewards: Reward[] = await db.all(
-    'SELECT * FROM rewards WHERE parent_id = ?',
+  const children: User[] = await db.all(
+    'SELECT * FROM users WHERE parent_id = ?',
     user.id
   )
-  return { rewards } as RewardsResponse
+
+  return { users: children } as UsersResponse
 })

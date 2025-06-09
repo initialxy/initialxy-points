@@ -1,4 +1,3 @@
-// Shared types across frontend and backend
 export type User = {
   id: number
   username: string
@@ -33,7 +32,24 @@ export type WishlistItem = {
   reward_points?: number
 }
 
-export type PostResponseBody = {
+export type CreatedIdResponseBody = {
   message: string
   createdId: number
+}
+
+// Response types for API endpoints
+export type TasksResponse = {
+  tasks: Task[]
+}
+
+export type RewardsResponse = {
+  rewards: Reward[]
+}
+
+export type WishlistResponse = {
+  wishlist: WishlistItem[]
+}
+
+export type UsersResponse = {
+  users: User[]
 }

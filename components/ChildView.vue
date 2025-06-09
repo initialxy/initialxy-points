@@ -4,13 +4,13 @@
     <p>View your points, tasks, rewards, and wishlist items.</p>
     <div>
       <h3>Your Points</h3>
-      <p v-if="store.user">{{ store.user.points }} points</p>
+      <p v-if="user">{{ user.points }} points</p>
       <p v-else>Loading points...</p>
     </div>
     <div>
       <h3>Tasks</h3>
-      <ul v-if="tasksData && tasksData.length > 0">
-        <li v-for="task in tasksData" :key="task.id">
+      <ul v-if="tasksData?.tasks.length ?? 0 > 0">
+        <li v-for="task in tasksData?.tasks" :key="task.id">
           {{ task.title }} - {{ task.points }} points
           <span
             v-if="!task.completed"
@@ -25,8 +25,8 @@
     </div>
     <div>
       <h3>Rewards</h3>
-      <ul v-if="rewardsData?.rewards && rewardsData.length > 0">
-        <li v-for="reward in rewardsData" :key="reward.id">
+      <ul v-if="rewardsData?.rewards.length ?? 0 > 0">
+        <li v-for="reward in rewardsData?.rewards" :key="reward.id">
           {{ reward.title }} - {{ reward.points }} points
         </li>
       </ul>
@@ -34,8 +34,8 @@
     </div>
     <div>
       <h3>Wishlist</h3>
-      <ul v-if="wishlistData && wishlistData.length > 0">
-        <li v-for="item in wishlistData" :key="item.id">
+      <ul v-if="wishlistData?.wishlist.length ?? 0 > 0">
+        <li v-for="item in wishlistData?.wishlist" :key="item.id">
           {{ item.reward_title }} - {{ item.reward_points }} points
           <span v-if="!item.approved" style="color: orange">(Pending)</span>
           <span v-else style="color: green">(Approved)</span>
@@ -47,19 +47,22 @@
 </template>
 
 <script setup lang="ts">
-import type { Reward } from '~/types'
+import type {
+  TasksResponse,
+  RewardsResponse,
+  WishlistResponse,
+  User,
+} from '~/types'
 
-interface RewardsData {
-  rewards: Array<Reward>
-}
+const { user: sessionUser } = useUserSession()
+const user = sessionUser as Ref<User | null>
 
-const store = useStore()
+const { data: tasksData, refresh: tasksRefresh } =
+  await useFetch<TasksResponse>('/api/tasks')
 
-const { data: tasksData, refresh: tasksRefresh } = await useFetch('/api/tasks')
+const { data: rewardsData } = await useFetch<RewardsResponse>('/api/rewards')
 
-const { data: rewardsData } = await useFetch<RewardsData>('/api/rewards')
-
-const { data: wishlistData } = await useFetch('/api/wishlist')
+const { data: wishlistData } = await useFetch<WishlistResponse>('/api/wishlist')
 
 const completeTask = async (taskId: number) => {
   try {

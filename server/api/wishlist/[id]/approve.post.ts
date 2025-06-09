@@ -1,10 +1,12 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
 import { validateId } from '../../../utils/validation'
+import { User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
-  const user = event.context.user
+  const session = await requireUserSession(event)
+  const user = session.user as User
   const wishlistId = validateId(event.context.params?.id)
 
   if (!wishlistId) {
@@ -14,7 +16,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (!user || user.role !== 'parent') {
+  if (user.role !== 'parent') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },

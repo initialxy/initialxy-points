@@ -1,12 +1,13 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
-import { WishlistItem } from '~/types'
+import { WishlistItem, WishlistResponse, User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
-  const user = event.context.user
+  const session = await requireUserSession(event)
+  const user = session.user as User
 
-  if (!user || user.role !== 'child') {
+  if (user.role !== 'child') {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },
@@ -23,5 +24,5 @@ export default defineEventHandler(async (event: H3Event) => {
     user.id
   )
 
-  return { wishlist }
+  return { wishlist } as WishlistResponse
 })
