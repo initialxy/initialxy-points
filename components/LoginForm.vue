@@ -35,7 +35,6 @@
 
 <script setup lang="ts">
 const store = useStore()
-const route = useRoute()
 
 const username = ref('')
 const passcode = ref('')
@@ -48,7 +47,7 @@ const loginClicked = async () => {
 
   try {
     await store.login(username.value, passcode.value)
-    return navigateTo('/dashboard')
+    return await navigateTo('/dashboard')
   } catch (error) {
     console.error('Login failed:', error)
     errorMessage.value =

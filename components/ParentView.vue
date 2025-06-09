@@ -4,7 +4,7 @@
     <p>Manage your children's accounts and view their points.</p>
     <div>
       <h3>Children</h3>
-      <ul v-if="points && points.length > 0">
+      <ul v-if="data && data.points > 0">
         <li
           v-for="child in points"
           :key="child.child_id"
@@ -21,12 +21,10 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
 const { data, error, status } = await useFetch('/api/points')
-const points = data?.points || []
 
 const navigateToChild = (childId: number) => {
-  router.push(`/children/${childId}`)
+  navigateTo(`/children/${childId}`)
 }
 </script>
 

@@ -1,6 +1,7 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
 import { validateId } from '../../utils/validation'
+import { Task } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -22,6 +23,9 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const tasks = await db.all('SELECT * FROM tasks WHERE child_id = ?', userId)
+  const tasks: Task[] = await db.all(
+    'SELECT * FROM tasks WHERE child_id = ?',
+    userId
+  )
   return { tasks }
 })

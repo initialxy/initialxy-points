@@ -1,5 +1,6 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, readBody } from 'h3'
 import { getDb } from '../../database'
+import { PostResponseBody } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -22,16 +23,21 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const result = await db.run(
-    'INSERT INTO rewards (title, description, points, parent_id) VALUES (?, ?, ?, ?)',
+  const result = await db.get(
+    'INSERT INTO rewards (title, description, points, parent_id) VALUES (?, ?, ?, ?) RETURNING id',
     title,
     description,
     points,
     user.id
   )
 
+  const postResponseBody: PostResponseBody = {
+    message: 'Reward created successfully',
+    createdId: result.id,
+  }
+
   return {
     statusCode: 201,
-    body: { message: 'Reward created successfully', rewardId: result.lastID },
+    body: postResponseBody,
   }
 })

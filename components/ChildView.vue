@@ -4,13 +4,13 @@
     <p>View your points, tasks, rewards, and wishlist items.</p>
     <div>
       <h3>Your Points</h3>
-      <p v-if="user">{{ user.points }} points</p>
+      <p v-if="store.user">{{ store.user.points }} points</p>
       <p v-else>Loading points...</p>
     </div>
     <div>
       <h3>Tasks</h3>
-      <ul v-if="tasksData?.tasks && tasksData.tasks.length > 0">
-        <li v-for="task in tasksData.tasks" :key="task.id">
+      <ul v-if="tasksData && tasksData.length > 0">
+        <li v-for="task in tasksData" :key="task.id">
           {{ task.title }} - {{ task.points }} points
           <span
             v-if="!task.completed"
@@ -25,8 +25,8 @@
     </div>
     <div>
       <h3>Rewards</h3>
-      <ul v-if="rewardsData?.rewards && rewardsData.rewards.length > 0">
-        <li v-for="reward in rewardsData.rewards" :key="reward.id">
+      <ul v-if="rewardsData?.rewards && rewardsData.length > 0">
+        <li v-for="reward in rewardsData" :key="reward.id">
           {{ reward.title }} - {{ reward.points }} points
         </li>
       </ul>
@@ -34,8 +34,8 @@
     </div>
     <div>
       <h3>Wishlist</h3>
-      <ul v-if="wishlistData?.wishlist && wishlistData.wishlist.length > 0">
-        <li v-for="item in wishlistData.wishlist" :key="item.id">
+      <ul v-if="wishlistData && wishlistData.length > 0">
+        <li v-for="item in wishlistData" :key="item.id">
           {{ item.reward_title }} - {{ item.reward_points }} points
           <span v-if="!item.approved" style="color: orange">(Pending)</span>
           <span v-else style="color: green">(Approved)</span>
@@ -47,39 +47,26 @@
 </template>
 
 <script setup lang="ts">
-const { user } = useUserSession()
+import type { Reward } from '~/types'
 
-// Fetch tasks using useFetch (reactive)
-const {
-  data: tasksData,
-  pending: tasksPending,
-  error: tasksError,
-} = await useFetch('/api/tasks')
+interface RewardsData {
+  rewards: Array<Reward>
+}
 
-// Fetch rewards using useFetch (reactive)
-const {
-  data: rewardsData,
-  pending: rewardsPending,
-  error: rewardsError,
-} = await useFetch('/api/rewards')
+const store = useStore()
 
-// Fetch wishlist using useFetch (reactive)
-const {
-  data: wishlistData,
-  pending: wishlistPending,
-  error: wishlistError,
-} = await useFetch('/api/wishlist')
+const { data: tasksData, refresh: tasksRefresh } = await useFetch('/api/tasks')
+
+const { data: rewardsData } = await useFetch<RewardsData>('/api/rewards')
+
+const { data: wishlistData } = await useFetch('/api/wishlist')
 
 const completeTask = async (taskId: number) => {
   try {
     await $fetch(`/api/tasks/${taskId}/complete`, {
       method: 'POST',
     })
-    // Update local tasks list
-    const taskIndex = tasksData.value.tasks.findIndex((t) => t.id === taskId)
-    if (taskIndex !== -1) {
-      tasksData.value.tasks[taskIndex].completed = true
-    }
+    await tasksRefresh()
   } catch (err) {
     console.error('Error completing task:', err)
   }

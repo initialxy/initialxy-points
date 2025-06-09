@@ -3,12 +3,12 @@
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink to="/dashboard" v-if="store.isLoggedIn">Dashboard</NuxtLink>
-        <NuxtLink to="/tasks" v-if="store.isLoggedIn">Tasks</NuxtLink>
-        <NuxtLink to="/rewards" v-if="store.isLoggedIn">Rewards</NuxtLink>
-        <NuxtLink to="/wishlist" v-if="store.isLoggedIn">Wishlist</NuxtLink>
-        <NuxtLink to="/login" v-if="!store.isLoggedIn">Login</NuxtLink>
-        <button @click="logoutClicked" v-if="store.isLoggedIn">Logout</button>
+        <NuxtLink to="/dashboard" v-if="isLoggedIn">Dashboard</NuxtLink>
+        <NuxtLink to="/tasks" v-if="isLoggedIn">Tasks</NuxtLink>
+        <NuxtLink to="/rewards" v-if="isLoggedIn">Rewards</NuxtLink>
+        <NuxtLink to="/wishlist" v-if="isLoggedIn">Wishlist</NuxtLink>
+        <NuxtLink to="/login" v-if="!isLoggedIn">Login</NuxtLink>
+        <button @click="logoutClicked" v-if="isLoggedIn">Logout</button>
       </nav>
     </header>
     <main>
@@ -19,12 +19,13 @@
 
 <script setup lang="ts">
 const store = useStore()
-const router = useRouter()
 
 const logoutClicked = () => {
-  logout()
-  router.push('/login')
+  store.logout()
+  return navigateTo('/login')
 }
+
+const isLoggedIn = computed(() => store.user != null)
 </script>
 
 <style scoped>

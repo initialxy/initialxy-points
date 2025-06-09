@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia'
+import type { User } from '~/types'
 
 export const useStore = defineStore('main', () => {
-  const isLoggedIn = ref(false)
+  const user: Ref<User | null> = ref(null)
 
   const login = async (username: string, passcode: string) => {
     const { fetch: refreshSession } = useUserSession()
     try {
-      await $fetch('/api/auth/login', {
+      const response = await $fetch('/api/auth/login', {
         method: 'POST',
         body: { username, passcode },
       })
+      user.value = response.user
       await refreshSession()
-      isLoggedIn.value = true
     } catch (err) {
       console.error('Login error:', err)
       throw err
@@ -21,8 +22,8 @@ export const useStore = defineStore('main', () => {
   const logout = () => {
     const { clear: clearSession } = useUserSession()
     clearSession()
-    isLoggedIn.value = false
+    user.value = null
   }
 
-  return {isLoggedIn}
+  return { user, login, logout }
 })

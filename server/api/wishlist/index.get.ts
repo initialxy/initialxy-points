@@ -1,5 +1,6 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
+import { WishlistItem } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const wishlist = await db.all(
+  const wishlist: WishlistItem[] = await db.all(
     `
     SELECT wishlist.*, rewards.title AS reward_title, rewards.description AS reward_description, rewards.points AS reward_points
     FROM wishlist

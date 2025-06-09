@@ -3,6 +3,11 @@ import { z } from 'zod'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 import { validateString } from '../../utils/validation'
+import { User } from '~/types'
+
+interface DbUser extends User {
+  passcode: string
+}
 
 const bodySchema = z.object({
   username: z.string(),
@@ -26,19 +31,20 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const user = await db.get(
-    'SELECT * FROM users WHERE username = ?',
-    validatedUsername
-  )
+  const dbUser: DbUser | null =
+    (await db.get(
+      'SELECT * FROM users WHERE username = ?',
+      validatedUsername
+    )) || null
 
-  if (!user) {
+  if (dbUser == null) {
     throw createError({
       statusCode: 401,
       message: 'Invalid username or passcode',
     })
   }
 
-  const isValid = await bcrypt.compare(validatedPasscode, user.passcode)
+  const isValid = await bcrypt.compare(validatedPasscode, dbUser.passcode)
 
   if (!isValid) {
     throw createError({
@@ -47,15 +53,15 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Set the user session
-  await setUserSession(event, {
-    user: {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      points: user.points,
-    },
-  })
+  const user: User = {
+    id: dbUser.id,
+    username: dbUser.username,
+    role: dbUser.role,
+    points: dbUser.points,
+  }
 
-  return {}
+  // Set the user session
+  await setUserSession(event, { user })
+
+  return { user }
 })

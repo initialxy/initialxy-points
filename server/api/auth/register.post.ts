@@ -1,7 +1,7 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import { PostResponseBody } from '~/types'
 import { validateString } from '../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -42,28 +42,20 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const hashedPasscode = await bcrypt.hash(validatedPasscode, 10)
 
-  const result = await db.run(
-    'INSERT INTO users (username, passcode, role) VALUES (?, ?, ?)',
+  const result = await db.get(
+    'INSERT INTO users (username, passcode, role) VALUES (?, ?, ?) RETURNING id',
     validatedUsername,
     hashedPasscode,
     validatedRole
   )
 
-  // Generate JWT token
-  const token = jwt.sign(
-    { id: result.lastID, role: validatedRole },
-    process.env.JWT_SECRET || 'your-secret-key',
-    {
-      expiresIn: '1h',
-    }
-  )
+  const postResponseBody: PostResponseBody = {
+    message: 'User created successfully',
+    createdId: result.id,
+  }
 
   return {
     statusCode: 201,
-    body: {
-      message: 'User registered successfully',
-      token,
-      userId: result.lastID,
-    },
+    body: postResponseBody,
   }
 })
