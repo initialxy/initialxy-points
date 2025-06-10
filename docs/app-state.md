@@ -39,7 +39,7 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 ### Tables
 1. **users**: Stores user information (id, username, passcode, role, points)
 2. **tasks**: Stores tasks for children (id, title, description, points, child_id, completed)
-3. **rewards**: Stores rewards created by parents (id, title, description, points, parent_id)
+3. **rewards**: Stores rewards created by parents (id, description, points, parent_id)
 4. **wishlist**: Stores children's wishlist items (id, reward_id, child_id, approved)
 
 ## API Endpoints
@@ -57,8 +57,10 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 - `POST /api/rewards`: Creates a new reward
 
 ### Wishlist
-- `GET /api/wishlist`: Gets wishlist items for a child
-- `POST /api/wishlist`: Adds a reward to a child's wishlist
+- `GET /api/wishlist`: Gets wishlist items for a specific child or the authenticated child
+- `POST /api/wishlist`: Adds a new wishlist item with a description
+- `POST /api/wishlist/[id]/approve`: Approves a wishlist item and creates a reward
+- `POST /api/wishlist/[id]/reject`: Rejects a wishlist item
 
 ## Setup and Development
 

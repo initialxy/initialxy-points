@@ -8,7 +8,7 @@
 ## 1. `useFetch` (Recommended for Initial Data)
 ```ts
 <script setup lang="ts">
-const { data, error, status } = await useFetch('/api/data')
+const { data, error, status } = await useFetch<ResponseBody>('/api/data')
 </script>
 
 <template>
@@ -32,13 +32,14 @@ const { data, error, status } = await useFetch('/api/data')
   - Data is reactive, use it directly in template without accessing `.value`
   - Handle errors in template, not immediately after the call
   - Ideal for component initial state
+  - Always specify response type as function generic (e.g., `useFetch<ResponseBody>`)
 
 ## 2. `$fetch` (Client-Side Actions)
 ```ts
 <script setup lang="ts">
 async function submitForm() {
   try {
-    const response = await $fetch('/api/submit', {
+    const response = await $fetch<ResponseType>('/api/submit', {
       method: 'POST',
       body: { data: 'example' }
     })
@@ -55,6 +56,7 @@ async function submitForm() {
   - Works only in client-side context
   - Non-reactive, direct HTTP calls
   - Use for user-triggered actions (form submissions, button clicks, etc.)
+  - Always specify response type as function generic (e.g., `$fetch<ResponseType>`)
 
 ## 3. `useAsyncData` (Advanced Usage)
 ```ts
@@ -92,7 +94,7 @@ const { data } = await useAsyncData(() =>
 
 ### Client-Side Only Fetch
 ```ts
-const { data } = useFetch('/api/endpoint', { server: false })
+const { data } = useFetch<ResponseBody>('/api/endpoint', { server: false })
 ```
 
 ### Manual Refresh
@@ -105,14 +107,14 @@ const { data } = useFetch('/api/endpoint', { server: false })
 ## Common Anti-Patterns
 ❌ Wrong:
 ```ts
-const data = await $fetch('/api/data') // Non-reactive, no SSR support
+const data = await $fetch<ResponseType>('/api/data') // Non-reactive, no SSR support
 const rewards = ref([])
 rewards.value = data.value // Unnecessary ref creation
 ```
 
 ✅ Correct:
 ```ts
-const { data, error, status } = await useFetch('/api/data') // Reactive, SSR-safe
+const { data, error, status } = await useFetch<ResponseType>('/api/data') // Reactive, SSR-safe
 // Use data directly in template
 ```
 

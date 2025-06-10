@@ -11,7 +11,7 @@
       <h3>Tasks</h3>
       <ul v-if="tasksData?.tasks.length ?? 0 > 0">
         <li v-for="task in tasksData?.tasks" :key="task.id">
-          {{ task.title }} - {{ task.points }} points
+          {{ task.points }} points
           <span
             v-if="!task.completed"
             @click="completeTask(task.id)"
@@ -27,7 +27,7 @@
       <h3>Rewards</h3>
       <ul v-if="rewardsData?.rewards.length ?? 0 > 0">
         <li v-for="reward in rewardsData?.rewards" :key="reward.id">
-          {{ reward.title }} - {{ reward.points }} points
+          {{ reward.points }} points
         </li>
       </ul>
       <p v-else>No rewards available.</p>
@@ -36,9 +36,16 @@
       <h3>Wishlist</h3>
       <ul v-if="wishlistData?.wishlist.length ?? 0 > 0">
         <li v-for="item in wishlistData?.wishlist" :key="item.id">
-          {{ item.reward_title }} - {{ item.reward_points }} points
-          <span v-if="!item.approved" style="color: orange">(Pending)</span>
-          <span v-else style="color: green">(Approved)</span>
+          {{ item.description }} - {{ item.points }} points
+          <span v-if="item.status === 'pending'" style="color: orange"
+            >(Pending)</span
+          >
+          <span v-if="item.status === 'approved'" style="color: green"
+            >(Approved)</span
+          >
+          <span v-if="item.status === 'rejected'" style="color: red"
+            >(Rejected)</span
+          >
         </li>
       </ul>
       <p v-else>Your wishlist is empty.</p>

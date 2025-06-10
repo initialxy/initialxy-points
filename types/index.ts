@@ -7,8 +7,7 @@ export type User = {
 
 export type Task = {
   id: number
-  title: string
-  description?: string
+  description: string
   points: number
   child_id: number
   completed: boolean
@@ -16,20 +15,17 @@ export type Task = {
 
 export type Reward = {
   id: number
-  title: string
-  description?: string
+  description: string
   points: number
   parent_id: number
 }
 
 export type WishlistItem = {
   id: number
-  reward_id: number
   child_id: number
-  approved: boolean
-  reward_title?: string
-  reward_description?: string
-  reward_points?: number
+  description: string
+  points?: number
+  status: 'pending' | 'approved' | 'rejected'
 }
 
 export type CreatedIdResponseBody = {
@@ -52,4 +48,9 @@ export type WishlistResponse = {
 
 export type UsersResponse = {
   users: User[]
+}
+
+export type Notification = {
+  message: string
+  type: string
 }

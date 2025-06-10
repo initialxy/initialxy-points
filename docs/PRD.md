@@ -16,8 +16,8 @@
 - [x] Two types of users: parents (admins) and kids
 - [x] Parents can create tasks and define points for completion
 - [x] Parents can define rewards and their point values
-- [x] Kids can submit reward wishlists visible to parents
-- [x] Parents can approve/reject reward wishlist items
+- [x] Kids can submit reward wishlists with descriptions visible to parents
+- [x] Parents can approve/reject wishlist items, setting points for approved items
 - [x] Kids can redeem rewards with points (requires parent approval)
 - [x] Points visibility for parents and kids
 

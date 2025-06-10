@@ -36,42 +36,23 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Check if the wishlist item is already approved
-  if (wishlistItem.status === 'approved') {
+  // Check if the wishlist item is already approved or rejected
+  if (wishlistItem.status !== 'pending') {
     return {
       statusCode: 400,
-      body: { message: 'Wishlist item already approved' },
+      body: { message: 'Wishlist item already processed' },
     }
   }
 
-  const body = await readBody(event)
-  const { points } = body
-
-  if (!points || points <= 0) {
-    return {
-      statusCode: 400,
-      body: { message: 'Points are required and must be greater than 0' },
-    }
-  }
-
-  // Create a new reward
-  const result = await db.get(
-    'INSERT INTO rewards (description, points, parent_id) VALUES (?, ?, ?) RETURNING id',
-    wishlistItem.description,
-    points,
-    user.id
-  )
-
-  // Update the wishlist item status to approved and set points
+  // Update the wishlist item status to rejected
   await db.run(
-    'UPDATE wishlist SET status = ?, points = ? WHERE id = ?',
-    'approved',
-    points,
+    'UPDATE wishlist SET status = ? WHERE id = ?',
+    'rejected',
     wishlistId
   )
 
   return {
     statusCode: 200,
-    body: { message: 'Wishlist item approved successfully' },
+    body: { message: 'Wishlist item rejected successfully' },
   }
 })

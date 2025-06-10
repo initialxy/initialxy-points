@@ -8,10 +8,9 @@
     />
     <div v-if="status === 'pending'">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
-    <ul v-else-if="tasks && tasks.length">
-      <li v-for="task in tasks" :key="task.id">
-        <h2>{{ task.title }}</h2>
-        <p>{{ task.description }}</p>
+    <ul v-else-if="tasks && tasks.tasks.length">
+      <li v-for="task in tasks.tasks" :key="task.id">
+        <h2>{{ task.description }}</h2>
         <p>Points: {{ task.points }}</p>
         <button @click="completeTask(task.id)" :disabled="task.completed">
           Complete
@@ -23,26 +22,35 @@
 </template>
 
 <script setup lang="ts">
-const notification = ref(null)
+import type { TasksResponse, Notification } from '~/types'
+import { ref } from 'vue'
+import { useFetch } from '#imports'
+
+const notification = ref<Notification | null>(null)
 
 // Fetch tasks data using useFetch directly in setup
-const { data: tasks, error, status, refresh } = await useFetch('/api/tasks')
+const {
+  data: tasks,
+  error,
+  status,
+  refresh,
+} = await useFetch<TasksResponse>('/api/tasks')
 
 const completeTask = async (taskId: number) => {
   try {
-    const response = await $fetch(`/api/tasks/${taskId}/complete`, {
+    await $fetch(`/api/tasks/${taskId}/complete`, {
       method: 'POST',
     })
 
     // Update task status locally
-    const task = tasks.value.find((t) => t.id === taskId)
+    const task = tasks.value?.tasks.find((t) => t.id === taskId)
     if (task) {
       task.completed = true
     }
 
     // Show notification
     notification.value = {
-      message: `Task completed! You earned ${response.pointsEarned} points.`,
+      message: `Task completed!`,
       type: 'success',
     }
 

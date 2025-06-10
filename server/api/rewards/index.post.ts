@@ -15,18 +15,17 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const { title, description, points } = body
+  const { description, points } = body
 
-  if (!title || !points) {
+  if (!points) {
     return {
       statusCode: 400,
-      body: { message: 'Title and points are required' },
+      body: { message: 'Description and points are required' },
     }
   }
 
   const result = await db.get(
-    'INSERT INTO rewards (title, description, points, parent_id) VALUES (?, ?, ?, ?) RETURNING id',
-    title,
+    'INSERT INTO rewards (description, points, parent_id) VALUES (?, ?, ?) RETURNING id',
     description,
     points,
     user.id

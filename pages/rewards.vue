@@ -4,12 +4,13 @@
     <form @submit.prevent="createReward">
       <h2>Create New Reward</h2>
       <div>
-        <label for="title">Title:</label>
-        <input v-model="newReward.title" type="text" id="title" required />
-      </div>
-      <div>
         <label for="description">Description:</label>
-        <input v-model="newReward.description" type="text" id="description" />
+        <input
+          v-model="newReward.description"
+          type="text"
+          id="description"
+          required
+        />
       </div>
       <div>
         <label for="points">Points:</label>
@@ -21,10 +22,9 @@
     <h2>Available Rewards</h2>
     <div v-if="status === 'pending'">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
-    <ul v-else-if="data && data.length">
-      <li v-for="reward in data" :key="reward.id">
-        <h3>{{ reward.title }}</h3>
-        <p>{{ reward.description }}</p>
+    <ul v-if="data && data.rewards.length > 0">
+      <li v-for="reward in data.rewards" :key="reward.id">
+        <h3>{{ reward.description }}</h3>
         <p>Points: {{ reward.points }}</p>
       </li>
     </ul>
@@ -33,13 +33,15 @@
 </template>
 
 <script setup lang="ts">
+import type { RewardsResponse } from '~/types'
+
 const newReward = ref({
-  title: '',
   description: '',
   points: 0,
 })
 // Fetch rewards data using useFetch directly in setup
-const { data, error, status } = await useFetch('/api/rewards')
+const { data, error, status, refresh } =
+  await useFetch<RewardsResponse>('/api/rewards')
 
 const createReward = async () => {
   try {
@@ -49,7 +51,7 @@ const createReward = async () => {
     })
 
     // Clear form and refresh rewards list
-    newReward.value = { title: '', description: '', points: 0 }
+    newReward.value = { description: '', points: 0 }
     await refresh()
   } catch (err) {
     console.error('Error creating reward:', err)

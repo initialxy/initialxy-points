@@ -11,6 +11,14 @@
           @click="navigateToChild(child.child_id)"
         >
           {{ child.username }} - {{ child.points }} points
+          <ul v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0">
+            <li
+              v-for="wish in childWishlists.get(child.child_id)"
+              :key="wish.id"
+            >
+              {{ wish.description }} ({{ wish.status }})
+            </li>
+          </ul>
         </li>
       </ul>
       <p v-else-if="status === 'pending'">Loading children data...</p>
@@ -21,11 +29,39 @@
 </template>
 
 <script setup lang="ts">
+import type { UsersResponse, WishlistItem, WishlistResponse } from '~/types'
+import { ref, watch, computed } from 'vue'
+import { useFetch } from '#imports'
+
 const { data, error, status } = await useFetch<UsersResponse>('/api/users')
+
+const childWishlists = ref<Map<number, WishlistItem[]>>(new Map())
 
 const navigateToChild = (childId: number) => {
   navigateTo(`/children/${childId}`)
 }
+
+watch(
+  data,
+  async (newData) => {
+    if (newData) {
+      for (const user of newData.users) {
+        if (user.role === 'child') {
+          try {
+            const response = await $fetch<WishlistResponse>(`/api/wishlist?child_id=${user.id}`)
+            childWishlists.value.set(
+              user.id,
+              response.wishlist
+            )
+          } catch (err) {
+            console.error(`Error fetching wishlist for child ${user.id}:`, err)
+          }
+        }
+      }
+    }
+  },
+  { immediate: true }
+)
 
 const points = computed(
   () =>

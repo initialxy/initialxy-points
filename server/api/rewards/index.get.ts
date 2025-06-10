@@ -7,16 +7,31 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  if (user.role !== 'parent') {
-    return {
-      statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
-  }
+  const { child_id } = getQuery(event)
 
-  const rewards: Reward[] = await db.all(
-    'SELECT * FROM rewards WHERE parent_id = ?',
-    user.id
-  )
-  return { rewards } as RewardsResponse
+  if (child_id) {
+    const rewards: Reward[] = await db.all(
+      `
+      SELECT rewards.*
+      FROM rewards
+      JOIN users ON rewards.parent_id = users.id
+      WHERE users.id = ? AND users.role = 'parent'
+      `,
+      child_id
+    )
+    return { rewards } as RewardsResponse
+  } else {
+    if (user.role !== 'parent') {
+      return {
+        statusCode: 403,
+        body: { message: 'Forbidden' },
+      }
+    }
+
+    const rewards: Reward[] = await db.all(
+      'SELECT * FROM rewards WHERE parent_id = ?',
+      user.id
+    )
+    return { rewards } as RewardsResponse
+  }
 })

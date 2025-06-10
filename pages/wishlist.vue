@@ -9,19 +9,22 @@
     <form @submit.prevent="addToWishlist">
       <h2>Add to Wishlist</h2>
       <div>
-        <label for="rewardId">Reward ID:</label>
-        <input v-model="rewardId" type="number" id="rewardId" required />
+        <label for="description">Description:</label>
+        <input v-model="description" type="text" id="description" required />
       </div>
       <button type="submit">Add to Wishlist</button>
     </form>
 
     <h2>Wishlist Items</h2>
-    <ul v-if="data && data.length">
-      <li v-for="item in data" :key="item.id">
-        <h3>{{ item.reward.title }}</h3>
-        <p>{{ item.reward.description }}</p>
-        <p>Points: {{ item.reward.points }}</p>
-        <p>Status: {{ item.approved ? 'Approved' : 'Pending' }}</p>
+    <ul v-if="data && data.wishlist.length">
+      <li v-for="item in data.wishlist" :key="item.id">
+        <h3>{{ item.description }}</h3>
+        <p>Status: {{ item.status }}</p>
+        <p v-if="item.status === 'pending'">
+          <button @click="approveItem(item.id)">Approve</button>
+          <button @click="rejectItem(item.id)">Reject</button>
+        </p>
+        <p v-if="item.status === 'approved'">Points: {{ item.points }}</p>
       </li>
     </ul>
     <p v-else-if="status === 'pending'">Loading...</p>
@@ -31,21 +34,31 @@
 </template>
 
 <script setup lang="ts">
-const rewardId = ref(0)
-const notification = ref(null)
+import type { WishlistResponse, Notification, WishlistItem } from '~/types'
+import { ref } from 'vue'
+import { useFetch } from '#imports'
+
+const description = ref('')
+const notification = ref<Notification | null>(null)
+const points = ref(0)
+
+type WishlistData = {
+  wishlist: WishlistItem[]
+}
 
 // Fetch wishlist data using useFetch directly in setup
-const { data, error, status, refresh } = await useFetch('/api/wishlist')
+const { data, error, status, refresh } =
+  await useFetch<WishlistResponse>('/api/wishlist')
 
 const addToWishlist = async () => {
   try {
     await $fetch('/api/wishlist', {
       method: 'POST',
-      body: { rewardId: rewardId.value },
+      body: { description: description.value },
     })
 
     // Clear input and refresh wishlist
-    rewardId.value = 0
+    description.value = ''
     await refresh()
 
     // Show notification
@@ -62,6 +75,45 @@ const addToWishlist = async () => {
     console.error('Error adding to wishlist:', err)
     notification.value = {
       message: 'Failed to add to wishlist. Please try again.',
+      type: 'error',
+    }
+  }
+}
+
+const approveItem = async (id: number) => {
+  try {
+    await $fetch(`/api/wishlist/${id}/approve`, {
+      method: 'POST',
+      body: { points: points.value },
+    })
+    await refresh()
+    notification.value = {
+      message: 'Item approved successfully!',
+      type: 'success',
+    }
+  } catch (err) {
+    console.error('Error approving item:', err)
+    notification.value = {
+      message: 'Failed to approve item. Please try again.',
+      type: 'error',
+    }
+  }
+}
+
+const rejectItem = async (id: number) => {
+  try {
+    await $fetch(`/api/wishlist/${id}/reject`, {
+      method: 'POST',
+    })
+    await refresh()
+    notification.value = {
+      message: 'Item rejected successfully!',
+      type: 'success',
+    }
+  } catch (err) {
+    console.error('Error rejecting item:', err)
+    notification.value = {
+      message: 'Failed to reject item. Please try again.',
       type: 'error',
     }
   }

@@ -15,28 +15,19 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const { rewardId } = body
+  const { description } = body
 
-  if (!rewardId) {
+  if (!description) {
     return {
       statusCode: 400,
-      body: { message: 'Reward ID is required' },
-    }
-  }
-
-  const reward = await db.get('SELECT * FROM rewards WHERE id = ?', rewardId)
-
-  if (!reward) {
-    return {
-      statusCode: 404,
-      body: { message: 'Reward not found' },
+      body: { message: 'Description is required' },
     }
   }
 
   const result = await db.get(
-    'INSERT INTO wishlist (reward_id, child_id) VALUES (?, ?) RETURNING id',
-    rewardId,
-    user.id
+    'INSERT INTO wishlist (child_id, description) VALUES (?, ?) RETURNING id',
+    user.id,
+    description
   )
 
   const postResponseBody: CreatedIdResponseBody = {

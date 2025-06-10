@@ -27,8 +27,7 @@ async function initializeDatabase(db: Database): Promise<Database> {
 
       CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
+        description TEXT NOT NULL,
         points INTEGER NOT NULL,
         child_id INTEGER,
         completed BOOLEAN DEFAULT FALSE,
@@ -37,8 +36,7 @@ async function initializeDatabase(db: Database): Promise<Database> {
 
       CREATE TABLE IF NOT EXISTS rewards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
+        description TEXT NOT NULL,
         points INTEGER NOT NULL,
         parent_id INTEGER,
         FOREIGN KEY(parent_id) REFERENCES users(id)
@@ -46,10 +44,10 @@ async function initializeDatabase(db: Database): Promise<Database> {
 
       CREATE TABLE IF NOT EXISTS wishlist (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        reward_id INTEGER,
         child_id INTEGER,
-        approved BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY(reward_id) REFERENCES rewards(id),
+        description TEXT NOT NULL,
+        points INTEGER,
+        status TEXT CHECK(status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
         FOREIGN KEY(child_id) REFERENCES users(id)
       );
     `)

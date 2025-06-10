@@ -200,7 +200,6 @@ Retrieves the authenticated kid's wishlist items.
       "kid_id": "number",
       "reward_id": "number",
       "approved": "boolean",
-      "reward_title": "string",
       "reward_description": "string",
       "reward_points": "number"
     }
@@ -274,3 +273,19 @@ Retrieves points information for all kids.
 **Status Codes:**
 - 200: Successful retrieval
 - 403: Forbidden (not a parent user)
+
+### POST /api/wishlist/[id]/reject
+Rejects a wishlist item by a parent.
+
+**Response:**
+```json
+{
+  "message": "Wishlist item rejected successfully"
+}
+```
+
+**Status Codes:**
+- 200: Wishlist item rejected successfully
+- 400: Invalid wishlist ID, already processed, or invalid state
+- 403: Forbidden (not a parent user)
+- 404: Wishlist item not found
