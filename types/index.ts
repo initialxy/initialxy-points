@@ -50,6 +50,10 @@ export type UsersResponse = {
   users: User[]
 }
 
+export type UserResponse = {
+  user: User
+}
+
 export type Notification = {
   message: string
   type: string

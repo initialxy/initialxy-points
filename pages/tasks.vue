@@ -8,7 +8,7 @@
     />
     <div v-if="status === 'pending'">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
-    <ul v-else-if="tasks && tasks.tasks.length">
+    <ul v-else-if="tasks && tasks.length">
       <li v-for="task in tasks.tasks" :key="task.id">
         <h2>{{ task.description }}</h2>
         <p>Points: {{ task.points }}</p>

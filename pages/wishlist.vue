@@ -16,7 +16,7 @@
     </form>
 
     <h2>Wishlist Items</h2>
-    <ul v-if="data && data.wishlist.length">
+    <ul v-if="data?.wishlist.length ?? 0 > 0">
       <li v-for="item in data.wishlist" :key="item.id">
         <h3>{{ item.description }}</h3>
         <p>Status: {{ item.status }}</p>

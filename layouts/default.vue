@@ -6,7 +6,7 @@
         <NuxtLink to="/dashboard" v-if="loggedIn">Dashboard</NuxtLink>
         <NuxtLink to="/tasks" v-if="loggedIn">Tasks</NuxtLink>
         <NuxtLink to="/rewards" v-if="loggedIn">Rewards</NuxtLink>
-        <NuxtLink to="/wishlist" v-if="loggedIn">Wishlist</NuxtLink>
+        <NuxtLink to="/wishlist" v-if="loggedIn && user?.role === 'child'">Wishlist</NuxtLink>
         <NuxtLink to="/login" v-if="!loggedIn">Login</NuxtLink>
         <button @click="logoutClicked" v-if="loggedIn">Logout</button>
       </nav>
@@ -18,7 +18,10 @@
 </template>
 
 <script setup lang="ts">
-const { loggedIn } = useUserSession()
+import type { User } from '~/types'
+
+const { user: sessionUser, loggedIn } = useUserSession()
+const user = sessionUser as Ref<User | null>
 const store = useStore()
 
 const logoutClicked = async () => {

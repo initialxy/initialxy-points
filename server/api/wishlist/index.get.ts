@@ -7,28 +7,20 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  const { child_id } = getQuery(event)
+  const { id } = getQuery(event)
 
-  if (child_id) {
-    const wishlist: WishlistItem[] = await db.all(
-      'SELECT * FROM wishlist WHERE child_id = ?',
-      child_id
-    )
-    const response: WishlistResponse = { wishlist }
-    return response
-  } else {
-    if (user.role !== 'child') {
-      return {
-        statusCode: 403,
-        body: { message: 'Forbidden' },
-      }
+  if (id == null && user.role !== 'child') {
+    return {
+      statusCode: 403,
+      body: { message: 'Forbidden' },
     }
-
-    const wishlist: WishlistItem[] = await db.all(
-      'SELECT * FROM wishlist WHERE child_id = ?',
-      user.id
-    )
-    const response: WishlistResponse = { wishlist }
-    return response
   }
+
+  const userId = id ?? user.id
+
+  const wishlist: WishlistItem[] = await db.all(
+    'SELECT * FROM wishlist WHERE child_id = ?',
+    userId
+  )
+  return { wishlist } as WishlistResponse
 })

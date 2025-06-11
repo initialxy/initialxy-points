@@ -7,9 +7,9 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  const { child_id } = getQuery(event)
+  const { child_id: childId } = getQuery(event)
 
-  if (child_id) {
+  if (childId) {
     const rewards: Reward[] = await db.all(
       `
       SELECT rewards.*
@@ -17,11 +17,11 @@ export default defineEventHandler(async (event: H3Event) => {
       JOIN users ON rewards.parent_id = users.id
       WHERE users.id = ? AND users.role = 'parent'
       `,
-      child_id
+      childId
     )
     return { rewards } as RewardsResponse
   } else {
-    if (user.role !== 'parent') {
+    if (user.role !== 'child') {
       return {
         statusCode: 403,
         body: { message: 'Forbidden' },

@@ -14,10 +14,10 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const children: User[] = await db.all(
-    'SELECT * FROM users WHERE role = ?',
+  const users: User[] = await db.all(
+    'SELECT id, username, role, points FROM users WHERE role = ?',
     'child'
   )
 
-  return { users: children } as UsersResponse
+  return { users } as UsersResponse
 })
