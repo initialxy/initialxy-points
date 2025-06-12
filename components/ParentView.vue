@@ -48,11 +48,10 @@ watch(
       for (const user of newData.users) {
         if (user.role === 'child') {
           try {
-            const response = await $fetch<WishlistResponse>(`/api/wishlist?child_id=${user.id}`)
-            childWishlists.value.set(
-              user.id,
-              response.wishlist
+            const response = await $fetch<WishlistResponse>(
+              `/api/wishlist?child_id=${user.id}`
             )
+            childWishlists.value.set(user.id, response.wishlist)
           } catch (err) {
             console.error(`Error fetching wishlist for child ${user.id}:`, err)
           }

@@ -13,6 +13,12 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
 
+  app: {
+    head: {
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+    }
+  },
+  css: ['~/assets/css/main.css'],
   pinia: {
     storesDirs: ['./stores/**'],
   },

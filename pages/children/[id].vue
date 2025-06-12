@@ -35,11 +35,18 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import type { User, WishlistResponse, RewardsResponse, UserResponse } from '~/types'
+import type {
+  User,
+  WishlistResponse,
+  RewardsResponse,
+  UserResponse,
+} from '~/types'
 
 const route = useRoute()
 const childId = route.params.id
-const { data, error, status } = await useFetch<UserResponse>(`/api/users/${childId}`)
+const { data, error, status } = await useFetch<UserResponse>(
+  `/api/users/${childId}`
+)
 
 const {
   data: wishlistData,
