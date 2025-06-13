@@ -10,7 +10,9 @@ export type Task = {
   description: string
   points: number
   child_id: number
-  completed: boolean
+  task_type: 'throw-away' | 'perpetual'
+  parent_id: number
+  is_marked_complete: boolean
 }
 
 export type Reward = {

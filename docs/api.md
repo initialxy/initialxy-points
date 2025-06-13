@@ -68,7 +68,7 @@ Registers a new user.
 ## Tasks
 
 ### GET /api/tasks
-Retrieves tasks for the authenticated kid user.
+Retrieves tasks for the authenticated user.
 
 **Response:**
 ```json
@@ -76,11 +76,12 @@ Retrieves tasks for the authenticated kid user.
   "tasks": [
     {
       "id": "number",
-      "title": "string",
       "description": "string",
       "points": "number",
-      "completed": "boolean",
-      "kid_id": "number"
+      "task_type": "string", // 'throw-away' or 'perpetual'
+      "child_id": "number",
+      "parent_id": "number",
+      "is_marked_complete": "boolean"
     }
   ]
 }
@@ -88,7 +89,7 @@ Retrieves tasks for the authenticated kid user.
 
 **Status Codes:**
 - 200: Successful retrieval
-- 403: Forbidden (not a kid user)
+- 403: Forbidden (not authorized)
 
 ### POST /api/tasks
 Creates a new task for a kid (parent-only endpoint).
@@ -96,10 +97,10 @@ Creates a new task for a kid (parent-only endpoint).
 **Request:**
 ```json
 {
-  "title": "string",
   "description": "string",
   "points": "number",
-  "kid_id": "number"
+  "kid_id": "number",
+  "task_type": "string" // 'throw-away' or 'perpetual'
 }
 ```
 
@@ -107,11 +108,11 @@ Creates a new task for a kid (parent-only endpoint).
 ```json
 {
   "id": "number",
-  "title": "string",
   "description": "string",
   "points": "number",
-  "completed": "boolean",
-  "kid_id": "number"
+  "task_type": "string",
+  "child_id": "number",
+  "parent_id": "number"
 }
 ```
 
@@ -120,21 +121,53 @@ Creates a new task for a kid (parent-only endpoint).
 - 400: Invalid input
 - 403: Forbidden (not a parent user)
 
-### POST /api/tasks/[id]/complete
-Marks a task as completed by a kid user.
+### POST /api/tasks/[id]/mark_complete
+Marks a task as completed by a kid user (pending parent approval).
 
 **Response:**
 ```json
 {
-  "message": "Task completed successfully",
+  "message": "Task marked as completed. Awaiting parent approval."
+}
+```
+
+**Status Codes:**
+- 200: Task marked as completed
+- 400: Invalid task ID or task already completed
+- 403: Forbidden (not a kid user)
+- 404: Task not found
+
+### POST /api/tasks/[id]/approve_complete
+Approves a task completion by a parent user.
+
+**Response:**
+```json
+{
+  "message": "Task completion approved",
   "pointsEarned": "number"
 }
 ```
 
 **Status Codes:**
-- 200: Task completed successfully
-- 400: Invalid task ID or task already completed
-- 403: Forbidden (not a kid user)
+- 200: Task completion approved
+- 400: Invalid task ID or task not marked as completed
+- 403: Forbidden (not a parent user)
+- 404: Task not found
+
+### POST /api/tasks/[id]/reject_complete
+Rejects a task completion by a parent user.
+
+**Response:**
+```json
+{
+  "message": "Task completion rejected"
+}
+```
+
+**Status Codes:**
+- 200: Task completion rejected
+- 400: Invalid task ID or task not marked as completed
+- 403: Forbidden (not a parent user)
 - 404: Task not found
 
 ## Rewards
@@ -148,7 +181,6 @@ Retrieves available rewards.
   "rewards": [
     {
       "id": "number",
-      "title": "string",
       "description": "string",
       "points": "number"
     }
@@ -165,7 +197,6 @@ Creates a new reward (parent-only endpoint).
 **Request:**
 ```json
 {
-  "title": "string",
   "description": "string",
   "points": "number"
 }
@@ -175,7 +206,6 @@ Creates a new reward (parent-only endpoint).
 ```json
 {
   "id": "number",
-  "title": "string",
   "description": "string",
   "points": "number"
 }

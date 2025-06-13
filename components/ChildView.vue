@@ -11,14 +11,14 @@
       <h3>Tasks</h3>
       <ul v-if="tasksData?.tasks.length ?? 0 > 0">
         <li v-for="task in tasksData?.tasks" :key="task.id">
-          {{ task.points }} points
+          {{ task.points }} points - {{ task.description }}
           <span
-            v-if="!task.completed"
-            @click="completeTask(task.id)"
+            v-if="!task.is_marked_complete"
+            @click="markTaskComplete(task.id)"
             style="cursor: pointer; color: blue"
             >Complete</span
           >
-          <span v-else>(Completed)</span>
+          <span v-else style="color: orange">(Completed - Awaiting Approval)</span>
         </li>
       </ul>
       <p v-else>No tasks available.</p>
@@ -27,7 +27,7 @@
       <h3>Rewards</h3>
       <ul v-if="rewardsData?.rewards.length ?? 0 > 0">
         <li v-for="reward in rewardsData?.rewards" :key="reward.id">
-          {{ reward.points }} points
+          {{ reward.points }} points - {{ reward.description }}
         </li>
       </ul>
       <p v-else>No rewards available.</p>
@@ -37,15 +37,9 @@
       <ul v-if="wishlistData?.wishlist.length ?? 0 > 0">
         <li v-for="item in wishlistData?.wishlist" :key="item.id">
           {{ item.description }} - {{ item.points }} points
-          <span v-if="item.status === 'pending'" style="color: orange"
-            >(Pending)</span
-          >
-          <span v-if="item.status === 'approved'" style="color: green"
-            >(Approved)</span
-          >
-          <span v-if="item.status === 'rejected'" style="color: red"
-            >(Rejected)</span
-          >
+          <span v-if="item.status === 'pending'" style="color: orange">(Pending)</span>
+          <span v-if="item.status === 'approved'" style="color: green">(Approved)</span>
+          <span v-if="item.status === 'rejected'" style="color: red">(Rejected)</span>
         </li>
       </ul>
       <p v-else>Your wishlist is empty.</p>
@@ -71,9 +65,9 @@ const { data: rewardsData } = await useFetch<RewardsResponse>('/api/rewards')
 
 const { data: wishlistData } = await useFetch<WishlistResponse>('/api/wishlist')
 
-const completeTask = async (taskId: number) => {
+const markTaskComplete = async (taskId: number) => {
   try {
-    await $fetch(`/api/tasks/${taskId}/complete`, {
+    await $fetch(`/api/tasks/${taskId}/mark_complete`, {
       method: 'POST',
     })
     await tasksRefresh()

@@ -29,9 +29,12 @@ async function initializeDatabase(db: Database): Promise<Database> {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         description TEXT NOT NULL,
         points INTEGER NOT NULL,
+        parent_id INTEGER,
         child_id INTEGER,
-        completed BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY(child_id) REFERENCES users(id)
+        task_type TEXT NOT NULL CHECK(task_type IN ('throw-away', 'perpetual')),
+        is_marked_complete BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY(child_id) REFERENCES users(id),
+        FOREIGN KEY(parent_id) REFERENCES users(id)
       );
 
       CREATE TABLE IF NOT EXISTS rewards (

@@ -1,7 +1,7 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
 import { validateId } from '../../../utils/validation'
-import { User } from '~/types'
+import { User, Task } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -9,22 +9,15 @@ export default defineEventHandler(async (event: H3Event) => {
   const user = session.user as User
   const taskId = validateId(event.context.params?.id)
 
-  if (!taskId) {
+  if (taskId == null) {
     return {
       statusCode: 400,
       body: { message: 'Invalid task ID' },
     }
   }
 
-  if (user.role !== 'child') {
-    return {
-      statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
-  }
-
   // Check if the task exists and belongs to the user
-  const task = await db.get(
+  const task = await db.get<Task>(
     'SELECT * FROM tasks WHERE id = ? AND child_id = ?',
     [taskId, user.id]
   )
@@ -32,29 +25,22 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!task) {
     return {
       statusCode: 404,
-      body: { message: 'Task not found' },
+      body: { message: 'Task not found or not authorized' },
     }
   }
 
-  // Check if the task is already completed
-  if (task.completed) {
+  if (task.is_marked_complete) {
     return {
       statusCode: 400,
-      body: { message: 'Task already completed' },
+      body: { message: 'Task is already marked as completed' },
     }
   }
 
-  // Update the task as completed
-  await db.run('UPDATE tasks SET completed = TRUE WHERE id = ?', taskId)
-
-  // Update the user's points balance
-  await db.run('UPDATE users SET points = points + ? WHERE id = ?', [
-    task.points,
-    user.id,
-  ])
+  // Mark the task as completed (pending parent approval)
+  await db.run('UPDATE tasks SET is_marked_complete = TRUE WHERE id = ?', taskId)
 
   return {
     statusCode: 200,
-    body: { message: 'Task completed successfully', pointsEarned: task.points },
+    body: { message: 'Task marked as completed. Awaiting parent approval.' },
   }
 })
