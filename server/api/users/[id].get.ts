@@ -6,9 +6,9 @@ export default defineEventHandler(async (event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const userId = parseInt(event.context.params?.id ?? '0') as number
+  const userId = validateId(parseInt(event.context.params?.id ?? '0') as number)
 
-  if (userId === 0 || (user.id !== userId && user.role !== 'parent')) {
+  if (userId == null || (user.id !== userId && user.role !== 'parent')) {
     return {
       statusCode: 403,
       body: { message: 'Forbidden' },

@@ -15,11 +15,21 @@
       <form @submit.prevent="createTask">
         <div>
           <label for="description">Task Description:</label>
-          <input v-model="newTask.description" type="text" id="description" required />
+          <input
+            v-model="newTask.description"
+            type="text"
+            id="description"
+            required
+          />
         </div>
         <div>
           <label for="points">Points:</label>
-          <input v-model.number="newTask.points" type="number" id="points" required />
+          <input
+            v-model.number="newTask.points"
+            type="number"
+            id="points"
+            required
+          />
         </div>
         <div>
           <label for="child">Child:</label>
@@ -56,12 +66,50 @@
           <button @click="approveTask(task.id)">Approve</button>
           <button @click="rejectTask(task.id)">Reject</button>
         </div>
+        <div v-else-if="user?.role === 'parent' && !task.is_marked_complete">
+          <button @click="editTask(task)">Edit</button>
+          <button @click="deleteTask(task.id)">Delete</button>
+        </div>
         <div v-else>
           <button disabled>Completed (Awaiting Approval)</button>
         </div>
       </li>
     </ul>
     <p v-else>No tasks available</p>
+
+    <!-- Task edit form for parents -->
+    <div v-if="user?.role === 'parent' && editingTask">
+      <h2>Edit Task</h2>
+      <form @submit.prevent="updateTask">
+        <div>
+          <label for="editDescription">Task Description:</label>
+          <input
+            v-model="editingTask.description"
+            type="text"
+            id="editDescription"
+            required
+          />
+        </div>
+        <div>
+          <label for="editPoints">Points:</label>
+          <input
+            v-model.number="editingTask.points"
+            type="number"
+            id="editPoints"
+            required
+          />
+        </div>
+        <div>
+          <label for="editTaskType">Task Type:</label>
+          <select v-model="editingTask.task_type" id="editTaskType" required>
+            <option value="throw-away">Throw-away (one-time)</option>
+            <option value="perpetual">Perpetual (recurring)</option>
+          </select>
+        </div>
+        <button type="submit">Update Task</button>
+        <button type="button" @click="cancelEdit">Cancel</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -85,8 +133,8 @@ const {
 
 // Fetch children data for parent task creation
 const { data: usersData } = await useFetch<{ users: User[] }>('/api/users')
-const children = computed(() =>
-  usersData.value?.users.filter((u) => u.role === 'child') || []
+const children = computed(
+  () => usersData.value?.users.filter((u) => u.role === 'child') || []
 )
 
 const newTask = ref({
@@ -222,6 +270,86 @@ const rejectTask = async (taskId: number) => {
     }
   }
 }
+
+// New code for task editing
+const editingTask = ref<Task | null>(null)
+
+const editTask = (task: Task) => {
+  editingTask.value = { ...task }
+}
+
+const updateTask = async () => {
+  if (!editingTask.value) return
+
+  try {
+    const response = await $fetch<Task>(`/api/tasks/${editingTask.value.id}`, {
+      method: 'PUT',
+      body: {
+        description: editingTask.value.description,
+        points: editingTask.value.points,
+        task_type: editingTask.value.task_type,
+      },
+    })
+
+    // Show notification
+    notification.value = {
+      message: `Task updated successfully.`,
+      type: 'success',
+    }
+
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      notification.value = null
+    }, 3000)
+
+    // Reset editing state
+    editingTask.value = null
+
+    // Refresh the task list
+    await refresh()
+  } catch (err) {
+    console.error('Error updating task:', err)
+    notification.value = {
+      message: 'Error updating task. Please try again.',
+      type: 'error',
+    }
+  }
+}
+
+const cancelEdit = () => {
+  editingTask.value = null
+}
+
+// New code for task deletion
+const deleteTask = async (taskId: number) => {
+  if (!confirm('Are you sure you want to delete this task?')) return
+
+  try {
+    await $fetch(`/api/tasks/${taskId}`, {
+      method: 'DELETE',
+    })
+
+    // Show notification
+    notification.value = {
+      message: `Task deleted successfully.`,
+      type: 'success',
+    }
+
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      notification.value = null
+    }, 3000)
+
+    // Refresh the task list
+    await refresh()
+  } catch (err) {
+    console.error('Error deleting task:', err)
+    notification.value = {
+      message: 'Error deleting task. Please try again.',
+      type: 'error',
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -251,7 +379,9 @@ label {
   margin-bottom: 0.5rem;
 }
 
-input, select, button {
+input,
+select,
+button {
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;

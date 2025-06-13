@@ -7,7 +7,9 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const wishlistId = validateId(event.context.params?.id)
+  const wishlistId = validateId(
+    parseInt(event.context.params?.id ?? '0') as number
+  )
 
   if (!wishlistId) {
     return {

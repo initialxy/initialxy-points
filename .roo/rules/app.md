@@ -1,6 +1,6 @@
 # initialxy-points App Summary
 
-**App Description:** A simple web app that helps track points earned by kids and allows them to redeem points for rewards.
+**App Description:** A simple web app that helps track points earned by kids and allows them to redeem points for rewards. See docs/PRD.md for more context.
 
 **Technical Stack:**
 - Frontend: Vue.js with Nuxt.js framework (additional modules: nuxt/fonts, nuxt/icon, nuxt/ui)

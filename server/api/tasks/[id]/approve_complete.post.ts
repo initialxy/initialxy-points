@@ -7,7 +7,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const taskId = validateId(event.context.params?.id)
+  const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
 
   if (taskId == null) {
     return {
@@ -42,7 +42,10 @@ export default defineEventHandler(async (event: H3Event) => {
     await db.run('DELETE FROM tasks WHERE id = ?', taskId)
   } else {
     // For perpetual tasks, reset the is_marked_complete flag
-    await db.run('UPDATE tasks SET is_marked_complete = FALSE WHERE id = ?', taskId)
+    await db.run(
+      'UPDATE tasks SET is_marked_complete = FALSE WHERE id = ?',
+      taskId
+    )
   }
 
   // Update the child's points balance

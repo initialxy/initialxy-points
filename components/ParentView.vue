@@ -7,11 +7,21 @@
       <form @submit.prevent="createTask">
         <div>
           <label for="description">Task Description:</label>
-          <input v-model="newTask.description" type="text" id="description" required />
+          <input
+            v-model="newTask.description"
+            type="text"
+            id="description"
+            required
+          />
         </div>
         <div>
           <label for="points">Points:</label>
-          <input v-model.number="newTask.points" type="number" id="points" required />
+          <input
+            v-model.number="newTask.points"
+            type="number"
+            id="points"
+            required
+          />
         </div>
         <div>
           <label for="child">Child:</label>
@@ -59,7 +69,8 @@
       <h3>Manage Tasks</h3>
       <ul v-if="tasks.length > 0">
         <li v-for="task in tasks" :key="task.id">
-          {{ task.description }} ({{ task.task_type }}) - {{ task.points }} points
+          {{ task.description }} ({{ task.task_type }}) -
+          {{ task.points }} points
           <span v-if="task.is_marked_complete">
             <button @click="approveTask(task.id)">Approve</button>
             <button @click="rejectTask(task.id)">Reject</button>
@@ -73,7 +84,12 @@
 </template>
 
 <script setup lang="ts">
-import type { UsersResponse, WishlistItem, WishlistResponse, Task } from '~/types'
+import type {
+  UsersResponse,
+  WishlistItem,
+  WishlistResponse,
+  Task,
+} from '~/types'
 import { ref, watch, computed } from 'vue'
 import { useFetch } from '#imports'
 
@@ -115,8 +131,8 @@ const points = computed(
     })) || []
 )
 
-const children = computed(() =>
-  data.value?.users.filter((user) => user.role === 'child') || []
+const children = computed(
+  () => data.value?.users.filter((user) => user.role === 'child') || []
 )
 
 const newTask = ref({
@@ -219,7 +235,9 @@ label {
   margin-bottom: 0.5rem;
 }
 
-input, select, button {
+input,
+select,
+button {
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;

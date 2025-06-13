@@ -18,7 +18,9 @@
             style="cursor: pointer; color: blue"
             >Complete</span
           >
-          <span v-else style="color: orange">(Completed - Awaiting Approval)</span>
+          <span v-else style="color: orange"
+            >(Completed - Awaiting Approval)</span
+          >
         </li>
       </ul>
       <p v-else>No tasks available.</p>
@@ -37,9 +39,15 @@
       <ul v-if="wishlistData?.wishlist.length ?? 0 > 0">
         <li v-for="item in wishlistData?.wishlist" :key="item.id">
           {{ item.description }} - {{ item.points }} points
-          <span v-if="item.status === 'pending'" style="color: orange">(Pending)</span>
-          <span v-if="item.status === 'approved'" style="color: green">(Approved)</span>
-          <span v-if="item.status === 'rejected'" style="color: red">(Rejected)</span>
+          <span v-if="item.status === 'pending'" style="color: orange"
+            >(Pending)</span
+          >
+          <span v-if="item.status === 'approved'" style="color: green"
+            >(Approved)</span
+          >
+          <span v-if="item.status === 'rejected'" style="color: red"
+            >(Rejected)</span
+          >
         </li>
       </ul>
       <p v-else>Your wishlist is empty.</p>

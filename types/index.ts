@@ -36,6 +36,10 @@ export type CreatedIdResponseBody = {
 }
 
 // Response types for API endpoints
+export type TaskResponse = {
+  task: Task
+}
+
 export type TasksResponse = {
   tasks: Task[]
 }

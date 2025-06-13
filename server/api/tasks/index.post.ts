@@ -1,6 +1,6 @@
 import { defineEventHandler, H3Event, readBody } from 'h3'
 import { getDb } from '../../database'
-import { User, Task } from '~/types'
+import { User, TaskResponse } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -39,14 +39,13 @@ export default defineEventHandler(async (event: H3Event) => {
   const taskId = result.lastID as number
 
   return {
-    statusCode: 201,
-    body: {
+    task: {
       id: taskId,
       description,
       points,
       task_type,
       child_id: kid_id,
       parent_id: user.id,
-    } as Task,
-  }
+    },
+  } as TaskResponse
 })
