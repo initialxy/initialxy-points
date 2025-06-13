@@ -1,308 +1,70 @@
----
-title: RadioGroup
-description: A set of radio buttons to select a single option from a list.
-category: form
-links:
-  - label: RadioGroup
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/radio-group
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/RadioGroup.vue
----
+# URadioGroup
+
+The URadioGroup component is a set of radio buttons used to select a single option from a list. It supports various customization options through props and slots.
 
 ## Usage
 
-Use the `v-model` directive to control the value of the RadioGroup or the `default-value` prop to set the initial value when you do not need to control its state.
+### Basic Usage
+Use the `v-model` directive to control the value or `default-value` prop for initial value.
 
-### Items
+```ts
+<script setup lang="ts">
+import type { RadioGroupItem, RadioGroupValue } from '@nuxt/ui'
+const items = ref<RadioGroupItem[]>(['System', 'Light', 'Dark'])
+const value = ref<RadioGroupValue>('System')
+</script>
 
-Use the `items` prop as an array of strings or numbers:
+<template>
+  <URadioGroup v-model="value" :items="items" />
+</template>
+```
 
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-  - items
-external:
-  - items
-  - modelValue
-externalTypes:
-  - RadioGroupItem[]
-  - RadioGroupValue
-props:
-  modelValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
+### Items as Objects
+Pass an array of objects with properties like `label`, `description`, `value`, etc.
 
-You can also pass an array of objects with the following properties:
+```ts
+<script setup lang="ts">
+import type { RadioGroupItem, RadioGroupValue } from '@nuxt/ui'
+const items = ref<RadioGroupItem[]>([
+  { label: 'System', description: 'This is the first option.', value: 'system' },
+  { label: 'Light', description: 'This is the second option.', value: 'light' },
+  { label: 'Dark', description: 'This is the third option.', value: 'dark' }
+])
+const value = ref<RadioGroupValue>('system')
+</script>
 
-- `label?: string`{lang="ts-type"}
-- `description?: string`{lang="ts-type"}
-- [`value?: string`{lang="ts-type"}](#value-key)
-- `disabled?: boolean`{lang="ts-type"}
-- `class?: any`{lang="ts-type"}
-- `ui?: { item?: ClassNameValue, container?: ClassNameValue, base?: ClassNameValue, 'indicator'?: ClassNameValue, wrapper?: ClassNameValue, label?: ClassNameValue, description?: ClassNameValue }`{lang="ts-type"}
+<template>
+  <URadioGroup v-model="value" :items="items" />
+</template>
+```
 
-::component-code
----
-ignore:
-  - modelValue
-  - items
-external:
-  - items
-  - modelValue
-externalTypes:
-  - RadioGroupItem[]
-  - RadioGroupValue
-props:
-  modelValue: 'system'
-  items:
-    - label: 'System'
-      description: 'This is the first option.'
-      value: 'system'
-    - label: 'Light'
-      description: 'This is the second option.'
-      value: 'light'
-    - label: 'Dark'
-      description: 'This is the third option.'
-      value: 'dark'
----
-::
+## Props
 
-::caution
-When using objects, you need to reference the `value` property of the object in the `v-model` directive or the `default-value` prop.
-::
+- `items`: Array of strings/numbers or objects with properties like `label`, `description`, etc.
+- `valueKey`: Property to use as value (default: 'value')
+- `legend`: Legend text for the group
+- `color`: Color variant (e.g., 'primary', 'neutral')
+- `variant`: Variant style (e.g., 'list', 'card', 'table')
+- `size`: Size variant (e.g., 'xs', 'sm', 'md', 'lg', 'xl')
+- `orientation`: Layout orientation ('horizontal' or 'vertical')
+- `indicator`: Indicator position ('start', 'end', 'hidden')
+- `disabled`: Disable the group
 
-### Value Key
+## Slots
 
-You can change the property that is used to set the value by using the `value-key` prop. Defaults to `value`.
+- `legend`: Custom legend content
+- `label`: Custom label content
+- `description`: Custom description content
 
-::component-code
----
-ignore:
-  - modelValue
-  - items
-  - valueKey
-external:
-  - items
-  - modelValue
-externalTypes:
-  - RadioGroupItem[]
-  - RadioGroupValue
-props:
-  modelValue: 'light'
-  valueKey: 'id'
-  items:
-    - label: 'System'
-      description: 'This is the first option.'
-      id: 'system'
-    - label: 'Light'
-      description: 'This is the second option.'
-      id: 'light'
-    - label: 'Dark'
-      description: 'This is the third option.'
-      id: 'dark'
----
-::
+## Example
 
-### Legend
+```ts
+<script setup lang="ts">
+import type { RadioGroupItem } from '@nuxt/ui'
+const items = ref<RadioGroupItem[]>(['System', 'Light', 'Dark'])
+</script>
 
-Use the `legend` prop to set the legend of the RadioGroup.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  legend: 'Theme'
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the RadioGroup.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  color: neutral
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-### Variant :badge{label="New" class="align-text-top"}
-
-Use the `variant` prop to change the variant of the RadioGroup.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  color: 'primary'
-  variant: 'table'
-  defaultValue: 'pro'
-  items:
-    - label: 'Pro'
-      value: 'pro'
-      description: 'Tailored for indie hackers, freelancers and solo founders.'
-    - label: 'Startup'
-      value: 'startup'
-      description: 'Best suited for small teams, startups and agencies.'
-    - label: 'Enterprise'
-      value: 'enterprise'
-      description: 'Ideal for larger teams and organizations.'
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the RadioGroup.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  size: 'xl'
-  variant: 'list'
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the RadioGroup. Defaults to `vertical`.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  orientation: 'horizontal'
-  variant: 'list'
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-### Indicator :badge{label="New" class="align-text-top"}
-
-Use the `indicator` prop to change the position or hide the indicator. Defaults to `start`.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  indicator: 'end'
-  variant: 'card'
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the RadioGroup.
-
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-  - items
-external:
-  - items
-externalTypes:
-  - RadioGroupItem[]
-props:
-  disabled: true
-  defaultValue: 'System'
-  items:
-    - 'System'
-    - 'Light'
-    - 'Dark'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+<template>
+  <URadioGroup legend="Theme" default-value="System" :items="items" />
+</template>
+```

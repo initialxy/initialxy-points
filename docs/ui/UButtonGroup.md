@@ -1,116 +1,124 @@
----
-title: ButtonGroup
-description: Group multiple button-like elements together.
-category: element
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/ButtonGroup.vue
----
+# UButtonGroup
+
+## Overview
+The UButtonGroup component allows grouping multiple button-like elements together. It's useful for creating button groups with consistent styling and behavior.
 
 ## Usage
+Wrap multiple UButton components within a UButtonGroup to group them together.
 
-Wrap multiple [Button](/components/button) within a ButtonGroup to group them together.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
+```vue
+<template>
+  <UButtonGroup>
     <UButton color="neutral" variant="subtle" label="Button" />
     <UButton color="neutral" variant="outline" icon="i-lucide-chevron-down" />
----
-:u-button{color="neutral" variant="subtle" label="Button"}
-:u-button{color="neutral" variant="outline" icon="i-lucide-chevron-down"}
-::
+  </UButtonGroup>
+</template>
+```
 
-### Size
+## Props
 
+### size
 Use the `size` prop to change the size of all the buttons.
 
-::component-code
----
-prettier: true
-props:
-  size: xl
-slots:
-  default: |
-
+```vue
+<template>
+  <UButtonGroup size="xl">
     <UButton color="neutral" variant="subtle" label="Button" />
     <UButton color="neutral" variant="outline" icon="i-lucide-chevron-down" />
----
-:u-button{color="neutral" variant="subtle" label="Button"}
-:u-button{color="neutral" variant="outline" icon="i-lucide-chevron-down"}
-::
+  </UButtonGroup>
+</template>
+```
 
-### Orientation
-
+### orientation
 Use the `orientation` prop to change the orientation of the buttons. Defaults to `horizontal`.
 
-::component-code
----
-prettier: true
-props:
-  orientation: vertical
-slots:
-  default: |
-
+```vue
+<template>
+  <UButtonGroup orientation="vertical">
     <UButton color="neutral" variant="subtle" label="Submit" />
     <UButton color="neutral" variant="outline" label="Cancel" />
----
-:u-button{color="neutral" variant="subtle" label="Submit"}
-:u-button{color="neutral" variant="outline" label="Cancel"}
-::
+  </UButtonGroup>
+</template>
+```
 
 ## Examples
 
-### With input
+### With Input
+You can use components like UInput, UInputMenu, USelect, USelectMenu, etc. within a button group.
 
-You can use components like [Input](/components/input), [InputMenu](/components/input-menu), [Select](/components/select) [SelectMenu](/components/select-menu), etc. within a button group.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
+```vue
+<template>
+  <UButtonGroup>
     <UInput color="neutral" variant="outline" placeholder="Enter token" />
-
     <UButton color="neutral" variant="subtle" icon="i-lucide-clipboard" />
----
-:u-input{color="neutral" variant="outline" placeholder="Enter token"}
-:u-button{color="neutral" variant="subtle" icon="i-lucide-clipboard"}
-::
+  </UButtonGroup>
+</template>
+```
 
-### With tooltip
+### With Tooltip
+You can use a UTooltip within a button group.
 
-You can use a [Tooltip](/components/tooltip) within a button group.
+```vue
+<template>
+  <UButtonGroup>
+    <UInput color="neutral" variant="outline" placeholder="Enter token" />
+    <UTooltip text="Copy to clipboard">
+      <UButton color="neutral" variant="subtle" icon="i-lucide-clipboard" />
+    </UTooltip>
+  </UButtonGroup>
+</template>
+```
 
-:component-example{name="button-group-tooltip-example"}
+### With Dropdown
+You can use a UDropdownMenu within a button group.
 
-### With dropdown
+```vue
+<script setup lang="ts">
+import type { DropdownMenuItem } from '@nuxt/ui'
+const items: DropdownMenuItem[] = [
+  { label: 'Team', icon: 'i-lucide-users' },
+  { label: 'Invite users', icon: 'i-lucide-user-plus', children: [
+    { label: 'Invite by email', icon: 'i-lucide-send-horizontal' },
+    { label: 'Invite by link', icon: 'i-lucide-link' }
+  ]},
+  { label: 'New team', icon: 'i-lucide-plus' }
+]
+</script>
+<template>
+  <UButtonGroup>
+    <UButton color="neutral" variant="subtle" label="Settings" />
+    <UDropdownMenu :items="items">
+      <UButton color="neutral" variant="outline" icon="i-lucide-chevron-down" />
+    </UDropdownMenu>
+  </UButtonGroup>
+</template>
+```
 
-You can use a [DropdownMenu](/components/dropdown-menu) within a button group.
+### With Badge
+You can use a UBadge within a button group.
 
-:component-example{name="button-group-dropdown-example"}
-
-### With badge
-
-You can use a [Badge](/components/badge) within a button group.
-
-:component-example{name="button-group-badge-example"}
+```vue
+<template>
+  <UButtonGroup>
+    <UBadge color="neutral" variant="outline" size="lg" label="https://" />
+    <UInput color="neutral" variant="outline" placeholder="www.example.com" />
+  </UButtonGroup>
+</template>
+```
 
 ## API
 
 ### Props
 
-:component-props
+| Prop       | Default     | Type                                                                                     |
+|------------|-------------|------------------------------------------------------------------------------------------|
+| `as`       | `'div'`     | `any`                                                                                   |
+| `size`     | `'md'`      | `"md" | "xs" | "sm" | "lg" | "xl"`                                                 |
+| `orientation` | `'horizontal'` | `"horizontal" | "vertical"`                                             |
+| `ui`       | `{}`        | `{}`                                                                                   |
 
 ### Slots
 
-:component-slots
-
-## Theme
-
-:component-theme
+| Slot     | Type |
+|----------|------|
+| `default` | `{}` |

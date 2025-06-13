@@ -1,201 +1,85 @@
----
-description: A control that toggles between two states.
-category: form
-links:
-  - label: Switch
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/switch
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Switch.vue
----
+# USwitch Component
+
+## Overview
+The USwitch component is a control that toggles between two states. It's commonly used for boolean settings like enabling/disabling features.
 
 ## Usage
+### Basic Usage
+Use `v-model` to control the checked state:
+```vue
+<script setup lang="ts">
+const value = ref(true)
+</script>
+<template>
+  <USwitch v-model="value" />
+</template>
+```
 
-Use the `v-model` directive to control the checked state of the Switch.
-
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: true
----
-::
-
-Use the `default-value` prop to set the initial value when you do not need to control its state.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: true
----
-::
-
-### Label
-
-Use the `label` prop to set the label of the Switch.
-
-::component-code
----
-props:
-  label: Check me
----
-::
-
-When using the `required` prop, an asterisk is added next to the label.
-
-::component-code
----
-ignore:
-  - label
-props:
-  required: true
-  label: Check me
----
-::
-
-### Description
-
-Use the `description` prop to set the description of the Switch.
-
-::component-code
----
-ignore:
-  - label
-props:
-  label: Check me
-  description: 'This is a checkbox.'
----
-::
-
-### Icon
-
-Use the `checked-icon` and `unchecked-icon` props to set the icons of the Switch when checked and unchecked.
-
-::component-code
----
-prettier: true
-ignore:
-  - label
-  - defaultValue
-props:
-  uncheckedIcon: 'i-lucide-x'
-  checkedIcon: 'i-lucide-check'
-  defaultValue: true
-  label: Check me
----
-::
-
-### Loading
-
-Use the `loading` prop to show a loading icon on the Switch.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  loading: true
-  defaultValue: true
-  label: Check me
----
-::
-
-### Loading Icon
-
-Use the `loading-icon` prop to customize the loading icon. Defaults to `i-lucide-loader-circle`.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  loading: true
-  loadingIcon: 'i-lucide-loader'
-  defaultValue: true
-  label: Check me
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.loading` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.loading` key.
-:::
-::
-
-### Color
-
-Use the `color` prop to change the color of the Switch.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  color: neutral
-  defaultValue: true
-  label: Check me
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Switch.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  size: xl
-  defaultValue: true
-  label: Check me
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the Switch.
-
-::component-code
----
-ignore:
-  - label
-props:
-  disabled: true
-  label: Check me
----
-::
-
-## API
+Use `default-value` for initial state without controlling it:
+```vue
+<template>
+  <USwitch default-value />
+</template>
+```
 
 ### Props
+- `label`: Sets the label text
+- `description`: Adds a description below the switch
+- `checked-icon`/`unchecked-icon`: Custom icons for checked/unchecked states
+- `loading`: Shows a loading indicator
+- `loading-icon`: Customizes the loading icon
+- `color`: Changes the switch color (e.g., 'primary', 'neutral')
+- `size`: Adjusts the switch size (e.g., 'xs', 'sm', 'md', 'lg', 'xl')
+- `disabled`: Disables the switch
 
-:component-props
+### Example with Label and Description
+```vue
+<template>
+  <USwitch label="Check me" description="This is a checkbox." />
+</template>
+```
+
+### Loading State
+```vue
+<template>
+  <USwitch loading default-value label="Check me" />
+</template>
+```
+
+### Custom Icons
+```vue
+<template>
+  <USwitch
+    unchecked-icon="i-lucide-x"
+    checked-icon="i-lucide-check"
+    default-value
+    label="Check me"
+  />
+</template>
+```
+
+## Theme Customization
+Customize globally in `app.config.ts` or `vite.config.ts` under `ui.icons.loading` key.
+
+## API Reference
+### Props
+- `as`: Element type (default: 'div')
+- `color`: Color variant (default: 'primary')
+- `size`: Size variant (default: 'md')
+- `loading`: Boolean to show loading state
+- `loadingIcon`: Custom loading icon
+- `checkedIcon`: Icon when checked
+- `uncheckedIcon`: Icon when unchecked
+- `label`: Label text
+- `description`: Description text
+- `defaultValue`: Initial state
+- `disabled`: Disable the switch
+- `id`, `name`, `required`, `value`, `modelValue`: Form-related props
 
 ### Slots
-
-:component-slots
+- `label`: Custom label content
+- `description`: Custom description content
 
 ### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+- `change`: Emitted on change
+- `update:modelValue`: Emitted on model value update

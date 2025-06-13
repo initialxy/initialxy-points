@@ -1,205 +1,50 @@
----
-description: A popup that reveals information when hovering over an element.
-category: overlay
-links:
-  - label: Tooltip
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/tooltip
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Tooltip.vue
----
+# UTooltip
+
+The UTooltip component is a popup that reveals information when hovering over an element. It's part of the Nuxt UI library and can be used with any component, typically a button.
 
 ## Usage
 
-Use a [Button](/components/button) or any other component in the default slot of the Tooltip.
+1. Wrap your app with the `App` component which uses the `TooltipProvider`.
+2. Use the `text` prop to set the tooltip content.
+3. Optionally use other props like `kbds`, `delay-duration`, `content`, `arrow`, and `disabled` to customize the tooltip.
 
-::warning
-Make sure to wrap your app with the [`App`](/components/app) component which uses the [`TooltipProvider`](https://reka-ui.com/docs/components/tooltip#provider) component from Reka UI.
-::
+## Props
 
-::tip{to="/components/app#props"}
-You can check the `App` component `tooltip` prop to see how to configure the Tooltip globally.
-::
-
-### Text
-
-Use the `text` prop to set the content of the Tooltip.
-
-::component-code
----
-prettier: true
-props:
-  text: 'Open on GitHub'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
-
-### Kbds
-
-Use the `kbds` prop to render [Kbd](/components/kbd) components in the Tooltip.
-
-::component-code
----
-prettier: true
-ignore:
-  - text
-  - kbds
-props:
-  text: 'Open on GitHub'
-  kbds:
-    - meta
-    - G
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
-
-::tip
-You can use special keys like `meta` that displays as `⌘` on macOS and `Ctrl` on other platforms.
-::
-
-### Delay
-
-Use the `delay-duration` prop to change the delay before the Tooltip appears. For example, you can make it appear instantly by setting it to `0`.
-
-::component-code
----
-prettier: true
-ignore:
-  - text
-props:
-  delayDuration: 0
-  text: 'Open on GitHub'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
-
-::tip
-This can be configured globally through the `tooltip.delayDuration` option in the [`App`](/components/app) component.
-::
-
-### Content
-
-Use the `content` prop to control how the Tooltip content is rendered, like its `align` or `side` for example.
-
-::component-code
----
-prettier: true
-ignore:
-  - text
-items:
-  content.align:
-    - start
-    - center
-    - end
-  content.side:
-    - right
-    - left
-    - top
-    - bottom
-props:
-  content:
-    align: center
-    side: bottom
-    sideOffset: 8
-  text: 'Open on GitHub'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
-
-### Arrow
-
-Use the `arrow` prop to display an arrow on the Tooltip.
-
-::component-code
----
-prettier: true
-ignore:
-  - text
-  - arrow
-props:
-  arrow: true
-  text: 'Open on GitHub'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the Tooltip.
-
-::component-code
----
-prettier: true
-ignore:
-  - text
-props:
-  disabled: true
-  text: 'Open on GitHub'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-::
+- `text`: string - The text content of the tooltip.
+- `kbds`: array - Keyboard keys to display in the tooltip.
+- `delay-duration`: number - Delay before the tooltip appears.
+- `content`: object - Controls how the tooltip content is rendered.
+- `arrow`: boolean - Display an arrow on the tooltip.
+- `disabled`: boolean - Disable the tooltip.
 
 ## Examples
 
-### Control open state
+### Basic Usage
+```vue
+<template>
+  <UTooltip text="Open on GitHub">
+    <UButton label="Open" color="neutral" variant="subtle" />
+  </UTooltip>
+</template>
+```
 
-You can control the open state by using the `default-open` prop or the `v-model:open` directive.
+### With Keyboard Shortcuts
+```vue
+<template>
+  <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
+    <UButton label="Open" color="neutral" variant="subtle" />
+  </UTooltip>
+</template>
+```
 
-::component-example
----
-name: 'tooltip-open-example'
----
-::
-
-::note
-In this example, leveraging [`defineShortcuts`](/composables/define-shortcuts), you can toggle the Tooltip by pressing :kbd{value="O"}.
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+### Custom Content
+```vue
+<template>
+  <UTooltip
+    :content="{ align: 'center', side: 'bottom', sideOffset: 8 }"
+    text="Open on GitHub"
+  >
+    <UButton label="Open" color="neutral" variant="subtle" />
+  </UTooltip>
+</template>
+```

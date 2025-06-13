@@ -1,26 +1,12 @@
----
-title: App
-description: Wraps your app to provide global configurations and more.
-category: layout
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/App.vue
----
+# UApp Component
+
+The UApp component is a wrapper for your Nuxt application that provides global configurations and utilities. It implements the Reka UI ConfigProvider for global settings like reading direction and body lock behavior. It also integrates ToastProvider and TooltipProvider for global toasts, tooltips, and programmatic modals/slideovers.
 
 ## Usage
 
-This component implements Reka UI [ConfigProvider](https://reka-ui.com/docs/utilities/config-provider) to provide global configuration to all components:
+Use UApp at the root of your application:
 
-- Enables all primitives to inherit global reading direction.
-- Enables changing the behavior of scroll body when setting body lock.
-- Much more controls to prevent layout shifts.
-
-It's also using [ToastProvider](https://reka-ui.com/docs/components/toast#provider) and [TooltipProvider](https://reka-ui.com/docs/components/tooltip#provider) to provide global toasts and tooltips, as well as programmatic modals and slideovers.
-
-Use it at the root of your app:
-
-```vue [app.vue]
+```vue
 <template>
   <UApp>
     <NuxtPage />
@@ -28,24 +14,20 @@ Use it at the root of your app:
 </template>
 ```
 
-::framework-only
-#nuxt
-:::tip{to="/getting-started/i18n/nuxt#locale"}
-Learn how to use the `locale` prop to change the locale of your app.
-:::
+## Props
 
-#vue
-:::tip{to="/getting-started/i18n/vue#locale"}
-Learn how to use the `locale` prop to change the locale of your app.
-:::
-::
+- `tooltip`: Configures tooltip behavior (delay, hover, etc.)
+- `toaster`: Configures toast notifications (position, duration, etc.)
+- `locale`: Sets the application locale
+- `portal`: Specifies where to render the portal
+- `scrollBody`: Controls global scroll body behavior
+- `nonce`: Sets a global nonce value
 
-## API
+## Slots
 
-### Props
+- `default`: The default slot for app content
 
-:component-props
+## Related
 
-### Slots
-
-:component-slots
+- [useToast](/composables/use-toast)
+- [Accordion](/components/accordion)

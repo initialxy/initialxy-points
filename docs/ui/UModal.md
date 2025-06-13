@@ -1,387 +1,177 @@
----
-description: A dialog window that can be used to display a message or request user input.
-category: overlay
-links:
-  - label: Dialog
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/dialog
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Modal.vue
----
+# UModal Component
+
+The UModal component is a dialog window used to display messages or request user input. It supports various customization options through props and slots.
 
 ## Usage
 
-Use a [Button](/components/button) or any other component in the default slot of the Modal.
+Use a button or any component in the default slot to trigger the modal. Use the `#content` slot for the modal's content.
 
-Then, use the `#content` slot to add the content displayed when the Modal is open.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
+```vue
+<template>
+  <UModal>
     <UButton label="Open" color="neutral" variant="subtle" />
+    <template #content>
+      <Placeholder class="h-48 m-4" />
+    </template>
+  </UModal>
+</template>
+```
 
-  content: |
+## Customization
 
-    <Placeholder class="h-48 m-4" />
----
+### Title and Description
 
-:u-button{label="Open" color="neutral" variant="subtle"}
+Use the `title` and `description` props to set the modal's header content.
 
-#content
-:placeholder{class="h-48 m-4"}
-::
-
-You can also use the `#header`{lang="ts-type"}, `#body`{lang="ts-type"} and `#footer`{lang="ts-type"} slots to customize the Modal's content.
-
-### Title
-
-Use the `title` prop to set the title of the Modal's header.
-
-::component-code
----
-prettier: true
-props:
-  title: 'Modal with title'
-slots:
-  default: |
-
+```vue
+<template>
+  <UModal title="Modal with title" description="Description text">
     <UButton label="Open" color="neutral" variant="subtle" />
+    <template #body>
+      <Placeholder class="h-48" />
+    </template>
+  </UModal>
+</template>
+```
 
-  body: |
+### Close Button
 
-    <Placeholder class="h-48" />
----
+Customize or hide the close button using the `close` prop.
 
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-### Description
-
-Use the `description` prop to set the description of the Modal's header.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-props:
-  title: 'Modal with description'
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-slots:
-  default: |
-
+```vue
+<template>
+  <UModal title="Modal with close button" :close="{ color: 'primary', variant: 'outline', class: 'rounded-full' }">
     <UButton label="Open" color="neutral" variant="subtle" />
+    <template #body>
+      <Placeholder class="h-48" />
+    </template>
+  </UModal>
+</template>
+```
 
-  body: |
+### Overlay and Transition
 
-    <Placeholder class="h-48" />
----
+Control the overlay and transition effects with the `overlay` and `transition` props.
 
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-### Close
-
-Use the `close` prop to customize or hide the close button (with `false` value) displayed in the Modal's header.
-
-You can pass any property from the [Button](/components/button) component to customize it.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - close.color
-  - close.variant
-props:
-  title: 'Modal with close button'
-  close:
-    color: primary
-    variant: outline
-    class: 'rounded-full'
-slots:
-  default: |
-
+```vue
+<template>
+  <UModal :overlay="false" :transition="false" title="Modal without overlay/transition">
     <UButton label="Open" color="neutral" variant="subtle" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-::tip
-The close button is not displayed if the `#content` slot is used as it's a part of the header.
-::
-
-### Close Icon
-
-Use the `close-icon` prop to customize the close button [Icon](/components/icon). Defaults to `i-lucide-x`.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-props:
-  title: 'Modal with close button'
-  closeIcon: 'i-lucide-arrow-right'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
-:::
-::
-
-### Overlay
-
-Use the `overlay` prop to control whether the Modal has an overlay or not. Defaults to `true`.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-props:
-  overlay: false
-  title: 'Modal without overlay'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-### Transition
-
-Use the `transition` prop to control whether the Modal is animated or not. Defaults to `true`.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-props:
-  transition: false
-  title: 'Modal without transition'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle"}
-
-#body
-:placeholder{class="h-48"}
-::
+    <template #body>
+      <Placeholder class="h-48" />
+    </template>
+  </UModal>
+</template>
+```
 
 ### Fullscreen
 
-Use the `fullscreen` prop to make the Modal fullscreen.
+Make the modal fullscreen using the `fullscreen` prop.
 
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - fullscreen
-props:
-  fullscreen: true
-  title: 'Modal fullscreen'
-slots:
-  default: |
-
+```vue
+<template>
+  <UModal fullscreen title="Fullscreen Modal">
     <UButton label="Open" color="neutral" variant="subtle" />
+    <template #body>
+      <Placeholder class="h-full" />
+    </template>
+  </UModal>
+</template>
+```
 
-  body: |
+## Advanced Usage
 
-    <Placeholder class="h-full" />
----
+### Control Open State
 
-:u-button{label="Open" color="neutral" variant="subtle"}
+Control the open state with `v-model:open` or `default-open` prop.
 
-#body
-:placeholder{class="h-full"}
-::
+```vue
+<script setup lang="ts">
+const open = ref(false)
+</script>
 
-## Examples
-
-### Control open state
-
-You can control the open state by using the `default-open` prop or the `v-model:open` directive.
-
-::component-example
----
-name: 'modal-open-example'
----
-::
-
-::note
-In this example, leveraging [`defineShortcuts`](/composables/define-shortcuts), you can toggle the Modal by pressing :kbd{value="O"}.
-::
-
-::tip
-This allows you to move the trigger outside of the Modal or remove it entirely.
-::
-
-### Disable dismissal
-
-Set the `dismissible` prop to `false` to prevent the Modal from being closed when clicking outside of it or pressing escape. A `close:prevent` event will be emitted when the user tries to close it.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - dismissible
-props:
-  dismissible: false
-  title: 'Modal non-dismissible'
-slots:
-  default: |
-
+<template>
+  <UModal v-model:open="open">
     <UButton label="Open" color="neutral" variant="subtle" />
+    <template #content>
+      <Placeholder class="h-48 m-4" />
+    </template>
+  </UModal>
+</template>
+```
 
-  body: |
+### Disable Dismissal
 
-    <Placeholder class="h-48" />
----
+Prevent modal dismissal with the `dismissible` prop.
 
-:u-button{label="Open" color="neutral" variant="subtle"}
+```vue
+<template>
+  <UModal :dismissible="false" title="Non-dismissible Modal">
+    <UButton label="Open" color="neutral" variant="subtle" />
+    <template #body>
+      <Placeholder class="h-48" />
+    </template>
+  </UModal>
+</template>
+```
 
-#body
-:placeholder{class="h-48"}
-::
+### Programmatic Usage
 
-### Programmatic usage
+Use the `useOverlay` composable to open modals programmatically.
 
-You can use the [`useOverlay`](/composables/use-overlay) composable to open a Modal programmatically.
+```vue
+<script setup lang="ts">
+import { useOverlay } from '#components'
+const overlay = useOverlay()
+const modal = overlay.create(ModalComponent)
+</script>
 
-::warning
-Make sure to wrap your app with the [`App`](/components/app) component which uses the [`OverlayProvider`](https://github.com/nuxt/ui/blob/v3/src/runtime/components/OverlayProvider.vue) component.
-::
+<template>
+  <UButton label="Open" @click="modal.open()" />
+</template>
+```
 
-First, create a modal component that will be opened programmatically:
+### Nested Modals
 
-::component-example
----
-prettier: true
-name: 'modal-example'
-preview: false
----
-::
+Modals can be nested within each other.
 
-::note
-We are emitting a `close` event when the modal is closed or dismissed here. You can emit any data through the `close` event, however, the event must be emitted in order to capture the return value.
-::
+```vue
+<script setup lang="ts">
+const first = ref(false)
+const second = ref(false)
+</script>
 
-Then, use it in your app:
+<template>
+  <UModal v-model:open="first" title="First Modal">
+    <UButton label="Open Second" @click="second = true" />
+    <template #footer>
+      <UModal v-model:open="second" title="Second Modal">
+        <!-- Content here -->
+      </UModal>
+    </template>
+  </UModal>
+</template>
+```
 
-::component-example
----
-name: 'modal-programmatic-example'
----
-::
+## Slots
 
-::tip
-You can close the modal within the modal component by emitting `emit('close')`.
-::
+- `default`: Trigger button
+- `content`: Main content
+- `header`, `body`, `footer`: Custom sections
+- `title`, `description`, `close`: Header elements
 
-### Nested modals
+## Props
 
-You can nest modals within each other.
+- `title`: Modal title
+- `description`: Modal description
+- `overlay`: Show overlay (default: true)
+- `transition`: Enable transition (default: true)
+- `fullscreen`: Make modal fullscreen (default: false)
+- `close`: Customize close button
+- `dismissible`: Allow dismissal (default: true)
+- `v-model:open`: Control open state
 
-::component-example
----
-name: 'modal-nested-example'
----
-::
+## Emits
 
-### With footer slot
-
-Use the `#footer` slot to add content after the Modal's body.
-
-::component-example
----
-name: 'modal-footer-slot-example'
----
-::
-
-### With command palette
-
-You can use a [CommandPalette](/components/command-palette) component inside the Modal's content.
-
-::component-example
----
-collapse: true
-name: 'modal-command-palette-example'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+- `update:open`: Open state change
+- `close:prevent`: Prevent close

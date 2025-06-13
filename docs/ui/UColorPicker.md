@@ -1,167 +1,92 @@
----
-title: ColorPicker
-description: A component to select a color.
-category: form
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/ColorPicker.vue
----
+# UColorPicker
+
+The UColorPicker component allows users to select colors in various formats.
 
 ## Usage
 
-Use the `v-model` directive to control the value of the ColorPicker.
+### Basic Usage
+Use `v-model` to control the value:
+```vue
+<script setup lang="ts">
+const value = ref('#00C16A')
+</script>
+<template>
+  <UColorPicker v-model="value" />
+</template>
+```
 
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: '#00C16A'
----
-::
+Use `default-value` for initial value without state control:
+```vue
+<template>
+  <UColorPicker default-value="#00BCD4" />
+</template>
+```
 
-Use the `default-value` prop to set the initial value when you do not need to control its state.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: '#00BCD4'
----
-::
-
-### RGB Format
-
-Use the `format` prop to set `rgb` value of the ColorPicker.
-
-::component-code
----
-ignore:
-  - modelValue
-  - format
-external:
-  - modelValue
-props:
-  format: rgb
-  modelValue: 'rgb(0, 193, 106)'
----
-::
-
-### HSL Format
-
-Use the `format` prop to set `hsl` value of the ColorPicker.
-
-::component-code
----
-ignore:
-  - modelValue
-  - format
-external:
-  - modelValue
-props:
-  format: hsl
-  modelValue: 'hsl(153, 100%, 37.8%)'
----
-::
-
-### CMYK Format
-
-Use the `format` prop to set `cmyk` value of the ColorPicker.
-
-::component-code
----
-ignore:
-  - modelValue
-  - format
-external:
-  - modelValue
-props:
-  format: cmyk
-  modelValue: 'cmyk(100%, 0%, 45.08%, 24.31%)'
----
-::
-
-### CIELab Format
-
-Use the `format` prop to set `lab` value of the ColorPicker.
-
-::component-code
----
-ignore:
-  - modelValue
-  - format
-external:
-  - modelValue
-props:
-  format: lab
-  modelValue: 'lab(68.88% -60.41% 32.55%)'
----
-::
+### Color Formats
+Set color format using the `format` prop:
+- RGB: `format="rgb"`
+- HSL: `format="hsl"`
+- CMYK: `format="cmyk"`
+- CIELab: `format="lab"`
 
 ### Throttle
-
-Use the `throttle` prop to set the throttle value of the ColorPicker.
-
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  throttle: 100
-  modelValue: '#00C16A'
----
-::
+Control update frequency with `throttle` prop:
+```vue
+<template>
+  <UColorPicker :throttle="100" v-model="value" />
+</template>
+```
 
 ### Size
+Set component size with `size` prop:
+```vue
+<template>
+  <UColorPicker size="xl" />
+</template>
+```
 
-Use the `size` prop to set the size of the ColorPicker.
-
-::component-code
----
-props:
-  size: xl
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the ColorPicker.
-
-::component-code
----
-props:
-  disabled: true
----
-::
+### Disabled State
+Disable the picker with `disabled` prop:
+```vue
+<template>
+  <UColorPicker disabled />
+</template>
+```
 
 ## Examples
 
-### As a Color chooser
-
-Use a [Button](/components/button) and a [Popover](/components/popover) component to create a color chooser.
-
-::component-example
----
-name: 'color-picker-chooser-example'
----
-::
+### Color Chooser
+Combine with Button and Popover for a color chooser:
+```vue
+<script setup lang="ts">
+const color = ref('#00C16A')
+const chip = computed(() => ({ backgroundColor: color.value }))
+</script>
+<template>
+  <UPopover>
+    <UButton label="Choose color" color="neutral" variant="outline">
+      <template #leading>
+        <span :style="chip" class="size-3 rounded-full" />
+      </template>
+    </UButton>
+    <template #content>
+      <UColorPicker v-model="color" class="p-2" />
+    </template>
+  </UPopover>
+</template>
+```
 
 ## API
 
 ### Props
-
-:component-props
+- `as`: Element type (default: 'div')
+- `throttle`: Update frequency in ms (default: 50)
+- `disabled`: Boolean to disable picker
+- `defaultValue`: Initial color (default: '#FFFFFF')
+- `format`: Color format (default: 'hex')
+- `size`: Component size (default: 'md')
+- `modelValue`: Bound value
+- `ui`: Object for custom styling
 
 ### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+- `update:modelValue`: Emits updated color value

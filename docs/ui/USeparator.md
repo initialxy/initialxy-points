@@ -1,125 +1,36 @@
----
-description: Separates content horizontally or vertically.
-category: layout
-links:
-  - label: Separator
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/separator
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Separator.vue
----
+# USeparator Component
+
+The USeparator component is used to separate content horizontally or vertically in a Vue.js application using Nuxt UI.
 
 ## Usage
 
-Use the Separator component as-is to separate content.
+```vue
+<template>
+  <USeparator />
+</template>
+```
 
-::component-code
----
-class: 'p-8'
----
-::
+## Props
 
-### Orientation
+- `orientation`: Changes the orientation (horizontal or vertical). Default is horizontal.
+- `label`: Displays a label in the middle.
+- `icon`: Displays an icon in the middle.
+- `avatar`: Displays an avatar in the middle.
+- `color`: Changes the color (primary, secondary, success, info, warning, error, neutral). Default is neutral.
+- `type`: Changes the type (solid, dashed, dotted). Default is solid.
+- `size`: Changes the size (xs, sm, md, lg, xl). Default is xs.
+- `decorative`: Makes the component purely decorative, removing it from the accessibility tree.
 
-Use the `orientation` prop to change the orientation of the Separator. Defaults to `horizontal`.
+## Example Usage
 
-::component-code
----
-ignore:
-  - class
-class: 'p-8'
-props:
-  orientation: vertical
-  class: 'h-48'
----
-::
-
-### Label
-
-Use the `label` prop to display a label in the middle of the Separator.
-
-::component-code
----
-class: 'p-8'
-props:
-  label: 'Hello World'
----
-::
-
-### Icon
-
-Use the `icon` prop to display an icon in the middle of the Separator.
-
-::component-code
----
-class: 'p-8'
-props:
-  icon: 'i-simple-icons-nuxtdotjs'
----
-::
-
-### Avatar
-
-Use the `avatar` prop to display an avatar in the middle of the Separator.
-
-::component-code
----
-prettier: true
-class: 'p-8'
-props:
-  avatar:
-    src: 'https://github.com/nuxt.png'
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the Separator. Defaults to `neutral`.
-
-::component-code
----
-class: 'p-8'
-props:
-  color: primary
-  type: solid
----
-::
-
-### Type
-
-Use the `type` prop to change the type of the Separator. Defaults to `solid`.
-
-::component-code
----
-class: 'p-8'
-props:
-  type: dashed
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Separator. Defaults to `xs`.
-
-::component-code
----
-class: 'p-8'
-props:
-  size: lg
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+```vue
+<template>
+  <USeparator orientation="vertical" class="h-48" />
+  <USeparator label="Hello World" />
+  <USeparator icon="i-simple-icons-nuxtdotjs" />
+  <USeparator :avatar="{ src: 'https://github.com/nuxt.png' }" />
+  <USeparator color="primary" type="solid" />
+  <USeparator type="dashed" />
+  <USeparator size="lg" />
+</template>
+```

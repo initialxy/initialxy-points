@@ -1,212 +1,83 @@
----
-description: A form component with built-in validation and submission handling.
-category: form
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Form.vue
----
+# UForm Component
 
-## Usage
+The UForm component in Nuxt UI provides built-in validation and submission handling for forms. It works with various validation libraries like Valibot, Zod, Yup, Joi, and Superstruct, or custom validation logic.
 
-Use the Form component to validate form data using validation libraries such as [Valibot](https://github.com/fabian-hiller/valibot), [Zod](https://github.com/colinhacks/zod), [Yup](https://github.com/jquense/yup), [Joi](https://github.com/hapijs/joi), [Superstruct](https://github.com/ianstormtaylor/superstruct) or your own validation logic.
+## Key Features
 
-It works with the [FormField](/components/form-field) component to display error messages around form elements automatically.
+- **Schema Validation**: Requires `state` (reactive form state) and `schema` (validation schema) props.
+- **Custom Validation**: Use the `validate` prop for custom validation logic.
+- **Input Events**: Triggers validation on `input`, `change`, or `blur` events.
+- **Error Handling**: Listens to `@error` event for error handling.
+- **Nesting Forms**: Supports nested forms for complex data structures.
 
-### Schema Validation
-
-It requires two props:
-
-- `state` - a reactive object holding the form's state.
-- `schema` - any [Standard Schema](https://standardschema.dev/) or a schema from [Yup](https://github.com/jquense/yup), [Joi](https://github.com/hapijs/joi) or [Superstruct](https://github.com/ianstormtaylor/superstruct).
-
-::warning
-**No validation library is included** by default, ensure you **install the one you need**.
-::
-
-::tabs{class="gap-0"}
-  ::component-example{label="Valibot"}
-  ---
-  name: 'form-example-valibot'
-  props:
-    class: 'w-60'
-  ---
-  ::
-
-  ::component-example{label="Zod"}
-  ---
-  name: 'form-example-zod'
-  props:
-    class: 'w-60'
-  ---
-  ::
-
-  ::component-example{label="Yup"}
-  ---
-  name: 'form-example-yup'
-  props:
-    class: 'w-60'
-  ---
-  ::
-
-  ::component-example{label="Joi"}
-  ---
-  name: 'form-example-joi'
-  props:
-    class: 'w-60'
-  ---
-  ::
-
-  ::component-example{label="Superstruct"}
-  ---
-  name: 'form-example-superstruct'
-  props:
-    class: 'w-60'
-  ---
-  ::
-::
-
-Errors are reported directly to the [FormField](/components/form-field) component based on the `name` or `error-pattern` prop. This means the validation rules defined for the `email` attribute in your schema will be applied to `<FormField name="email">`{lang="vue"}.
-
-Nested validation rules are handled using dot notation. For example, a rule like `{ user: z.object({ email: z.string() }) }`{lang="ts"} will be applied to `<FormField name="user.email">`{lang="vue"}.
-
-### Custom Validation
-
-Use the `validate` prop to apply your own validation logic.
-
-The validation function must return a list of errors with the following attributes:
-
-- `message` - the error message to display.
-- `name` - the `name` of the `FormField` to send the error to.
-
-::tip
-It can be used alongside the `schema` prop to handle complex use cases.
-::
-
-::component-example
----
-name: 'form-example-basic'
-props:
-  class: 'w-60'
----
-::
-
-### Input Events
-
-The Form component automatically triggers validation when an input emits an `input`, `change`, or `blur` event.
-
-- Validation on `input` occurs **as you type**.
-- Validation on `change` occurs when you **commit to a value**.
-- Validation on `blur` happens when an input **loses focus**.
-
-You can control when validation happens this using the `validate-on` prop.
-
-::component-example{label="Default"}
----
-source: false
-name: 'form-example-elements'
-options:
-  - name: 'validate-on'
-    label: 'validate-on'
-    items:
-    - 'input'
-    - 'change'
-    - 'blur'
-    default:
-    - 'input'
-    - 'change'
-    - 'blur'
-    multiple: true
----
-::
-
-::tip
-You can use the [`useFormField`](/composables/use-form-field) composable to implement this inside your own components.
-::
-
-### Error Event
-
-You can listen to the `@error` event to handle errors. This event is triggered when the form is submitted and contains an array of `FormError` objects with the following fields:
-
-- `id` - the input's `id`.
-- `name` - the `name` of the `FormField`
-- `message` - the error message to display.
-
-Here's an example that focuses the first input element with an error after the form is submitted:
-
-::component-example
----
-name: 'form-example-on-error'
-collapse: true
-props:
-  class: 'w-60'
----
-::
-
-### Nesting Forms
-
-Nesting form components allows you to manage complex data structures, such as lists or conditional fields, more efficiently.
-
-For example, it can be used to dynamically add fields based on user's input:
-::component-example
----
-collapse: true
-name: 'form-example-nested'
----
-::
-
-Or to validate list inputs:
-::component-example
----
-collapse: true
-name: 'form-example-nested-list'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-### Expose
-
-You can access the typed component instance using [`useTemplateRef`](https://vuejs.org/api/composition-api-helpers.html#usetemplateref).
+## Example Usage
 
 ```vue
 <script setup lang="ts">
-const form = useTemplateRef('form')
+import * as z from 'zod'
+import type { FormSubmitEvent } from '@nuxt/ui'
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Must be at least 8 characters')
+})
+
+type Schema = z.output<typeof schema>
+const state = reactive<Partial<Schema>>({
+  email: undefined,
+  password: undefined
+})
+
+const toast = useToast()
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  console.log(event.data)
+}
 </script>
 
 <template>
-  <UForm ref="form" />
+  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+    <UFormField label="Email" name="email">
+      <UInput v-model="state.email" />
+    </UFormField>
+    <UFormField label="Password" name="password">
+      <UInput v-model="state.password" type="password" />
+    </UFormField>
+    <UButton type="submit">Submit</UButton>
+  </UForm>
 </template>
 ```
 
-This will give you access to the following:
+## Props
 
-| Name | Type |
-| ---- | ---- |
-| `submit()`{lang="ts-type"} | `Promise<void>`{lang="ts-type"} <br> <div class="text-toned mt-1"><p>Triggers form submission.</p> |
-| `validate(opts: { name?: keyof T \| (keyof T)[], silent?: boolean, nested?: boolean, transform?: boolean })`{lang="ts-type"} | `Promise<T>`{lang="ts-type"} <br> <div class="text-toned mt-1"><p>Triggers form validation. Will raise any errors unless `opts.silent` is set to true.</p> |
-| `clear(path?: keyof T)`{lang="ts-type"} | `void` <br> <div class="text-toned mt-1"><p>Clears form errors associated with a specific path. If no path is provided, clears all form errors.</p> |
-| `getErrors(path?: keyof T)`{lang="ts-type"} | `FormError[]`{lang="ts-type"} <br> <div class="text-toned mt-1"><p>Retrieves form errors associated with a specific path. If no path is provided, returns all form errors.</p></div> |
-| `setErrors(errors: FormError[], name?: keyof T)`{lang="ts-type"} | `void` <br> <div class="text-toned mt-1"><p>Sets form errors for a given path. If no path is provided, overrides all errors.</p> |
-| `errors`{lang="ts-type"} | `Ref<FormError[]>`{lang="ts-type"} <br> <div class="text-toned mt-1"><p>A reference to the array containing validation errors. Use this to access or manipulate the error information.</p> |
-| `disabled`{lang="ts-type"} | `Ref<boolean>`{lang="ts-type"} |
-| `dirty`{lang="ts-type"} | `Ref<boolean>`{lang="ts-type"} `true` if at least one form field has been updated by the user.|
-| `dirtyFields`{lang="ts-type"} | `DeepReadonly<Set<keyof T>>`{lang="ts-type"} Tracks fields that have been modified by the user. |
-| `touchedFields`{lang="ts-type"} | `DeepReadonly<Set<keyof T>>`{lang="ts-type"} Tracks fields that the user interacted with. |
-| `blurredFields`{lang="ts-type"} | `DeepReadonly<Set<keyof T>>`{lang="ts-type"} Tracks fields blurred by the user. |
+- `state`: Reactive object holding the form's state.
+- `schema`: Validation schema (supports Standard Schema, Yup, Joi, Superstruct).
+- `validate`: Custom validation function.
+- `validateOn`: List of input events that trigger validation.
+- `disabled`: Boolean to disable all inputs.
+- `attach`: Boolean to attach to parent form.
+- `loadingAuto`: Boolean to disable form elements on submit.
 
-## Theme
+## Slots
 
-:component-theme
+- `default`: Contains form errors and loading state.
+
+## Emits
+
+- `submit`: Form submission event.
+- `error`: Error event with validation errors.
+
+## Expose
+
+- `submit()`: Triggers form submission.
+- `validate()`: Triggers form validation.
+- `clear()`: Clears form errors.
+- `getErrors()`: Retrieves form errors.
+- `setErrors()`: Sets form errors.
+- `errors`: Reference to validation errors.
+- `disabled`: Reference to disabled state.
+- `dirty`: Boolean indicating if form has been modified.
+- `dirtyFields`: Tracks modified fields.
+- `touchedFields`: Tracks interacted fields.
+- `blurredFields`: Tracks blurred fields.

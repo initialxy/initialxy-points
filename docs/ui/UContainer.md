@@ -1,32 +1,23 @@
----
-description: A container lets you center and constrain the width of your content.
-category: layout
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Container.vue
----
+# UContainer
+
+The UContainer component in Nuxt UI is used to center and constrain the width of content. It's a simple yet powerful way to manage layout in your application.
 
 ## Usage
 
-::component-example
----
-name: 'container-example'
-props:
-  class: 'w-full'
----
-::
+```vue
+<template>
+  <UContainer>
+    <Placeholder class="h-32" />
+  </UContainer>
+</template>
+```
 
 ## API
 
 ### Props
 
-:component-props
+- `as`: Specifies the element or component this component should render as. Default is `'div'`.
 
 ### Slots
 
-:component-slots
-
-## Theme
-
-:component-theme
+- `default`: The default slot for content.

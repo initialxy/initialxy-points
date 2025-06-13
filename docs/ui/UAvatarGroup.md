@@ -1,104 +1,65 @@
----
-title: AvatarGroup
-description: Stack multiple avatars in a group.
-category: element
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/AvatarGroup.vue
----
+# UAvatarGroup
+
+## Overview
+The UAvatarGroup component allows stacking multiple avatars together. It's useful for displaying groups of user avatars in a compact format.
 
 ## Usage
+Wrap multiple UAvatar components within an UAvatarGroup to stack them.
 
-Wrap multiple [Avatar](/components/avatar) within an AvatarGroup to stack them.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
+```vue
+<template>
+  <UAvatarGroup>
     <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
     <UAvatar src="https://github.com/romhml.png" alt="Romain Hamel" />
     <UAvatar src="https://github.com/noook.png" alt="Neil Richter" />
----
-:u-avatar{src="https://github.com/benjamincanac.png" alt="Benjamin Canac"}
-:u-avatar{src="https://github.com/romhml.png" alt="Romain Hamel"}
-:u-avatar{src="https://github.com/noook.png" alt="Neil Richter"}
-::
+  </UAvatarGroup>
+</template>
+```
 
-### Size
-
-Use the `size` prop to change the size of all the avatars.
-
-::component-code
----
-prettier: true
-props:
-  size: xl
-slots:
-  default: |
-
-    <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
-    <UAvatar src="https://github.com/romhml.png" alt="Romain Hamel" />
-    <UAvatar src="https://github.com/noook.png" alt="Neil Richter" />
----
-:u-avatar{src="https://github.com/benjamincanac.png" alt="Benjamin Canac"}
-:u-avatar{src="https://github.com/romhml.png" alt="Romain Hamel"}
-:u-avatar{src="https://github.com/noook.png" alt="Neil Richter"}
-::
-
-### Max
-
-Use the `max` prop to limit the number of avatars displayed. The rest is displayed as an `+X` avatar.
-
-::component-code
----
-prettier: true
-props:
-  max: 2
-slots:
-  default: |
-
-    <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
-    <UAvatar src="https://github.com/romhml.png" alt="Romain Hamel" />
-    <UAvatar src="https://github.com/noook.png" alt="Neil Richter" />
----
-:u-avatar{src="https://github.com/benjamincanac.png" alt="Benjamin Canac"}
-:u-avatar{src="https://github.com/romhml.png" alt="Romain Hamel"}
-:u-avatar{src="https://github.com/noook.png" alt="Neil Richter"}
-::
+## Props
+- `size`: Changes the size of all avatars (values: '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl')
+- `max`: Limits the number of avatars displayed, showing the rest as a "+X" avatar
+- `ui`: Customize component styles
 
 ## Examples
+### With Tooltip
+Wrap each avatar with a UTooltip to display a tooltip on hover.
 
-### With tooltip
+```vue
+<template>
+  <UAvatarGroup>
+    <UTooltip text="benjamincanac">
+      <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
+    </UTooltip>
+    <!-- More avatars with tooltips -->
+  </UAvatarGroup>
+</template>
+```
 
-Wrap each avatar with a [Tooltip](/components/tooltip) to display a tooltip on hover.
+### With Chip
+Wrap each avatar with a UChip to display a chip around the avatar.
 
-:component-example{name="avatar-group-tooltip-example"}
+```vue
+<template>
+  <UAvatarGroup>
+    <UChip inset color="success">
+      <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
+    </UChip>
+    <!-- More avatars with chips -->
+  </UAvatarGroup>
+</template>
+```
 
-### With chip
+### With Link
+Wrap each avatar with a ULink to make them clickable.
 
-Wrap each avatar with a [Chip](/components/chip) to display a chip around the avatar.
-
-:component-example{name="avatar-group-chip-example"}
-
-### With link
-
-Wrap each avatar with a [Link](/components/link) to make them clickable.
-
-:component-example{name="avatar-group-link-example"}
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+```vue
+<template>
+  <UAvatarGroup>
+    <ULink to="https://github.com/benjamincanac" target="_blank" class="hover:ring-primary transition" raw>
+      <UAvatar src="https://github.com/benjamincanac.png" alt="Benjamin Canac" />
+    </ULink>
+    <!-- More avatars with links -->
+  </UAvatarGroup>
+</template>
+```

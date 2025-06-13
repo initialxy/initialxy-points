@@ -1,162 +1,46 @@
----
-description: An indicator showing the progress of a task.
-category: element
-links:
-  - label: Progress
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/progress
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Progress.vue
----
+# UProgress Component
+
+## Overview
+The UProgress component is a Vue.js component from Nuxt UI that displays a progress bar to indicate the progress of a task.
 
 ## Usage
+- Use `v-model` to control the progress value.
+- Use `max` prop to set the maximum value.
+- Use `status` prop to display the current value above the bar.
+- Use `animation` prop to change the animation style.
+- Use `orientation` prop to change the orientation (horizontal/vertical).
+- Use `color` prop to change the color.
+- Use `size` prop to change the size.
+- Use `inverted` prop to visually invert the progress bar.
 
-Use the `v-model` directive to control the value of the Progress.
+## Example
+```vue
+<script setup lang="ts">
+const value = ref(50)
+</script>
 
-::component-code
----
-external:
-  - modelValue
-props:
-  modelValue: 50
----
-::
+<template>
+  <UProgress v-model="value" />
+</template>
+```
 
-### Max
+## Props
+- `as`: Element or component to render as
+- `max`: Maximum progress value (number or array of strings)
+- `status`: Display current value above the bar (boolean)
+- `inverted`: Visually invert the progress (boolean)
+- `size`: Size of the progress bar
+- `color`: Color of the progress bar
+- `orientation`: Orientation of the progress bar (horizontal/vertical)
+- `animation`: Animation style of the progress bar
+- `modelValue`: Progress value (number)
+- `getValueLabel`: Function to get accessible label text
+- `getValueText`: Function to get accessible value text
+- `ui`: Object for customizing styles
 
-Use the `max` prop to set the maximum value of the Progress.
+## Slots
+- `status`: Slot for custom status display
 
-::component-code
----
-external:
-  - modelValue
-props:
-  modelValue: 3
-  max: 4
----
-::
-
-Use the `max` prop with an array of strings to display the active step under the bar, the maximum value of the Progress is the length of the array.
-
-::component-code
----
-prettier: true
-ignore:
-  - max
-external:
-  - modelValue
-props:
-  modelValue: 3
-  max:
-    - 'Waiting...'
-    - 'Cloning...'
-    - 'Migrating...'
-    - 'Deploying...'
-    - 'Done!'
----
-::
-
-### Status
-
-Use the `status` prop to display the current Progress value above the bar.
-
-::component-code
----
-external:
-  - modelValue
-props:
-  modelValue: 50
-  status: true
----
-::
-
-### Indeterminate
-
-When no `v-model` is set or the value is `null`, the Progress becomes _indeterminate_. The progress bar is animated as a `carousel`, but you can change it using the [`animation`](#animation) prop.
-
-::component-code
----
-external:
-  - modelValue
-props:
-  modelValue: null
----
-::
-
-### Animation
-
-Use the `animation` prop to change the animation of the Progress to an inverse carousel, a swinging bar or an elastic bar. Defaults to `carousel`.
-
-::component-code
----
-props:
-  animation: swing
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the Progress. Defaults to `horizontal`.
-
-::component-code
----
-ignore:
-  - class
-props:
-  orientation: vertical
-  class: 'h-48'
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the Slider.
-
-::component-code
----
-props:
-  color: neutral
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Slider.
-
-::component-code
----
-props:
-  size: xl
----
-::
-
-### Inverted
-
-Use the `inverted` prop to visually invert the Progress.
-
-::component-code
----
-props:
-  inverted: true
-  modelValue: 25
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+## Emits
+- `update:modelValue`: Emits when modelValue changes
+- `update:max`: Emits when max changes

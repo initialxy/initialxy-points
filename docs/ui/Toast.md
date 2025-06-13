@@ -1,251 +1,62 @@
----
-description: A succinct message to provide information or feedback to the user.
-category: overlay
-links:
-  - label: Toast
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/toast
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Toast.vue
----
+# Toast Component
+
+The Toast component in Nuxt UI is used to display succinct messages to provide information or feedback to users. It's implemented using the `useToast` composable.
 
 ## Usage
 
-Use the [useToast](/composables/use-toast) composable to display a toast in your application.
+1. Wrap your app with the `App` component which uses the `Toaster` component.
+2. Use the `useToast` composable to display toasts.
 
-::warning
-Make sure to wrap your app with the [`App`](/components/app) component which uses our [`Toaster`](https://github.com/nuxt/ui/blob/v3/src/runtime/components/Toaster.vue) component which uses the [`ToastProvider`](https://reka-ui.com/docs/components/toast#provider) component from Reka UI.
-::
+## Configuration Options
 
-::tip{to="/components/app#props"}
-You can check the `App` component `toaster` prop to see how to configure the Toaster globally.
-::
+- **Title**: Pass a `title` field to the `toast.add` method.
+- **Description**: Pass a `description` field to the `toast.add` method.
+- **Icon**: Pass an `icon` field to display an icon.
+- **Avatar**: Pass an `avatar` field to display an avatar.
+- **Color**: Pass a `color` field to change the toast color.
+- **Close Button**: Customize or hide the close button with the `close` field.
+- **Close Icon**: Customize the close button icon with the `closeIcon` field.
+- **Actions**: Add button actions with the `actions` field.
+- **Orientation**: Change the orientation with the `orientation` prop.
 
-### Title
+## Global Configuration
 
-Pass a `title` field to the `toast.add` method to display a title.
-
-::component-example
----
-options:
-  - name: 'title'
-    label: 'title'
-    default: 'Uh oh! Something went wrong.'
-name: 'toast-title-example'
----
-::
-
-### Description
-
-Pass a `description` field to the `toast.add` method to display a description.
-
-::component-example
----
-options:
-  - name: 'title'
-    label: 'title'
-    default: 'Uh oh! Something went wrong.'
-  - name: 'description'
-    label: 'description'
-    default: 'There was a problem with your request.'
-name: 'toast-description-example'
----
-::
-
-### Icon
-
-Pass an `icon` field to the `toast.add` method to display an [Icon](/components/icon).
-
-::component-example
----
-options:
-  - name: 'icon'
-    label: 'icon'
-    default: 'i-lucide-wifi'
-name: 'toast-icon-example'
----
-::
-
-### Avatar
-
-Pass an `avatar` field to the `toast.add` method to display an [Avatar](/components/avatar).
-
-::component-example
----
-options:
-  - name: 'avatar.src'
-    alias: 'avatar'
-    label: 'avatar.src'
-    default:
-      src: 'https://github.com/benjamincanac.png'
-name: 'toast-avatar-example'
----
-::
-
-### Color
-
-Pass a `color` field to the `toast.add` method to change the color of the Toast.
-
-::component-example
----
-options:
-  - name: 'color'
-    label: 'color'
-    default: neutral
-    items:
-      - primary
-      - secondary
-      - success
-      - info
-      - warning
-      - error
-      - neutral
-name: 'toast-color-example'
----
-::
-
-### Close
-
-Pass a `close` field to customize or hide the close button (with `false` value).
-
-::component-example
----
-name: 'toast-close-example'
----
-::
-
-### Close Icon
-
-Pass a `closeIcon` field to customize the close button [Icon](/components/icon). Default to `i-lucide-x`.
-
-::component-example
----
-options:
-  - name: 'closeIcon'
-    label: 'closeIcon'
-    default: 'i-lucide-arrow-right'
-name: 'toast-close-icon-example'
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
-:::
-::
-
-### Actions
-
-Pass an `actions` field to add some [Button](/components/button) actions to the Alert.
-
-::component-example
----
-options:
-  - name: 'description'
-    label: 'description'
-    default: 'There was a problem with your request.'
-name: 'toast-actions-example'
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the Toast.
-
-::component-example
----
-options:
-  - name: 'orientation'
-    label: 'orientation'
-    default: 'horizontal'
-    items:
-      - horizontal
-      - vertical
-name: 'toast-orientation-example'
----
-::
-
-## Examples
-
-### Change global position
-
-Change the `toaster.position` prop on the [App](/components/app#props) component to change the position of the toasts.
-
-::component-example
----
-prettier: true
-name: 'toast-example'
----
-
-#options
-:toaster-position-example
-::
-
-::note{to="https://github.com/nuxt/ui/blob/v3/docs/app/app.config.ts#L3"}
-In this example, we use the `AppConfig` to configure the `position` prop of the `Toaster` component globally.
-::
-
-### Change global duration
-
-Change the `toaster.duration` prop on the [App](/components/app#props) component to change the duration of the toasts.
-
-::component-example
----
-prettier: true
-name: 'toast-example'
----
-
-#options
-:toaster-duration-example
-::
-
-::note{to="https://github.com/nuxt/ui/blob/v3/docs/app/app.config.ts#L5"}
-In this example, we use the `AppConfig` to configure the `duration` prop of the `Toaster` component globally.
-::
-
-### Stacked toasts
-
-Set the `toaster.expand` prop to `false` on the [App](/components/app#props) component to display stacked toasts.
-
-::tip
-You can hover over the toasts to expand them. This will also pause the timer of the toasts.
-::
-
-::component-example
----
-prettier: true
-name: 'toast-example'
----
-
-#options
-:toaster-expand-example
-::
-
-::note{to="https://github.com/nuxt/ui/blob/v3/docs/app/app.config.ts#L4"}
-In this example, we use the `AppConfig` to configure the `expand` prop of the `Toaster` component globally.
-::
+- **Position**: Change the `toaster.position` prop on the `App` component.
+- **Duration**: Change the `toaster.duration` prop on the `App` component.
+- **Expand**: Set the `toaster.expand` prop to control stacked toasts.
 
 ## API
 
 ### Props
 
-:component-props
+- `as`: Element or component to render as
+- `title`: Title of the toast
+- `description`: Description of the toast
+- `icon`: Icon to display
+- `avatar`: Avatar properties
+- `color`: Color of the toast
+- `orientation`: Orientation between content and actions
+- `progress`: Show progress bar
+- `actions`: List of button actions
+- `close`: Display close button
+- `closeIcon`: Icon in the close button
+- `duration`: Time in milliseconds the toast remains visible
 
 ### Slots
 
-:component-slots
+- `leading`
+- `title`
+- `description`
+- `actions`
+- `close`
 
 ### Emits
 
-:component-emits
-
-## Theme
-
-:component-theme
+- `pause`
+- `escapeKeyDown`
+- `resume`
+- `swipeStart`
+- `swipeMove`
+- `swipeCancel`
+- `swipeEnd`
+- `update:open`

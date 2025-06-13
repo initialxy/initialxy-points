@@ -1,125 +1,45 @@
----
-description: A hierarchy of links to navigate through a website.
-category: navigation
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Breadcrumb.vue
----
+# UBreadcrumb Component
 
-## Usage
+## Overview
+The UBreadcrumb component is a Vue component from Nuxt UI that creates a hierarchy of links for website navigation. It's useful for displaying the current page's location within a navigational hierarchy.
 
-### Items
+## Key Features
+- Uses the `items` prop as an array of objects with properties like `label`, `icon`, `avatar`, `slot`, `class`, and `ui`.
+- Renders a `span` instead of a link when the `to` property is not defined.
+- Allows customization of the separator icon between items using the `separator-icon` prop.
+- Supports custom slots for separators and individual items.
 
-Use the `items` prop as an array of objects with the following properties:
+## Example Usage
+```vue
+<script setup lang="ts">
+import type { BreadcrumbItem } from '@nuxt/ui'
+const items = ref<BreadcrumbItem[]>([
+  { label: 'Home', icon: 'i-lucide-house' },
+  { label: 'Components', icon: 'i-lucide-box', to: '/components' },
+  { label: 'Breadcrumb', icon: 'i-lucide-link', to: '/components/breadcrumb' }
+])
+</script>
 
-- `label?: string`{lang="ts-type"}
-- `icon?: string`{lang="ts-type"}
-- `avatar?: AvatarProps`{lang="ts-type"}
-- [`slot?: string`{lang="ts-type"}](#with-custom-slot)
-- `class?: any`{lang="ts-type"}
-- `ui?: { item?: ClassNameValue, link?: ClassNameValue, linkLeadingIcon?: ClassNameValue, linkLeadingAvatar?: ClassNameValue, linkLabel?: ClassNameValue, separator?: ClassNameValue, separatorIcon?: ClassNameValue }`{lang="ts-type"}
+<template>
+  <UBreadcrumb :items="items" />
+</template>
+```
 
-You can pass any property from the [Link](/components/link#props) component such as `to`, `target`, etc.
+## Customization
+- Customize the separator icon globally in `app.config.ts` or `vite.config.ts` under `ui.icons.chevronRight`.
+- Use the `#separator` slot to customize the separator between items.
+- Use the `slot` property to customize a specific item.
 
-::component-code
----
-ignore:
-  - items
-external:
-  - items
-externalTypes:
-  - BreadcrumbItem[]
-props:
-  items:
-    - label: 'Home'
-      icon: 'i-lucide-house'
-    - label: 'Components'
-      icon: 'i-lucide-box'
-      to: '/components'
-    - label: 'Breadcrumb'
-      icon: 'i-lucide-link'
-      to: '/components/breadcrumb'
----
-::
+## Props
+- `items`: Array of objects defining the breadcrumb items.
+- `separatorIcon`: Icon to use as a separator (defaults to `i-lucide-chevron-right`).
+- `labelKey`: Key used to get the label from the item (defaults to `'label'`).
+- `ui`: Object for customizing the component's appearance.
 
-::note
-A `span` is rendered instead of a link when the `to` property is not defined.
-::
+## Slots
+- `item`: Customize all items.
+- `item-leading`, `item-label`, `item-trailing`: Customize specific parts of items.
+- `separator`: Customize the separator between items.
 
-### Separator Icon
-
-Use the `separator-icon` prop to customize the [Icon](/components/icon) between each item. Defaults to `i-lucide-chevron-right`.
-
-::component-code
----
-ignore:
-  - items
-external:
-  - items
-externalTypes:
-  - BreadcrumbItem[]
-props:
-  separatorIcon: 'i-lucide-arrow-right'
-  items:
-    - label: 'Home'
-      icon: 'i-lucide-house'
-    - label: 'Components'
-      icon: 'i-lucide-box'
-      to: '/components'
-    - label: 'Breadcrumb'
-      icon: 'i-lucide-link'
-      to: '/components/breadcrumb'
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.chevronRight` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.chevronRight` key.
-:::
-::
-
-## Examples
-
-### With separator slot
-
-Use the `#separator` slot to customize the separator between each item.
-
-:component-example{name="breadcrumb-separator-slot-example"}
-
-### With custom slot
-
-Use the `slot` property to customize a specific item.
-
-You will have access to the following slots:
-
-- `#{{ item.slot }}`{lang="ts-type"}
-- `#{{ item.slot }}-leading`{lang="ts-type"}
-- `#{{ item.slot }}-label`{lang="ts-type"}
-- `#{{ item.slot }}-trailing`{lang="ts-type"}
-
-:component-example{name="breadcrumb-custom-slot-example"}
-
-::tip{to="#slots"}
-You can also use the `#item`, `#item-leading`, `#item-label` and `#item-trailing` slots to customize all items.
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+## Theme Customization
+Customize the component's appearance in `app.config.ts` or `vite.config.ts` by modifying the `ui.breadcrumb` object.

@@ -1,370 +1,112 @@
----
-description: A drawer that smoothly slides in & out of the screen.
-category: overlay
-links:
-  - label: Drawer
-    icon: i-custom-reka-ui
-    to: https://github.com/unovue/vaul-vue
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Drawer.vue
----
+# UDrawer Component
+
+The UDrawer component is a Vue component that provides a smoothly sliding drawer interface. It's part of the Nuxt UI library.
+
+## Key Features
+
+- Uses slots for content, header, body, and footer customization
+- Supports various props for customization:
+  - `title`: Sets the title of the drawer's header
+  - `description`: Sets the description of the drawer's header
+  - `direction`: Controls the direction of the drawer (default: bottom)
+  - `inset`: Insets the drawer from the edges
+  - `handle`: Controls whether the drawer has a handle (default: true)
+  - `handle-only`: Allows the drawer to be dragged only by the handle
+  - `overlay`: Controls whether the drawer has an overlay (default: true)
+  - `should-scale-background`: Scales the background when the drawer is open
+  - `dismissible`: Allows the drawer to be closed by clicking outside or pressing escape (default: true)
+  - `modal`: Makes the drawer modal (default: true)
+  - `direction`: Sets the direction of the drawer (top, right, bottom, left)
 
 ## Usage
 
-Use a [Button](/components/button) or any other component in the default slot of the Drawer.
-
-Then, use the `#content` slot to add the content displayed when the Drawer is open.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="h-48 m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="h-48 m-4"}
-::
-
-You can also use the `#header`{lang="ts-type"}, `#body`{lang="ts-type"} and `#footer`{lang="ts-type"} slots to customize the Drawer's content.
-
-### Title
-
-Use the `title` prop to set the title of the Drawer's header.
-
-::component-code
----
-prettier: true
-props:
-  title: 'Drawer with title'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-### Description
-
-Use the `description` prop to set the description of the Drawer's header.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-props:
-  title: 'Drawer with description'
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  body: |
-
-    <Placeholder class="h-48" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#body
-:placeholder{class="h-48"}
-::
-
-### Direction
-
-Use the `direction` prop to control the direction of the Drawer. Defaults to `bottom`.
-
-::component-code
----
-prettier: true
-props:
-  direction: 'right'
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="min-w-96 min-h-96 size-full m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="min-w-96 min-h-96 size-full m-4"}
-::
-
-### Inset
-
-Use the `inset` prop to inset the Drawer from the edges.
-
-::component-code
----
-prettier: true
-props:
-  direction: 'right'
-  inset: true
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="min-w-96 min-h-96 size-full m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="min-w-96 min-h-96 size-full m-4"}
-::
-
-### Handle
-
-Use the `handle` prop to control whether the Drawer has a handle or not. Defaults to `true`.
-
-::component-code
----
-prettier: true
-props:
-  handle: false
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="h-48 m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="h-48 m-4"}
-::
-
-### Handle Only
-
-Use the `handle-only` prop to only allow the Drawer to be dragged by the handle.
-
-::component-code
----
-prettier: true
-props:
-  handleOnly: true
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="h-48 m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="h-48 m-4"}
-::
-
-### Overlay
-
-Use the `overlay` prop to control whether the Drawer has an overlay or not. Defaults to `true`.
-
-::component-code
----
-prettier: true
-props:
-  overlay: false
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="h-48 m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="h-48 m-4"}
-::
-
-### Scale background
-
-Use the `should-scale-background` prop to scale the background when the Drawer is open, creating a visual depth effect. You can set the `set-background-color-on-scale` prop to `false` to prevent changing the background color.
-
-::component-code
----
-prettier: true
-props:
-  shouldScaleBackground: true
-  setBackgroundColorOnScale: true
-slots:
-  default: |
-
-    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
-
-  content: |
-
-    <Placeholder class="h-48 m-4" />
----
-
-:u-button{label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up"}
-
-#content
-:placeholder{class="h-screen m-4"}
-::
-
-::warning
-Make sure to add the `data-vaul-drawer-wrapper` directive to a parent element of your app to make this work.
-
-```vue [app.vue]
+```vue
 <template>
-  <UApp>
-    <div class="bg-default" data-vaul-drawer-wrapper>
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
-    </div>
-  </UApp>
+  <UDrawer>
+    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
+    <template #content>
+      <Placeholder class="h-48 m-4" />
+    </template>
+  </UDrawer>
 </template>
 ```
 
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  app: {
-    rootAttrs: {
-      'data-vaul-drawer-wrapper': '',
-      'class': 'bg-default'
-    }
-  }
-})
-```
-
-::
-
 ## Examples
 
-### Control open state
+### Control Open State
 
-You can control the open state by using the `default-open` prop or the `v-model:open` directive.
+```vue
+<script setup lang="ts">
+const open = ref(false)
+defineShortcuts({
+  o: () => (open.value = !open.value)
+})
+</script>
 
-::component-example
----
-prettier: true
-name: 'drawer-open-example'
----
-::
+<template>
+  <UDrawer v-model:open="open">
+    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
+    <template #content>
+      <Placeholder class="h-48 m-4" />
+    </template>
+  </UDrawer>
+</template>
+```
 
-::note
-In this example, leveraging [`defineShortcuts`](/composables/define-shortcuts), you can toggle the Drawer by pressing :kbd{value="O"}.
-::
+### Disable Dismissal
 
-::tip
-This allows you to move the trigger outside of the Drawer or remove it entirely.
-::
+```vue
+<script setup lang="ts">
+const open = ref(false)
+</script>
 
-### Disable dismissal
+<template>
+  <UDrawer v-model:open="open" :dismissible="false" :handle="false">
+    <UButton label="Open" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-up" />
+    <template #header>
+      <h2 class="text-highlighted font-semibold">Drawer non-dismissible</h2>
+      <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="open = false" />
+    </template>
+    <template #body>
+      <Placeholder class="h-48" />
+    </template>
+  </UDrawer>
+</template>
+```
 
-Set the `dismissible` prop to `false` to prevent the Drawer from being closed when clicking outside of it or pressing escape.
+### Responsive Drawer
 
-::component-example
----
-prettier: true
-name: 'drawer-dismissible-example'
----
-::
+```vue
+<script lang="ts" setup>
+import { createReusableTemplate, useMediaQuery } from '@vueuse/core'
+const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
+const isDesktop = useMediaQuery('(min-width: 768px)')
+const open = ref(false)
+const state = reactive({ email: undefined })
+const title = 'Edit profile'
+const description = "Make changes to your profile here. Click save when you're done."
+</script>
 
-::note
-In this example, the `header` slot is used to add a close button which is not done by default.
-::
-
-### With interactive background
-
-Set the `overlay` and `modal` props to `false` alongside the `dismissible` prop to make the Drawer's background interactive without closing the Drawer.
-
-::component-example
----
-prettier: true
-name: 'drawer-modal-example'
----
-::
-
-### Responsive drawer
-
-You can render a [Modal](/components/modal) component on desktop and a Drawer on mobile for example.
-
-::component-example
----
-prettier: true
-name: 'drawer-responsive-example'
----
-::
-
-### With footer slot
-
-Use the `#footer` slot to add content after the Drawer's body.
-
-::component-example
----
-prettier: true
-collapse: true
-name: 'drawer-footer-slot-example'
----
-::
-
-### With command palette
-
-You can use a [CommandPalette](/components/command-palette) component inside the Drawer's content.
-
-::component-example
----
-collapse: true
-name: 'drawer-command-palette-example'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+<template>
+  <DefineFormTemplate>
+    <UForm :state="state" class="space-y-4">
+      <UFormField label="Email" name="email" required>
+        <UInput v-model="state.email" placeholder="shadcn@example.com" required />
+      </UFormField>
+      <UButton label="Save changes" type="submit" />
+    </UForm>
+  </DefineFormTemplate>
+  <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
+    <UButton label="Edit profile" color="neutral" variant="outline" />
+    <template #body>
+      <ReuseFormTemplate />
+    </template>
+  </UModal>
+  <UDrawer v-else v-model:open="open" :title="title" :description="description">
+    <UButton label="Edit profile" color="neutral" variant="outline" />
+    <template #body>
+      <ReuseFormTemplate />
+    </template>
+  </UDrawer>
+</template>
+```

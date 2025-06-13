@@ -1,151 +1,48 @@
----
-description: An indicator of a numeric value or a state.
-category: element
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Chip.vue
----
+# UChip Component
+
+## Overview
+The UChip component is a small indicator used to display numeric values or states. It can wrap any component and is highly customizable.
 
 ## Usage
-
-Wrap any component with a Chip to display an indicator.
-
-::component-code
----
-prettier: true
-slots:
-  default: |
-
+```vue
+<template>
+  <UChip>
     <UButton icon="i-lucide-mail" color="neutral" variant="subtle" />
----
-:u-button{icon="i-lucide-mail" color="neutral" variant="subtle"}
-::
+  </UChip>
+</template>
+```
 
-### Color
+## Props
+- `as`: Specifies the element or component to render as (default: 'div')
+- `text`: Sets the text inside the chip (string | number)
+- `color`: Changes the chip's color (default: 'primary')
+  - Options: 'error', 'primary', 'secondary', 'success', 'info', 'warning', 'neutral'
+- `size`: Changes the chip's size (default: 'md')
+  - Options: 'xs', 'sm', 'md', 'lg', 'xl', '3xs', '2xs', '2xl', '3xl'
+- `position`: Sets the chip's position (default: 'top-right')
+  - Options: 'top-right', 'bottom-right', 'top-left', 'bottom-left'
+- `inset`: Keeps the chip inside the component for rounded elements (boolean, default: false)
+- `standalone`: Renders the chip relatively to the parent (boolean, default: false)
+- `show`: Controls the visibility of the chip (boolean, default: true)
 
-Use the `color` prop to change the color of the Chip.
-
-::component-code
----
-prettier: true
-props:
-  color: neutral
-slots:
-  default: |
-
-    <UButton icon="i-lucide-mail" color="neutral" variant="subtle" />
----
-:u-button{icon="i-lucide-mail" color="neutral" variant="subtle"}
-::
-
-### Size
-
-Use the `size` prop to change the size of the Chip.
-
-::component-code
----
-prettier: true
-props:
-  size: 3xl
-slots:
-  default: |
-
-    <UButton icon="i-lucide-mail" color="neutral" variant="subtle" />
----
-:u-button{icon="i-lucide-mail" color="neutral" variant="subtle"}
-::
-
-### Text
-
-Use the `text` prop to set the text of the Chip.
-
-::component-code
----
-prettier: true
-props:
-  text: 5
-  size: 3xl
-slots:
-  default: |
-
-    <UButton icon="i-lucide-mail" color="neutral" variant="subtle" />
----
-:u-button{icon="i-lucide-mail" color="neutral" variant="subtle"}
-::
-
-### Position
-
-Use the `position` prop to change the position of the Chip.
-
-::component-code
----
-prettier: true
-props:
-  position: 'bottom-left'
-slots:
-  default: |
-
-    <UButton icon="i-lucide-mail" color="neutral" variant="subtle" />
----
-:u-button{icon="i-lucide-mail" color="neutral" variant="subtle"}
-::
-
-### Inset
-
-Use the `inset` prop to display the Chip inside the component. This is useful when dealing with rounded components.
-
-::component-code
----
-prettier: true
-props:
-  inset: true
-slots:
-  default: |
-
-    <UAvatar src="https://github.com/benjamincanac.png" />
----
-:u-avatar{src="https://github.com/benjamincanac.png"}
-::
-
-### Standalone
-
-Use the `standalone` prop alongside the `inset` prop to display the Chip inline.
-
-::component-code
----
-props:
-  standalone: true
-  inset: true
----
-::
-
-::note
-It's used this way in the [`CommandPalette`](/components/command-palette), [`InputMenu`](/components/input-menu), [`Select`](/components/select) or [`SelectMenu`](/components/select-menu) components for example.
-::
+## Slots
+- `default`: Main content slot
+- `content`: Additional content slot
 
 ## Examples
+### Control Visibility
+```vue
+<script setup lang="ts">
+const statuses = ['online', 'away', 'busy', 'offline']
+const status = ref(statuses[0])
+const color = computed(() => status.value ? { online: 'success', away: 'warning', busy: 'error', offline: 'neutral' }[status.value] as any : 'online')
+const show = computed(() => status.value !== 'offline')
+</script>
 
-### Control visibility
-
-You can control the visibility of the Chip using the `show` prop.
-
-:component-example{name="chip-show-example"}
-
-::note
-In this example, the Chip has a color per status and is displayed when the status is not `offline`.
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+<template>
+  <UChip :color="color" :show="show" inset>
+    <UAvatar src="https://github.com/benjamincanac.png" />
+  </UChip>
+</template>
+```
+In this example, the chip changes color based on status and is hidden when the status is 'offline'.

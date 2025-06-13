@@ -1,272 +1,81 @@
----
-title: Calendar
-description: A calendar component for selecting single dates, multiple dates or date ranges.
-category: element
-links:
-  - label: Calendar
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/calendar
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Calendar.vue
----
+# UCalendar Component
 
-::note
-This component relies on the [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/index.html) package which provides objects and functions for representing and manipulating dates and times in a locale-aware manner.
-::
+The UCalendar component is a versatile Vue calendar component for selecting single dates, multiple dates, or date ranges. It relies on the `@internationalized/date` package for locale-aware date manipulation.
 
-## Usage
+## Key Features
 
-Use the `v-model` directive to control the selected date.
+- **Single Date Selection**: Use `v-model` to control the selected date.
+- **Multiple Date Selection**: Enable with the `multiple` prop.
+- **Date Range Selection**: Enable with the `range` prop.
+- **Customization**: Customize color, size, month/year controls, and more.
+- **Disabled Dates**: Use `is-date-disabled` or `is-date-unavailable` props.
+- **Integration**: Can be used with other UI components like `UButton` and `UPopover` to create date pickers.
 
-::component-code
----
-cast:
-  modelValue: DateValue
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: [2022, 2, 3]
----
-::
+## Basic Usage
 
-Use the `default-value` prop to set the initial value when you do not need to control its state.
+```vue
+<script setup lang="ts">
+import { CalendarDate } from '@internationalized/date'
+const value = ref(new CalendarDate(2022, 2, 3))
+</script>
 
-::component-code
----
-cast:
-  defaultValue: DateValue
-ignore:
-  - defaultValue
-external:
-  - defaultValue
-props:
-  defaultValue: [2022, 2, 6]
----
-::
+<template>
+  <UCalendar v-model="value" />
+</template>
+```
 
-### Multiple
+## Props
 
-Use the `multiple` prop to allow multiple selections.
+- `v-model`: Controls the selected date(s).
+- `default-value`: Sets the initial value.
+- `multiple`: Allows selecting multiple dates.
+- `range`: Allows selecting a date range.
+- `color`: Changes the calendar color.
+- `size`: Changes the calendar size.
+- `disabled`: Disables the calendar.
+- `numberOfMonths`: Changes the number of months displayed.
+- `month-controls`, `year-controls`: Show/hide month/year controls.
+- `is-date-disabled`, `is-date-unavailable`: Functions to mark specific dates as disabled/unavailable.
 
-::component-code
----
-prettier: true
-cast:
-  modelValue: DateValue[]
-ignore:
-  - multiple
-  - modelValue
-external:
-  - modelValue
-props:
-  multiple: true
-  modelValue: [[2022, 2, 4], [2022, 2, 6], [2022, 2, 8]]
----
-::
+## Slots
 
-### Range
-
-Use the `range` prop to select a range of dates.
-
-::component-code
----
-prettier: true
-cast:
-  modelValue: DateRange
-ignore:
-  - range
-  - modelValue.start
-  - modelValue.end
-external:
-  - modelValue
-props:
-  range: true
-  modelValue:
-    start: [2022, 2, 3]
-    end: [2022, 2, 20]
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the calendar.
-
-::component-code
----
-props:
-  color: neutral
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the calendar.
-
-::component-code
----
-props:
-  size: xl
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the calendar.
-
-::component-code
----
-props:
-  disabled: true
----
-::
-
-### Number Of Months
-
-Use the `numberOfMonths` prop to change the number of months in the calendar.
-
-::component-code
----
-props:
-  numberOfMonths: 3
----
-::
-
-### Month Controls
-
-Use the `month-controls` prop to show the month controls. Defaults to `true`.
-
-::component-code
----
-props:
-  monthControls: false
----
-::
-
-### Year Controls
-
-Use the `year-controls` prop to show the year controls. Defaults to `true`.
-
-::component-code
----
-props:
-  yearControls: false
----
-::
-
-### Fixed Weeks
-
-Use the `fixed-weeks` prop to display the calendar with fixed weeks.
-
-::component-code
----
-props:
-  fixedWeeks: false
----
-::
+- `heading`: Customize the month heading.
+- `day`: Customize individual days.
+- `week-day`: Customize weekday labels.
 
 ## Examples
 
-### With chip events
+- **Multiple Selection**:
+  ```vue
+  <UCalendar multiple v-model="value" />
+  ```
 
-Use the [Chip](/components/chip) component to add events to specific days.
+- **Date Range**:
+  ```vue
+  <UCalendar range v-model="value" />
+  ```
 
-::component-example
----
-name: 'calendar-events-example'
----
-::
+- **With Chip Events**:
+  ```vue
+  <UCalendar v-model="modelValue">
+    <template #day="{ day }">
+      <UChip :color="getColorByDate(day.toDate('UTC'))" size="2xs">
+        {{ day.day }}
+      </UChip>
+    </template>
+  </UCalendar>
+  ```
 
-### With disabled dates
+## Theme Customization
 
-Use the `is-date-disabled` prop with a function to mark specific dates as disabled.
+Customize the calendar's appearance in your app's configuration:
 
-::component-example
----
-name: 'calendar-disabled-dates-example'
----
-::
-
-### With unavailable dates
-
-Use the `is-date-unavailable` prop with a function to mark specific dates as unavailable.
-
-::component-example
----
-name: 'calendar-unavailable-dates-example'
----
-::
-
-### With min/max dates
-
-Use the `min-value` and `max-value` props to limit the dates.
-
-::component-example
----
-name: 'calendar-min-max-dates-example'
----
-::
-
-### With other calendar systems
-
-You can use other calenders from `@internationalized/date` to implement a different calendar system. 
-
-::component-example
----
-name: 'calendar-other-system-example'
----
-::
-
-::note{to="https://react-spectrum.adobe.com/internationalized/date/Calendar.html#implementations"}
-You can check all the available calendars on `@internationalized/date` docs.
-::
-
-### With external controls
-
-You can control the calendar with external controls by manipulating the date passed in the `v-model`.
-
-::component-example
----
-name: 'calendar-external-controls-example'
----
-::
-
-### As a DatePicker
-
-Use a [Button](/components/button) and a [Popover](/components/popover) component to create a date picker.
-
-::component-example
----
-name: 'calendar-date-picker-example'
----
-::
-
-### As a DateRangePicker
-
-Use a [Button](/components/button) and a [Popover](/components/popover) component to create a date range picker.
-
-::component-example
----
-name: 'calendar-date-range-picker-example'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+```ts
+export default defineAppConfig({
+  ui: {
+    calendar: {
+      // Custom slot classes and variants
+    }
+  }
+})
+```

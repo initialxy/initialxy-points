@@ -1,301 +1,69 @@
----
-description: A callout to draw user's attention.
-category: element
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Alert.vue
----
+# UAlert Component
 
-## Usage
+The UAlert component is a callout used to draw the user's attention. It supports various customization options through props.
 
-### Title
+## Props
 
-Use the `title` prop to set the title of the Alert.
+- `title`: Sets the title of the alert
+- `description`: Sets the description of the alert
+- `icon`: Displays an icon (e.g., `icon="i-lucide-terminal"`)
+- `avatar`: Displays an avatar (e.g., `:avatar="{ src: 'https://example.com/image.png' }"`)
+- `color`: Changes the color of the alert (e.g., `color="neutral"`)
+- `variant`: Changes the variant of the alert (e.g., `variant="subtle"`)
+- `close`: Displays a close button to dismiss the alert
+- `closeIcon`: Customizes the close button icon (e.g., `close-icon="i-lucide-arrow-right"`)
+- `actions`: Adds button actions to the alert (e.g., `:actions="[{ label: 'Action 1' }]"`)
+- `orientation`: Changes the orientation of the alert (e.g., `orientation="horizontal"`)
+- `class`: Overrides the base styles of the alert
+- `ui`: Overrides the slots styles of the alert
 
-::component-code
----
-props:
-  title: 'Heads up!'
----
-::
+## Usage Examples
 
-### Description
+### Basic Alert
+```vue
+<template>
+  <UAlert title="Heads up!" />
+</template>
+```
 
-Use the `description` prop to set the description of the Alert.
+### Alert with Description
+```vue
+<template>
+  <UAlert title="Heads up!" description="You can change the primary color in your app config." />
+</template>
+```
 
-::component-code
----
-prettier: true
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
----
-::
+### Alert with Icon
+```vue
+<template>
+  <UAlert title="Heads up!" description="You can change the primary color in your app config." icon="i-lucide-terminal" />
+</template>
+```
 
-### Icon
+### Alert with Avatar
+```vue
+<template>
+  <UAlert title="Heads up!" description="You can change the primary color in your app config." :avatar="{ src: 'https://github.com/nuxt.png' }" />
+</template>
+```
 
-Use the `icon` prop to show an [Icon](/components/icon).
+### Alert with Custom Color and Variant
+```vue
+<template>
+  <UAlert color="neutral" variant="subtle" title="Heads up!" description="You can change the primary color in your app config." icon="i-lucide-terminal" />
+</template>
+```
 
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  icon: 'i-lucide-terminal'
----
-::
+### Alert with Close Button
+```vue
+<template>
+  <UAlert title="Heads up!" description="You can change the primary color in your app config." color="neutral" variant="outline" close />
+</template>
+```
 
-### Avatar
-
-Use the `avatar` prop to show an [Avatar](/components/avatar).
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  avatar.src: 'https://github.com/nuxt.png'
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-  - icon
-props:
-  color: neutral
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  icon: 'i-lucide-terminal'
----
-::
-
-### Variant
-
-Use the `variant` prop to change the variant of the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-  - icon
-props:
-  color: neutral
-  variant: subtle
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  icon: 'i-lucide-terminal'
----
-::
-
-### Close
-
-Use the `close` prop to display a [Button](/components/button) to dismiss the Alert.
-
-::tip
-An `update:open` event will be emitted when the close button is clicked.
-::
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-  - close
-  - color
-  - variant
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  color: neutral
-  variant: outline
-  close: true
----
-::
-
-You can pass any property from the [Button](/components/button) component to customize it.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-  - close.color
-  - close.variant
-  - color
-  - variant
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  color: neutral
-  variant: outline
-  close:
-    color: primary
-    variant: outline
-    class: 'rounded-full'
----
-::
-
-### Close Icon
-
-Use the `close-icon` prop to customize the close button [Icon](/components/icon). Defaults to `i-lucide-x`.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-  - close
-  - color
-  - variant
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  color: neutral
-  variant: outline
-  close: true
-  closeIcon: 'i-lucide-arrow-right'
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
-:::
-::
-
-### Actions
-
-Use the `actions` prop to add some [Button](/components/button) actions to the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - actions
-  - color
-  - variant
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  color: neutral
-  variant: outline
-  actions:
-    - label: Action 1
-    - label: Action 2
-      color: neutral
-      variant: subtle
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - actions
-  - color
-  - variant
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  color: neutral
-  variant: outline
-  orientation: horizontal
-  actions:
-    - label: Action 1
-    - label: Action 2
-      color: neutral
-      variant: subtle
----
-::
-
-## Examples
-
-### `class` prop
-
-Use the `class` prop to override the base styles of the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - title
-  - description
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  class: 'rounded-none'
----
-::
-
-### `ui` prop
-
-Use the `ui` prop to override the slots styles of the Alert.
-
-::component-code
----
-prettier: true
-ignore:
-  - ui
-  - title
-  - description
-  - icon
-props:
-  title: 'Heads up!'
-  description: 'You can change the primary color in your app config.'
-  icon: i-lucide-rocket
-  ui:
-    icon: 'size-11'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+### Alert with Actions
+```vue
+<template>
+  <UAlert title="Heads up!" description="You can change the primary color in your app config." color="neutral" variant="outline" :actions="[{ label: 'Action 1' }, { label: 'Action 2', color: 'neutral', variant: 'subtle' }]" />
+</template>
+```

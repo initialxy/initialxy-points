@@ -1,68 +1,74 @@
----
-description: Display content in a card with a header, body and footer.
-category: layout
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Card.vue
----
+# UCard Component
+
+## Overview
+The UCard component is used to display content in a card format with optional header, body, and footer sections.
 
 ## Usage
-
-::component-example
----
-name: 'card-example'
-props:
-  class: 'w-full'
----
-::
-
-### Variant
-
-Use the `variant` prop to change the variant of the Card.
-
-::component-code
----
-prettier: true
-hide:
-  - class
-props:
-  variant: subtle
-  class: 'w-full'
-slots:
-  header: |
-
-    <Placeholder class="h-8" />
-
-  default: |
-
+```vue
+<template>
+  <UCard>
+    <template #header>
+      <Placeholder class="h-8" />
+    </template>
     <Placeholder class="h-32" />
+    <template #footer>
+      <Placeholder class="h-8" />
+    </template>
+  </UCard>
+</template>
+```
 
-  footer: |
+## Variant
+Use the `variant` prop to change the card's appearance.
 
-    <Placeholder class="h-8" />
----
+```vue
+<template>
+  <UCard variant="subtle">
+    <template #header>
+      <Placeholder class="h-8" />
+    </template>
+    <Placeholder class="h-32" />
+    <template #footer>
+      <Placeholder class="h-8" />
+    </template>
+  </UCard>
+</template>
+```
 
-#header
-:placeholder{class="h-8"}
+## Props
+- `as`: Specifies the element or component to render as (default: 'div')
+- `variant`: Changes the card's variant (options: 'solid', 'outline', 'soft', 'subtle', default: 'outline')
+- `ui`: Object for customizing class names for root, header, body, and footer
 
-#default
-:placeholder{class="h-32"}
+## Slots
+- `header`: Content for the card header
+- `default`: Main content of the card
+- `footer`: Content for the card footer
 
-#footer
-:placeholder{class="h-8"}
-::
+## Theme Configuration
+Configure the card's appearance in `app.config.ts` or `vite.config.ts` by customizing the slots and variants.
 
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+```typescript
+// app.config.ts
+export default defineAppConfig({
+  ui: {
+    card: {
+      slots: {
+        root: 'rounded-lg',
+        header: 'p-4 sm:px-6',
+        body: 'p-4 sm:p-6',
+        footer: 'p-4 sm:px-6'
+      },
+      variants: {
+        variant: {
+          solid: { root: 'bg-inverted text-inverted' },
+          outline: { root: 'bg-default ring ring-default divide-y divide-default' },
+          soft: { root: 'bg-elevated/50 divide-y divide-default' },
+          subtle: { root: 'bg-elevated/50 ring ring-default divide-y divide-default' }
+        }
+      },
+      defaultVariants: { variant: 'outline' }
+    }
+  }
+})
+```

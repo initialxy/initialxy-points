@@ -1,240 +1,125 @@
----
-description: An input element to toggle between checked and unchecked states.
-category: form
-links:
-  - label: Checkbox
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/checkbox
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Checkbox.vue
----
+# UCheckbox Component
+
+## Overview
+The UCheckbox component is a Vue.js input element that toggles between checked and unchecked states. It's part of the Nuxt UI library.
 
 ## Usage
+### Basic Usage
+Use `v-model` to control the checked state:
+```vue
+<script setup lang="ts">
+const value = ref(true)
+</script>
+<template>
+  <UCheckbox v-model="value" />
+</template>
+```
 
-Use the `v-model` directive to control the checked state of the Checkbox.
+Use `default-value` for initial state without controlling it:
+```vue
+<template>
+  <UCheckbox default-value />
+</template>
+```
 
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: true
----
-::
+### Indeterminate State
+Set the checkbox to an indeterminate state using `v-model` or `default-value`:
+```vue
+<template>
+  <UCheckbox default-value="indeterminate" />
+</template>
+```
 
-Use the `default-value` prop to set the initial value when you do not need to control its state.
+Customize the indeterminate icon with `indeterminate-icon`:
+```vue
+<template>
+  <UCheckbox default-value="indeterminate" indeterminate-icon="i-lucide-plus" />
+</template>
+```
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: true
----
-::
+### Label and Description
+Add a label with the `label` prop:
+```vue
+<template>
+  <UCheckbox label="Check me" />
+</template>
+```
 
-### Indeterminate
+Add a description with the `description` prop:
+```vue
+<template>
+  <UCheckbox label="Check me" description="This is a checkbox." />
+</template>
+```
 
-Use the `indeterminate` value in the `v-model` directive or `default-value` prop to set the Checkbox to an [indeterminate state](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes).
+### Icon and Color
+Customize the checked icon with the `icon` prop:
+```vue
+<template>
+  <UCheckbox icon="i-lucide-heart" default-value label="Check me" />
+</template>
+```
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: 'indeterminate'
----
-::
+Change the color with the `color` prop:
+```vue
+<template>
+  <UCheckbox color="neutral" default-value label="Check me" />
+</template>
+```
 
-### Indeterminate Icon
+### Variant and Size
+Change the variant with the `variant` prop:
+```vue
+<template>
+  <UCheckbox color="primary" variant="card" default-value label="Check me" />
+</template>
+```
 
-Use the `indeterminate-icon` prop to customize the indeterminate icon. Defaults to `i-lucide-minus`.
+Change the size with the `size` prop:
+```vue
+<template>
+  <UCheckbox size="xl" variant="list" default-value label="Check me" />
+</template>
+```
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: 'indeterminate'
-  indeterminateIcon: 'i-lucide-plus'
----
-::
+### Indicator Position
+Change the indicator position with the `indicator` prop:
+```vue
+<template>
+  <UCheckbox indicator="end" variant="card" default-value label="Check me" />
+</template>
+```
 
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.minus` key.
-:::
+### Disabled State
+Disable the checkbox with the `disabled` prop:
+```vue
+<template>
+  <UCheckbox disabled label="Check me" />
+</template>
+```
 
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.minus` key.
-:::
-::
+## Props
+- `as`: Element or component to render as
+- `label`: Label text
+- `description`: Description text
+- `color`: Color variant
+- `variant`: Variant style
+- `size`: Size variant
+- `indicator`: Indicator position
+- `icon`: Checked icon
+- `indeterminateIcon`: Indeterminate icon
+- `disabled`: Disable state
+- `value`: Form submission value
+- `name`: Form field name
+- `required`: Required state
+- `id`: Element ID
+- `defaultValue`: Initial value
+- `modelValue`: Controlled value
 
-### Label
+## Slots
+- `label`: Label slot
+- `description`: Description slot
 
-Use the `label` prop to set the label of the Checkbox.
-
-::component-code
----
-props:
-  label: Check me
----
-::
-
-When using the `required` prop, an asterisk is added next to the label.
-
-::component-code
----
-ignore:
-  - label
-props:
-  required: true
-  label: Check me
----
-::
-
-### Description
-
-Use the `description` prop to set the description of the Checkbox.
-
-::component-code
----
-ignore:
-  - label
-props:
-  label: Check me
-  description: 'This is a checkbox.'
----
-::
-
-### Icon
-
-Use the `icon` prop to set the icon of the Checkbox when it is checked. Defaults to `i-lucide-check`.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  icon: 'i-lucide-heart'
-  defaultValue: true
-  label: Check me
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.check` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.check` key.
-:::
-::
-
-### Color
-
-Use the `color` prop to change the color of the Checkbox.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  color: neutral
-  defaultValue: true
-  label: Check me
----
-::
-
-### Variant :badge{label="New" class="align-text-top"}
-
-Use the `variant` prop to change the variant of the Checkbox.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  color: 'primary'
-  variant: 'card'
-  defaultValue: true
-  label: Check me
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Checkbox.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  size: xl
-  variant: list
-  defaultValue: true
-  label: Check me
----
-::
-
-### Indicator :badge{label="New" class="align-text-top"}
-
-Use the `indicator` prop to change the position or hide the indicator. Defaults to `start`.
-
-::component-code
----
-ignore:
-  - label
-  - defaultValue
-props:
-  indicator: 'end'
-  variant: 'card'
-  defaultValue: true
-  label: Check me
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the Checkbox.
-
-::component-code
----
-ignore:
-  - label
-props:
-  disabled: true
-  label: Check me
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+## Emits
+- `change`: Change event
+- `update:modelValue`: Model value update

@@ -1,194 +1,37 @@
----
-description: An input to select a numeric value within a range.
-category: form
-links:
-  - label: Slider
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/slider
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Slider.vue
----
+# USlider Component
 
-## Usage
+The USlider component is a Vue slider input for selecting numeric values within a range. Key features include:
 
-Use the `v-model` directive to control the value of the Slider.
+## Basic Usage
+- Control value with `v-model` directive
+- Set initial value with `default-value` prop
 
-::component-code
----
-external:
-  - modelValue
-props:
-  modelValue: 50
----
-::
+## Range Settings
+- Set min/max values with `min`/`max` props (default: 0/100)
+- Set increment value with `step` prop (default: 1)
 
-Use the `default-value` prop to set the initial value when you do not need to control its state.
+## Multiple Values
+- Create range slider with array values in `v-model` or `default-value`
+- Control thumb distance with `min-steps-between-thumbs` prop
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  defaultValue: 50
----
-::
+## Orientation
+- Change orientation with `orientation` prop (default: horizontal)
 
-### Min / Max
+## Styling
+- Change color with `color` prop
+- Change size with `size` prop
 
-Use the `min` and `max` props to set the minimum and maximum values of the Slider. Defaults to `0` and `100`.
+## Tooltip
+- Display current value with `tooltip` prop
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  min: 0
-  max: 50
-  defaultValue: 50
----
-::
+## Disabled State
+- Disable slider with `disabled` prop
 
-### Step
+## Inverted
+- Visually invert slider with `inverted` prop
 
-Use the `step` prop to set the increment value of the Slider. Defaults to `1`.
+## Props
+- `min`, `max`, `step`, `orientation`, `color`, `size`, `tooltip`, `disabled`, `inverted`
 
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  step: 10
-  defaultValue: 50
----
-::
-
-### Multiple
-
-Use the `v-model` directive or the `default-value` prop with an array of values to create a range Slider.
-
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: [25, 75]
----
-::
-
-Use the `min-steps-between-thumbs` prop to limit the minimum distance between the thumbs.
-
-::component-code
----
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: [25, 50, 75]
-  minStepsBetweenThumbs: 10
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the Slider. Defaults to `horizontal`.
-
-::component-code
----
-ignore:
-  - defaultValue
-  - class
-props:
-  orientation: vertical
-  defaultValue: 50
-  class: 'h-48'
----
-::
-
-### Color
-
-Use the `color` prop to change the color of the Slider.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  color: neutral
-  defaultValue: 50
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Slider.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  size: xl
-  defaultValue: 50
----
-::
-
-### Tooltip :badge{label="New" class="align-text-top"}
-
-Use the `tooltip` prop to display a [Tooltip](/components/tooltip) around the Slider thumbs with the current value. You can set it to `true` for default behavior or pass an object to customize it with any property from the [Tooltip](/components/tooltip#props) component.
-
-::component-code
----
-ignore:
-  - defaultValue
-  - tooltip
-props:
-  defaultValue: 50
-  tooltip: true
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the Slider.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  disabled: true
-  defaultValue: 50
----
-::
-
-### Inverted
-
-Use the `inverted` prop to visually invert the Slider.
-
-::component-code
----
-ignore:
-  - defaultValue
-props:
-  inverted: true
-  defaultValue: 25
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Emits
-
-:component-emits
-
-## Theme
-
-:component-theme
+## Emits
+- `update:modelValue`, `change`

@@ -1,285 +1,46 @@
----
-title: InputTags
-description: An input element that displays interactive tags.
-category: form
-links:
-  - label: InputTags
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/tags-input
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/InputTags.vue
-navigation.badge: Soon
----
+# UInputTags Component
 
-## Usage
+The UInputTags component is an interactive tag input element for Vue.js applications. It allows users to enter and display tags with various customization options.
 
-Use the `v-model` directive to control the value of the InputTags.
+## Key Features
 
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
----
-::
+- **Value Control**: Use `v-model` for reactive value binding or `default-value` for static initial value.
+- **Placeholder**: Set with the `placeholder` prop.
+- **Color and Highlight**: Customize with `color` and `highlight` props.
+- **Variants and Sizes**: Change appearance with `variant` and `size` props.
+- **Icons and Avatar**: Add icons with `icon`, `leading`, `trailing`, or show an avatar with the `avatar` prop.
+- **Delete Icon**: Customize with `delete-icon` prop.
+- **Loading State**: Show loading with `loading` and customize icon with `loading-icon`.
+- **Disabled State**: Prevent interaction with `disabled` prop.
+- **Form Integration**: Use within UFormField for better form control.
 
-Use the `default-value` prop to set the initial value when you do not need to control its state.
+## Props
 
-::component-code
----
-prettier: true
-ignore:
-  - defaultValue
-props:
-  defaultValue: ['Vue']
----
-::
+- `v-model`: Reactive value binding
+- `default-value`: Initial static value
+- `placeholder`: Input placeholder text
+- `color`: Ring color on focus
+- `variant`: Visual style variant
+- `size`: Component size
+- `icon`, `leading`, `trailing`: Icon display options
+- `avatar`: Display avatar
+- `delete-icon`: Custom delete icon
+- `loading`, `loading-icon`: Loading state and icon
+- `disabled`: Disable interaction
 
-### Placeholder
+## Slots
 
-Use the `placeholder` prop to set a placeholder text.
+- `leading`, `default`, `trailing`: Positional content
+- `item-text`, `item-delete`: Customize tag display and delete action
 
-::component-code
----
-props:
-  placeholder: 'Enter tags...'
----
-::
+## Usage Example
 
-### Color
+```vue
+<script setup lang="ts">
+const value = ref(['Vue'])
+</script>
 
-Use the `color` prop to change the ring color when the InputTags is focused.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  color: neutral
-  highlight: true
----
-::
-
-::note
-The `highlight` prop is used here to show the focus state. It's used internally when a validation error occurs.
-::
-
-### Variants
-
-Use the `variant` prop to change the appearance of the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  variant: subtle
-  color: neutral
-  highlight: false
----
-::
-
-### Sizes
-
-Use the `size` prop to adjust the size of the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  size: xl
----
-::
-
-### Icon
-
-Use the `icon` prop to show an [Icon](/components/icon) inside the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  icon: 'i-lucide-search'
-  size: md
-  variant: outline
----
-::
-
-::note
-Use the `leading` and `trailing` props to set the icon position or the `leading-icon` and `trailing-icon` props to set a different icon for each position.
-::
-
-### Avatar
-
-Use the `avatar` prop to show an [Avatar](/components/avatar) inside the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  avatar:
-    src: 'https://github.com/vuejs.png'
-  size: md
-  variant: outline
----
-::
-
-### Delete Icon
-
-Use the `delete-icon` prop to customize the delete [Icon](/components/icon) in the tags. Defaults to `i-lucide-x`.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  deleteIcon: 'i-lucide-trash'
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.close` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.close` key.
-:::
-::
-
-### Loading
-
-Use the `loading` prop to show a loading icon on the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  loading: true
-  trailing: false
----
-::
-
-### Loading Icon
-
-Use the `loading-icon` prop to customize the loading icon. Defaults to `i-lucide-loader-circle`.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  loading: true
-  loadingIcon: 'i-lucide-loader'
----
-::
-
-::framework-only
-#nuxt
-:::tip{to="/getting-started/icons/nuxt#theme"}
-You can customize this icon globally in your `app.config.ts` under `ui.icons.loading` key.
-:::
-
-#vue
-:::tip{to="/getting-started/icons/vue#theme"}
-You can customize this icon globally in your `vite.config.ts` under `ui.icons.loading` key.
-:::
-::
-
-### Disabled
-
-Use the `disabled` prop to disable the InputTags.
-
-::component-code
----
-prettier: true
-ignore:
-  - modelValue
-external:
-  - modelValue
-props:
-  modelValue: ['Vue']
-  disabled: true
----
-::
-
-## Examples
-
-### Within a FormField
-
-You can use the InputTags within a [FormField](/components/form-field) component to display a label, help text, required indicator, etc.
-
-::component-example
----
-name: 'input-tags-form-field-example'
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-### Expose
-
-When accessing the component via a template ref, you can use the following:
-
-| Name                       | Type                                            |
-| -------------------------- | ----------------------------------------------- |
-| `inputRef`{lang="ts-type"} | `Ref<InstanceType<typeof TagsInputInput> \| null>`{lang="ts-type"} |
-
-## Theme
-
-:component-theme
+<template>
+  <UInputTags v-model="value" placeholder="Enter tags..." />
+</template>
+```

@@ -1,147 +1,62 @@
----
-description: A short text to represent a status or a category.
-category: element
-links:
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Badge.vue
----
+# UBadge Component
+
+## Overview
+The UBadge component is a short text element used to represent a status or category. It's highly customizable with various props for styling and positioning.
 
 ## Usage
 
 ### Label
-
-Use the default slot to set the label of the Badge.
-
-::component-code
----
-slots:
-  default: Badge
----
-::
-
-You can achieve the same result by using the `label` prop.
-
-::component-code
----
-props:
-  label: Badge
----
-::
+Set the badge label using the default slot or the `label` prop:
+```vue
+<UBadge>Badge</UBadge>
+<UBadge label="Badge" />
+```
 
 ### Color
-
-Use the `color` prop to change the color of the Badge.
-
-::component-code
----
-props:
-  color: neutral
-slots:
-  default: Badge
----
-::
+Change the badge color using the `color` prop:
+```vue
+<UBadge color="neutral">Badge</UBadge>
+```
 
 ### Variant
-
-Use the `variant` props to change the variant of the Badge.
-
-::component-code
----
-props:
-  color: neutral
-  variant: outline
-slots:
-  default: Badge
----
-::
+Change the badge variant using the `variant` prop:
+```vue
+<UBadge color="neutral" variant="outline">Badge</UBadge>
+```
 
 ### Size
-
-Use the `size` prop to change the size of the Badge.
-
-::component-code
----
-props:
-  size: xl
-slots:
-  default: Badge
----
-::
+Change the badge size using the `size` prop:
+```vue
+<UBadge size="xl">Badge</UBadge>
+```
 
 ### Icon
-
-Use the `icon` prop to show an [Icon](/components/icon) inside the Badge.
-
-::component-code
----
-props:
-  icon: i-lucide-rocket
-  size: md
-  color: primary
-  variant: solid
-slots:
-  default: Badge
----
-::
-
-Use the `leading` and `trailing` props to set the icon position or the `leading-icon` and `trailing-icon` props to set a different icon for each position.
-
-::component-code
----
-props:
-  trailingIcon: i-lucide-arrow-right
-  size: md
-slots:
-  default: Badge
----
-::
+Add an icon using the `icon`, `leading`, or `trailing` props:
+```vue
+<UBadge icon="i-lucide-rocket" size="md" color="primary" variant="solid">Badge</UBadge>
+<UBadge trailing-icon="i-lucide-arrow-right" size="md">Badge</UBadge>
+```
 
 ### Avatar
+Add an avatar using the `avatar` prop:
+```vue
+<UBadge :avatar="{ src: 'https://github.com/nuxt.png' }" size="md" color="neutral" variant="outline">Badge</UBadge>
+```
 
-Use the `avatar` prop to show an [Avatar](/components/avatar) inside the Badge.
+## Props
+- `as`: Element or component to render as (default: 'span')
+- `label`: Text content (string or number)
+- `color`: Color variant (default: 'primary')
+- `variant`: Style variant (default: 'solid')
+- `size`: Size variant (default: 'md')
+- `square`: Equal padding on all sides (boolean)
+- `icon`, `leading`, `trailing`: Icon positioning
+- `avatar`: Avatar properties
 
-::component-code
----
-prettier: true
-props:
-  avatar:
-    src: 'https://github.com/nuxt.png'
-  size: md
-  color: neutral
-  variant: outline
-slots:
-  default: |
+## Slots
+- `leading`: Content before the label
+- `default`: Main label content
+- `trailing`: Content after the label
 
-    Badge
----
-::
-
-## Examples
-
-### `class` prop
-
-Use the `class` prop to override the base styles of the Badge.
-
-::component-code
----
-props:
-  class: 'font-bold rounded-full'
-slots:
-  default: Badge
----
-::
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-## Theme
-
-:component-theme
+## Theme Customization
+Customize the badge appearance in `app.config.ts` or `vite.config.ts` using the `ui.badge` configuration.

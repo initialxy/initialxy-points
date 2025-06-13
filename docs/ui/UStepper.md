@@ -1,248 +1,53 @@
----
-description: A set of steps that are used to indicate progress through a multi-step process.
-category: navigation
-links:
-  - label: Stepper
-    icon: i-custom-reka-ui
-    to: https://reka-ui.com/docs/components/stepper
-  - label: GitHub
-    icon: i-simple-icons-github
-    to: https://github.com/nuxt/ui/tree/v3/src/runtime/components/Stepper.vue
----
+# UStepper Component
 
-## Usage
+The UStepper component is a Vue component from Nuxt UI that displays a set of steps for a multi-step process. It provides various customization options through props and slots.
 
-### Items
+## Key Features
 
-Use the `items` prop as an array of objects with the following properties:
+- **Items**: Define steps using the `items` prop, which accepts an array of objects with properties like `title`, `description`, `icon`, etc.
+- **Color**: Change stepper color using the `color` prop.
+- **Size**: Adjust stepper size with the `size` prop.
+- **Orientation**: Set orientation to `horizontal` or `vertical` using the `orientation` prop.
+- **Disabled**: Disable navigation with the `disabled` prop.
+- **Controls**: Add custom navigation controls.
+- **Active Item**: Control the active step using `default-value` or `v-model`.
+- **Custom Slots**: Customize step content using slots like `#content` or custom named slots.
 
-- `title?: string`{lang="ts-type"}
-- `description?: AvatarProps`{lang="ts-type"}
-- `content?: string`{lang="ts-type"}
-- `icon?: string`{lang="ts-type"}
-- `value?: string | number`{lang="ts-type"}
-- `disabled?: boolean`{lang="ts-type"}
-- [`slot?: string`{lang="ts-type"}](#with-custom-slot)
-- `class?: any`{lang="ts-type"}
-- `ui?: { item?: ClassNameValue, container?: ClassNameValue, trigger?: ClassNameValue, indicator?: ClassNameValue, icon?: ClassNameValue, separator?: ClassNameValue, wrapper?: ClassNameValue, title?: ClassNameValue, description?: ClassNameValue }`{lang="ts-type"}
-
-::component-code
----
-ignore:
-  - items
-  - class
-external:
-  - items
-externalTypes:
-  - StepperItem[]
-props:
-  items:
-    - title: 'Address'
-      description: 'Add your address here'
-      icon: 'i-lucide-house'
-    - title: 'Shipping'
-      description: 'Set your preferred shipping method'
-      icon: 'i-lucide-truck'
-    - title: 'Checkout'
-      description: 'Confirm your order'
-  class: 'w-full'
----
-::
-
-::note
-Click on the items to navigate through the steps.
-::
-
-### Color
-
-Use the `color` prop to change the color of the Stepper.
-
-::component-code
----
-ignore:
-  - content
-  - items
-  - class
-external:
-  - items
-externalTypes:
-  - StepperItem[]
-props:
-  color: neutral
-  items:
-    - title: 'Address'
-      description: 'Add your address here'
-      icon: 'i-lucide-house'
-    - title: 'Shipping'
-      description: 'Set your preferred shipping method'
-      icon: 'i-lucide-truck'
-    - title: 'Checkout'
-      description: 'Confirm your order'
-  class: 'w-full'
----
-::
-
-### Size
-
-Use the `size` prop to change the size of the Stepper.
-
-::component-code
----
-ignore:
-  - content
-  - items
-  - class
-external:
-  - items
-externalTypes:
-  - StepperItem[]
-props:
-  size: xl
-  items:
-  - title: 'Address'
-    description: 'Add your address here'
-    icon: 'i-lucide-house'
-  - title: 'Shipping'
-    description: 'Set your preferred shipping method'
-    icon: 'i-lucide-truck'
-  - title: 'Checkout'
-    description: 'Confirm your order'
-  class: 'w-full'
----
-::
-
-### Orientation
-
-Use the `orientation` prop to change the orientation of the Stepper. Defaults to `horizontal`.
-
-::component-code
----
-ignore:
-  - content
-  - items
-  - class
-external:
-  - items
-externalTypes:
-  - StepperItem[]
-props:
-  orientation: vertical
-  items:
-  - title: 'Address'
-    description: 'Add your address here'
-    icon: 'i-lucide-house'
-  - title: 'Shipping'
-    description: 'Set your preferred shipping method'
-    icon: 'i-lucide-truck'
-  - title: 'Checkout'
-    description: 'Confirm your order'
-  class: 'w-full'
----
-::
-
-### Disabled
-
-Use the `disabled` prop to disable navigation through the steps.
-
-::component-code
----
-ignore:
-  - content
-  - items
-  - class
-external:
-  - items
-externalTypes:
-  - StepperItem[]
-props:
-  disabled: true
-  items:
-  - title: 'Address'
-    description: 'Add your address here'
-    icon: 'i-lucide-house'
-  - title: 'Shipping'
-    description: 'Set your preferred shipping method'
-    icon: 'i-lucide-truck'
-  - title: 'Checkout'
-    description: 'Confirm your order'
----
-::
-
-::note{to="#with-controls"}
-This can be useful when you want to force navigation with controls.
-::
-
-## Examples
-
-### With controls
-
-You can add additional controls for the stepper using buttons.
-
-:component-example{name="stepper-with-controls-example"}
-
-### Control active item
-
-You can control the active item by using the `default-value` prop or the `v-model` directive with the index of the item.
-
-:component-example{name="stepper-model-value-example"}
-
-::tip
-You can also pass the `value` of one of the items if provided.
-::
-
-### With content slot
-
-Use the `#content` slot to customize the content of each item.
-
-:component-example{name="stepper-content-slot-example"}
-
-### With custom slot
-
-Use the `slot` property to customize a specific item.
-
-You will have access to the following slots:
-
-- `#{{ item.slot }}`{lang="ts-type"}
-
-:component-example{name="stepper-custom-slot-example"}
-
-## API
-
-### Props
-
-:component-props
-
-### Slots
-
-:component-slots
-
-### Emits
-
-:component-emits
-
-### Expose
-
-You can access the typed component instance using [`useTemplateRef`](https://vuejs.org/api/composition-api-helpers.html#usetemplateref).
+## Example Usage
 
 ```vue
 <script setup lang="ts">
-const stepper = useTemplateRef('stepper')
+import type { StepperItem } from '@nuxt/ui'
+const items = ref<StepperItem[]>([
+  { title: 'Address', description: 'Add your address here', icon: 'i-lucide-house' },
+  { title: 'Shipping', description: 'Set your preferred shipping method', icon: 'i-lucide-truck' },
+  { title: 'Checkout', description: 'Confirm your order' }
+])
 </script>
 
 <template>
-  <UStepper ref="stepper" />
+  <UStepper :items="items" class="w-full" />
 </template>
 ```
 
-This will give you access to the following:
+## Props
 
-| Name | Type |
-| ---- | ---- |
-| `next`{lang="ts-type"} | `() => void`{lang="ts-type"} |
-| `prev`{lang="ts-type"} | `() => void`{lang="ts-type"} |
-| `hasNext`{lang="ts-type"} | `Ref<boolean>`{lang="ts-type"} |
-| `hasPrev`{lang="ts-type"} | `Ref<boolean>`{lang="ts-type"} |
+- `items`: Array of step objects
+- `color`: Stepper color (e.g., 'primary', 'neutral')
+- `size`: Stepper size (e.g., 'md', 'xl')
+- `orientation`: Orientation ('horizontal' or 'vertical')
+- `disabled`: Boolean to disable navigation
+- `defaultValue`: Initial active step value
+- `modelValue`: For two-way binding of active step
 
-## Theme
+## Slots
 
-:component-theme
+- `indicator`, `title`, `description`, `content`: Customize step elements
+- Custom named slots for specific steps
+
+## Exposed Methods
+
+- `next()`: Move to next step
+- `prev()`: Move to previous step
+- `hasNext`: Boolean indicating if there's a next step
+- `hasPrev`: Boolean indicating if there's a previous step
