@@ -1,5 +1,5 @@
 <template>
-  <UCard variant="subtle" class="m-8 ml-auto mr-auto w-100">
+  <UCard variant="subtle" class="m-8 ml-auto mr-auto">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
       <UFormField label="Who?" name="username" type="text">
         <UInput v-model="state.username" class="w-full" />

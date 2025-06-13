@@ -1,5 +1,5 @@
 <template>
-  <UContainer>
+  <UContainer class="max-w-100">
     <LoginForm />
   </UContainer>
 </template>

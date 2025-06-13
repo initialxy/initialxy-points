@@ -16,10 +16,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return { tasks } as TasksResponse
   } else if (user.role === 'parent') {
     // For parent users, return all tasks for their children
-    const tasks: Task[] = await db.all(
-      'SELECT * FROM tasks WHERE parent_id = ?',
-      user.id
-    )
+    const tasks: Task[] = await db.all('SELECT * FROM tasks')
     return { tasks } as TasksResponse
   } else {
     return {

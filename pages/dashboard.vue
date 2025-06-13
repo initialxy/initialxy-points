@@ -1,13 +1,6 @@
 <template>
-  <UContainer>
-    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Dashboard</h1>
-    <template v-if="isParent">
-      <ParentView />
-    </template>
-    <template v-else>
-      <ChildView />
-    </template>
-  </UContainer>
+  <ParentView v-if="isParent" />
+  <ChildView v-else />
 </template>
 
 <script setup lang="ts">
