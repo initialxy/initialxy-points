@@ -21,7 +21,6 @@ initialxy-points is designed to help parents track their kids' progress through 
 - Passcode-based authentication for parents and children
 - Task management system for parents to assign tasks to children
 - Reward system with point values
-- Wishlist functionality for children to request rewards
 - Points tracking and visibility
 - Responsive design for mobile and desktop
 
@@ -58,8 +57,8 @@ npm run preview
 ## Usage
 
 1. **Register Users**: Start by registering parent and child users through the application interface.
-2. **Parent Dashboard**: Parents can create tasks and rewards, view children's points, and manage wishlist items.
-3. **Child Dashboard**: Children can view their tasks, submit wishlist items, and track their points.
+2. **Parent Dashboard**: Parents can create tasks and rewards, view children's points.
+3. **Child Dashboard**: Children can view their tasks, and track their points.
 4. **API Access**: Developers can interact with the application's functionality through the REST API.
 
 ## API Documentation

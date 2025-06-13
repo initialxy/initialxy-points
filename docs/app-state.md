@@ -25,8 +25,8 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 ## Features
 
 ### User Roles
-- **Parent**: Can create rewards, view and manage their children's tasks and wishlists
-- **Child**: Can view their tasks, complete tasks to earn points, and add rewards to their wishlist
+- **Parent**: Can create rewards, view and manage their children's tasks
+- **Child**: Can view their tasks, complete tasks to earn points
 
 ### Main Functionality
 1. **User Authentication**: Login system with role-based access control
@@ -35,8 +35,7 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
    - Children can view tasks and mark them as completed (pending parent approval)
    - Parents can approve or reject completed tasks
    - Throw-away tasks are deleted after approval, perpetual tasks remain for future completion
-3. **Reward System**: Parents can create rewards, children can add rewards to their wishlist
-4. **Wishlist**: Children can add rewards to their wishlist, parents can approve them
+3. **Reward System**: Parents can create rewards
 
 ## Database Schema
 
@@ -44,7 +43,6 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 1. **users**: Stores user information (id, username, passcode, role, points)
 2. **tasks**: Stores tasks for children (id, description, points, child_id, parent_id, task_type, is_marked_complete)
 3. **rewards**: Stores rewards created by parents (id, description, points, parent_id)
-4. **wishlist**: Stores children's wishlist items (id, reward_id, child_id, approved)
 
 ## API Endpoints
 
@@ -62,12 +60,6 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 ### Rewards
 - `GET /api/rewards`: Gets rewards for a parent
 - `POST /api/rewards`: Creates a new reward (parent-only)
-
-### Wishlist
-- `GET /api/wishlist`: Gets wishlist items for a specific child or the authenticated child
-- `POST /api/wishlist`: Adds a new wishlist item with a description
-- `POST /api/wishlist/[id]/approve`: Approves a wishlist item and creates a reward
-- `POST /api/wishlist/[id]/reject`: Rejects a wishlist item
 
 ## Setup and Development
 
@@ -101,10 +93,8 @@ The application is functional with the core features implemented:
 - User authentication with role-based access
 - Task management system for children with parent approval
 - Reward creation and management for parents
-- Wishlist functionality for children to request rewards
 
 The app has completed the following tasks:
-- Implemented notifications for task completion and wishlist updates
 - Added responsive design for mobile and desktop
 - Completed PRD documentation
 - Added comprehensive API documentation

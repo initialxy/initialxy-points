@@ -7,7 +7,6 @@
 - **Project Goals:**
   - Implement a passcode-based authentication system
   - Create a system for parents to assign tasks and rewards
-  - Allow children to submit reward wishlists and redeem points
   - Provide visibility of points for both parents and children
 
 ## 2. Features
@@ -17,8 +16,6 @@
 - [x] Two types of users: parents (admins) and children
 - [x] Parents can create tasks (throw-away or perpetual) and define points for completion
 - [x] Parents can define rewards and their point values
-- [x] children can submit reward wishlists with descriptions visible to parents
-- [x] Parents can approve/reject wishlist items, setting points for approved items
 - [x] children can redeem rewards with points (requires parent approval)
 - [x] Points visibility for parents and children
 
@@ -31,12 +28,10 @@
 ### 3.1 Parent User Stories
 - As a parent, I want to create tasks for my children so that they can earn points.
 - As a parent, I want to define rewards and their point values so that my children know what they can earn.
-- As a parent, I want to approve or reject my children' reward wishlist items so that I can control what rewards they get.
 - As a parent, I want to see all children' points so that I can track their progress.
 
 ### 3.2 child User Stories
 - As a child, I want to see my tasks and earn points by completing them.
-- As a child, I want to submit a wishlist of rewards I'd like to have.
 - As a child, I want to see my points so that I know how many rewards I can get.
 - As a child, I want to redeem points for rewards and get parent approval.
 
@@ -56,8 +51,6 @@
 - [x] POST /api/tasks (Create tasks for children)
 - [x] GET /api/rewards (Get available rewards)
 - [x] POST /api/rewards (Create rewards)
-- [x] GET /api/wishlist (Get children' wishlist)
-- [x] POST /api/wishlist (Submit wishlist items)
 - [x] POST /api/redeem (Redeem points for rewards)
 - [x] GET /api/points (Get points for all children)
 - [x] POST /api/tasks/[id]/mark_complete (Mark task as completed by child)

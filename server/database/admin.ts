@@ -13,8 +13,7 @@ async function initializeDatabase(db: Database): Promise<Database> {
   if (
     !tableNames.includes('users') ||
     !tableNames.includes('tasks') ||
-    !tableNames.includes('rewards') ||
-    !tableNames.includes('wishlist')
+    !tableNames.includes('rewards')
   ) {
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
@@ -43,15 +42,6 @@ async function initializeDatabase(db: Database): Promise<Database> {
         points INTEGER NOT NULL,
         parent_id INTEGER,
         FOREIGN KEY(parent_id) REFERENCES users(id)
-      );
-
-      CREATE TABLE IF NOT EXISTS wishlist (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        child_id INTEGER,
-        description TEXT NOT NULL,
-        points INTEGER,
-        status TEXT CHECK(status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
-        FOREIGN KEY(child_id) REFERENCES users(id)
       );
     `)
   }

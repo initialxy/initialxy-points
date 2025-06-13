@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="text-2xl font-bold mb-4">Child Dashboard</h2>
-    <p class="mb-6">View your points, tasks, rewards, and wishlist items.</p>
+    <p class="mb-6">View your points, tasks, and rewards.</p>
 
     <UCard class="mb-8">
       <template #header>
@@ -61,35 +61,6 @@
         <p v-else class="text-gray-500">No rewards available.</p>
       </template>
     </UCard>
-
-    <UCard>
-      <template #header>
-        <h3 class="text-xl font-semibold">Wishlist</h3>
-      </template>
-      <template #default>
-        <ul v-if="wishlistData?.wishlist.length ?? 0 > 0" class="space-y-4">
-          <li
-            v-for="item in wishlistData?.wishlist"
-            :key="item.id"
-            class="p-4 bg-gray-100 rounded-lg shadow-sm"
-          >
-            <div class="font-semibold">
-              {{ item.description }} - {{ item.points }} points
-            </div>
-            <span v-if="item.status === 'pending'" class="text-orange-500"
-              >(Pending)</span
-            >
-            <span v-if="item.status === 'approved'" class="text-green-500"
-              >(Approved)</span
-            >
-            <span v-if="item.status === 'rejected'" class="text-red-500"
-              >(Rejected)</span
-            >
-          </li>
-        </ul>
-        <p v-else class="text-gray-500">Your wishlist is empty.</p>
-      </template>
-    </UCard>
   </div>
 </template>
 
@@ -97,7 +68,6 @@
 import type {
   TasksResponse,
   RewardsResponse,
-  WishlistResponse,
   User,
 } from '~/types'
 
@@ -108,8 +78,6 @@ const { data: tasksData, refresh: tasksRefresh } =
   await useFetch<TasksResponse>('/api/tasks')
 
 const { data: rewardsData } = await useFetch<RewardsResponse>('/api/rewards')
-
-const { data: wishlistData } = await useFetch<WishlistResponse>('/api/wishlist')
 
 const markTaskComplete = async (taskId: number) => {
   try {

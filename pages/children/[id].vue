@@ -12,24 +12,6 @@
       <template #default>
         <p>Points: {{ data.points }}</p>
 
-        <h4 class="mt-4 text-lg font-semibold">Wishlist Items</h4>
-        <ul v-if="wishlistData?.wishlist.length ?? 0 > 0" class="space-y-4">
-          <li
-            v-for="item in wishlistData.wishlist"
-            :key="item.id"
-            class="p-4 bg-gray-100 rounded-lg shadow-sm"
-          >
-            {{ item.description }} ({{ item.status }})
-          </li>
-        </ul>
-        <p v-else-if="wishlistStatus === 'pending'" class="text-gray-500">
-          Loading wishlist...
-        </p>
-        <p v-else-if="wishlistError" class="text-red-500">
-          {{ wishlistError.message }}
-        </p>
-        <p v-else class="text-gray-500">No wishlist items</p>
-
         <h4 class="mt-4 text-lg font-semibold">Rewards</h4>
         <ul v-if="rewardsData?.rewards.length ?? 0 > 0" class="space-y-4">
           <li
@@ -64,7 +46,6 @@
 import { useRoute } from 'vue-router'
 import type {
   User,
-  WishlistResponse,
   RewardsResponse,
   UserResponse,
 } from '~/types'
@@ -74,12 +55,6 @@ const childId = route.params.id
 const { data, error, status } = await useFetch<UserResponse>(
   `/api/users/${childId}`
 )
-
-const {
-  data: wishlistData,
-  error: wishlistError,
-  status: wishlistStatus,
-} = await useFetch<WishlistResponse>(`/api/wishlist?child_id=${childId}`)
 
 const {
   data: rewardsData,

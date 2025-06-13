@@ -22,14 +22,6 @@ export type Reward = {
   parent_id: number
 }
 
-export type WishlistItem = {
-  id: number
-  child_id: number
-  description: string
-  points?: number
-  status: 'pending' | 'approved' | 'rejected'
-}
-
 export type CreatedIdResponseBody = {
   message: string
   createdId: number
@@ -46,10 +38,6 @@ export type TasksResponse = {
 
 export type RewardsResponse = {
   rewards: Reward[]
-}
-
-export type WishlistResponse = {
-  wishlist: WishlistItem[]
 }
 
 export type UsersResponse = {

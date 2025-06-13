@@ -59,18 +59,6 @@
             <div class="font-semibold">
               {{ child.username }} - {{ child.points }} points
             </div>
-            <ul
-              v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0"
-              class="mt-2 space-y-2"
-            >
-              <li
-                v-for="wish in childWishlists.get(child.child_id)"
-                :key="wish.id"
-                class="text-sm"
-              >
-                {{ wish.description }} ({{ wish.status }})
-              </li>
-            </ul>
           </li>
         </ul>
         <p v-else-if="status === 'pending'" class="text-gray-500">
@@ -114,8 +102,6 @@
 <script setup lang="ts">
 import type {
   UsersResponse,
-  WishlistItem,
-  WishlistResponse,
   Task,
 } from '~/types'
 import { ref, watch, computed } from 'vue'
@@ -123,8 +109,6 @@ import { useFetch } from '#imports'
 import * as z from 'zod'
 
 const { data, error, status } = await useFetch<UsersResponse>('/api/users')
-
-const childWishlists = ref<Map<number, WishlistItem[]>>(new Map())
 
 const navigateToChild = (childId: number) => {
   navigateTo(`/children/${childId}`)
@@ -136,14 +120,7 @@ watch(
     if (newData) {
       for (const user of newData.users) {
         if (user.role === 'child') {
-          try {
-            const response = await $fetch<WishlistResponse>(
-              `/api/wishlist?child_id=${user.id}`
-            )
-            childWishlists.value.set(user.id, response.wishlist)
-          } catch (err) {
-            console.error(`Error fetching wishlist for child ${user.id}:`, err)
-          }
+          // Should fetch children's tasks and rewards
         }
       }
     }
