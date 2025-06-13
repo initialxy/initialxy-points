@@ -2,17 +2,16 @@
   <UContainer>
     <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">My Wishlist</h1>
 
-    <Notification
-      v-if="notification"
-      :message="notification.message"
-      :type="notification.type"
-    />
-
     <UCard class="mb-8">
       <template #header>
         <h2 class="text-xl font-semibold">Add to Wishlist</h2>
       </template>
-      <UForm :schema="wishlistSchema" :state="description" class="space-y-4" @submit="addToWishlist">
+      <UForm
+        :schema="wishlistSchema"
+        :state="description"
+        class="space-y-4"
+        @submit="addToWishlist"
+      >
         <UFormField label="Description" name="description">
           <UInput v-model="description" class="w-full" />
         </UFormField>
@@ -28,14 +27,22 @@
       </template>
       <template #default>
         <ul v-if="data?.wishlist.length ?? 0 > 0" class="space-y-4">
-          <li v-for="item in data.wishlist" :key="item.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+          <li
+            v-for="item in data.wishlist"
+            :key="item.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
             <h3 class="font-semibold">{{ item.description }}</h3>
             <p>Status: {{ item.status }}</p>
             <p v-if="item.status === 'pending'" class="mt-2 space-x-2">
               <UButton size="sm" @click="approveItem(item.id)">Approve</UButton>
-              <UButton size="sm" color="error" @click="rejectItem(item.id)">Reject</UButton>
+              <UButton size="sm" color="error" @click="rejectItem(item.id)"
+                >Reject</UButton
+              >
             </p>
-            <p v-if="item.status === 'approved'" class="mt-2">Points: {{ item.points }}</p>
+            <p v-if="item.status === 'approved'" class="mt-2">
+              Points: {{ item.points }}
+            </p>
           </li>
         </ul>
         <p v-else-if="status === 'pending'" class="text-gray-500">Loading...</p>
@@ -47,13 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import type { WishlistResponse, Notification, WishlistItem } from '~/types'
+import type { WishlistResponse, WishlistItem } from '~/types'
 import { ref } from 'vue'
 import { useFetch } from '#imports'
 import * as z from 'zod'
+import { useToast } from '#imports'
+
+const toast = useToast()
 
 const description = ref('')
-const notification = ref<Notification | null>(null)
 const points = ref(0)
 const isLoading = ref(false)
 
@@ -82,22 +91,17 @@ const addToWishlist = async () => {
     description.value = ''
     await refresh()
 
-    // Show notification
-    notification.value = {
-      message: 'Item added to wishlist successfully!',
-      type: 'success',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: 'Item added to wishlist successfully!',
+      color: 'success',
+    })
   } catch (err) {
     console.error('Error adding to wishlist:', err)
-    notification.value = {
-      message: 'Failed to add to wishlist. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Failed to add to wishlist. Please try again.',
+      color: 'error',
+    })
   } finally {
     isLoading.value = false
   }
@@ -112,16 +116,16 @@ const approveItem = async (id: number) => {
       body: { points: points.value },
     })
     await refresh()
-    notification.value = {
-      message: 'Item approved successfully!',
-      type: 'success',
-    }
+    toast.add({
+      title: 'Item approved successfully!',
+      color: 'success',
+    })
   } catch (err) {
     console.error('Error approving item:', err)
-    notification.value = {
-      message: 'Failed to approve item. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Failed to approve item. Please try again.',
+      color: 'error',
+    })
   } finally {
     isLoading.value = false
   }
@@ -135,21 +139,18 @@ const rejectItem = async (id: number) => {
       method: 'POST',
     })
     await refresh()
-    notification.value = {
-      message: 'Item rejected successfully!',
-      type: 'success',
-    }
+    toast.add({
+      title: 'Item rejected successfully!',
+      color: 'success',
+    })
   } catch (err) {
     console.error('Error rejecting item:', err)
-    notification.value = {
-      message: 'Failed to reject item. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Failed to reject item. Please try again.',
+      color: 'error',
+    })
   } finally {
     isLoading.value = false
   }
 }
 </script>
-
-<style scoped>
-</style>

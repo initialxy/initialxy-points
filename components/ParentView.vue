@@ -7,18 +7,35 @@
       <template #header>
         <h3 class="text-xl font-semibold">Create Task</h3>
       </template>
-      <UForm :schema="taskSchema" :state="newTask" class="space-y-4" @submit="createTask">
+      <UForm
+        :schema="taskSchema"
+        :state="newTask"
+        class="space-y-4"
+        @submit="createTask"
+      >
         <UFormField label="Task Description" name="description">
           <UInput v-model="newTask.description" class="w-full" />
         </UFormField>
         <UFormField label="Points" name="points">
-          <UInput v-model.number="newTask.points" type="number" class="w-full" />
+          <UInput
+            v-model.number="newTask.points"
+            type="number"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Child" name="kid_id">
-          <USelect v-model="newTask.kid_id" :options="childOptions" class="w-full" />
+          <USelect
+            v-model="newTask.kid_id"
+            :options="childOptions"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Task Type" name="task_type">
-          <USelect v-model="newTask.task_type" :options="taskTypeOptions" class="w-full" />
+          <USelect
+            v-model="newTask.task_type"
+            :options="taskTypeOptions"
+            class="w-full"
+          />
         </UFormField>
         <UButton type="submit" color="primary" :disabled="newTask.isLoading">
           Create Task
@@ -39,15 +56,26 @@
             class="p-4 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-colors cursor-pointer"
             @click="navigateToChild(child.child_id)"
           >
-            <div class="font-semibold">{{ child.username }} - {{ child.points }} points</div>
-            <ul v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0" class="mt-2 space-y-2">
-              <li v-for="wish in childWishlists.get(child.child_id)" :key="wish.id" class="text-sm">
+            <div class="font-semibold">
+              {{ child.username }} - {{ child.points }} points
+            </div>
+            <ul
+              v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0"
+              class="mt-2 space-y-2"
+            >
+              <li
+                v-for="wish in childWishlists.get(child.child_id)"
+                :key="wish.id"
+                class="text-sm"
+              >
                 {{ wish.description }} ({{ wish.status }})
               </li>
             </ul>
           </li>
         </ul>
-        <p v-else-if="status === 'pending'" class="text-gray-500">Loading children data...</p>
+        <p v-else-if="status === 'pending'" class="text-gray-500">
+          Loading children data...
+        </p>
         <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
         <p v-else class="text-gray-500">No children found.</p>
       </template>
@@ -59,11 +87,20 @@
       </template>
       <template #default>
         <ul v-if="tasks.length > 0" class="space-y-4">
-          <li v-for="task in tasks" :key="task.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
-            <div class="font-semibold">{{ task.description }} ({{ task.task_type }}) - {{ task.points }} points</div>
+          <li
+            v-for="task in tasks"
+            :key="task.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
+            <div class="font-semibold">
+              {{ task.description }} ({{ task.task_type }}) -
+              {{ task.points }} points
+            </div>
             <div v-if="task.is_marked_complete" class="mt-2 space-x-2">
               <UButton size="sm" @click="approveTask(task.id)">Approve</UButton>
-              <UButton size="sm" color="red" @click="rejectTask(task.id)">Reject</UButton>
+              <UButton size="sm" color="red" @click="rejectTask(task.id)"
+                >Reject</UButton
+              >
             </div>
             <div v-else class="text-gray-500 mt-2">(Not completed)</div>
           </li>
@@ -140,7 +177,10 @@ const taskError = ref('')
 const taskSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   points: z.number().min(1, 'Points must be at least 1'),
-  kid_id: z.number().nullable().refine((val) => val !== null, 'Child is required'),
+  kid_id: z
+    .number()
+    .nullable()
+    .refine((val) => val !== null, 'Child is required'),
   task_type: z.enum(['throw-away', 'perpetual']),
 })
 
@@ -224,5 +264,4 @@ const taskTypeOptions = [
 ]
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

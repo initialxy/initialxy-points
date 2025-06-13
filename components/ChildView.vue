@@ -19,14 +19,23 @@
       </template>
       <template #default>
         <ul v-if="tasksData?.tasks.length ?? 0 > 0" class="space-y-4">
-          <li v-for="task in tasksData?.tasks" :key="task.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
-            <div class="font-semibold">{{ task.points }} points - {{ task.description }}</div>
+          <li
+            v-for="task in tasksData?.tasks"
+            :key="task.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
+            <div class="font-semibold">
+              {{ task.points }} points - {{ task.description }}
+            </div>
             <span
               v-if="!task.is_marked_complete"
               class="text-blue-500 cursor-pointer"
               @click="markTaskComplete(task.id)"
-            >Complete</span>
-            <span v-else class="text-orange-500">(Completed - Awaiting Approval)</span>
+              >Complete</span
+            >
+            <span v-else class="text-orange-500"
+              >(Completed - Awaiting Approval)</span
+            >
           </li>
         </ul>
         <p v-else class="text-gray-500">No tasks available.</p>
@@ -39,8 +48,14 @@
       </template>
       <template #default>
         <ul v-if="rewardsData?.rewards.length ?? 0 > 0" class="space-y-4">
-          <li v-for="reward in rewardsData?.rewards" :key="reward.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
-            <div class="font-semibold">{{ reward.points }} points - {{ reward.description }}</div>
+          <li
+            v-for="reward in rewardsData?.rewards"
+            :key="reward.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
+            <div class="font-semibold">
+              {{ reward.points }} points - {{ reward.description }}
+            </div>
           </li>
         </ul>
         <p v-else class="text-gray-500">No rewards available.</p>
@@ -53,11 +68,23 @@
       </template>
       <template #default>
         <ul v-if="wishlistData?.wishlist.length ?? 0 > 0" class="space-y-4">
-          <li v-for="item in wishlistData?.wishlist" :key="item.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
-            <div class="font-semibold">{{ item.description }} - {{ item.points }} points</div>
-            <span v-if="item.status === 'pending'" class="text-orange-500">(Pending)</span>
-            <span v-if="item.status === 'approved'" class="text-green-500">(Approved)</span>
-            <span v-if="item.status === 'rejected'" class="text-red-500">(Rejected)</span>
+          <li
+            v-for="item in wishlistData?.wishlist"
+            :key="item.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
+            <div class="font-semibold">
+              {{ item.description }} - {{ item.points }} points
+            </div>
+            <span v-if="item.status === 'pending'" class="text-orange-500"
+              >(Pending)</span
+            >
+            <span v-if="item.status === 'approved'" class="text-green-500"
+              >(Approved)</span
+            >
+            <span v-if="item.status === 'rejected'" class="text-red-500"
+              >(Rejected)</span
+            >
           </li>
         </ul>
         <p v-else class="text-gray-500">Your wishlist is empty.</p>
@@ -96,5 +123,4 @@ const markTaskComplete = async (taskId: number) => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

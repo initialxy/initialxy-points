@@ -1,17 +1,28 @@
 <template>
   <UContainer>
-    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Manage Rewards</h1>
+    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+      Manage Rewards
+    </h1>
 
     <UCard class="mb-8">
       <template #header>
         <h2 class="text-xl font-semibold">Create New Reward</h2>
       </template>
-      <UForm :schema="rewardSchema" :state="newReward" class="space-y-4" @submit="createReward">
+      <UForm
+        :schema="rewardSchema"
+        :state="newReward"
+        class="space-y-4"
+        @submit="createReward"
+      >
         <UFormField label="Description" name="description">
           <UInput v-model="newReward.description" class="w-full" />
         </UFormField>
         <UFormField label="Points" name="points">
-          <UInput v-model.number="newReward.points" type="number" class="w-full" />
+          <UInput
+            v-model.number="newReward.points"
+            type="number"
+            class="w-full"
+          />
         </UFormField>
         <UButton type="submit" color="primary" :disabled="newReward.isLoading">
           Create Reward
@@ -27,7 +38,11 @@
         <div v-if="status === 'pending'" class="text-gray-500">Loading...</div>
         <div v-else-if="error" class="text-red-500">{{ error.message }}</div>
         <ul v-if="data && data.rewards.length > 0" class="space-y-4">
-          <li v-for="reward in data.rewards" :key="reward.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+          <li
+            v-for="reward in data.rewards"
+            :key="reward.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
             <h3 class="font-semibold">{{ reward.description }}</h3>
             <p>Points: {{ reward.points }}</p>
           </li>
@@ -77,5 +92,4 @@ const createReward = async () => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -2,12 +2,6 @@
   <UContainer>
     <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Tasks</h1>
 
-    <Notification
-      v-if="notification"
-      :message="notification.message"
-      :type="notification.type"
-    />
-
     <div v-if="status === 'pending'" class="text-gray-500">Loading...</div>
     <div v-else-if="error" class="text-red-500">{{ error.message }}</div>
 
@@ -16,18 +10,35 @@
       <template #header>
         <h2 class="text-xl font-semibold">Create Task</h2>
       </template>
-      <UForm :schema="taskSchema" :state="newTask" class="space-y-4" @submit="createTask">
+      <UForm
+        :schema="taskSchema"
+        :state="newTask"
+        class="space-y-4"
+        @submit="createTask"
+      >
         <UFormField label="Task Description" name="description">
           <UInput v-model="newTask.description" class="w-full" />
         </UFormField>
         <UFormField label="Points" name="points">
-          <UInput v-model.number="newTask.points" type="number" class="w-full" />
+          <UInput
+            v-model.number="newTask.points"
+            type="number"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Child" name="kid_id">
-          <USelect v-model="newTask.kid_id" :options="childOptions" class="w-full" />
+          <USelect
+            v-model="newTask.kid_id"
+            :options="childOptions"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Task Type" name="task_type">
-          <USelect v-model="newTask.task_type" :options="taskTypeOptions" class="w-full" />
+          <USelect
+            v-model="newTask.task_type"
+            :options="taskTypeOptions"
+            class="w-full"
+          />
         </UFormField>
         <UButton type="submit" color="primary" :disabled="newTask.isLoading">
           Create Task
@@ -43,22 +54,41 @@
       </template>
       <template #default>
         <ul v-if="tasks?.length ?? 0 > 0" class="space-y-4">
-          <li v-for="task in tasks" :key="task.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+          <li
+            v-for="task in tasks"
+            :key="task.id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm"
+          >
             <h2 class="font-semibold">{{ task.description }}</h2>
             <p>Points: {{ task.points }}</p>
             <p>Type: {{ task.task_type }}</p>
 
             <!-- Actions based on user role -->
-            <div v-if="user?.role === 'child' && !task.is_marked_complete" class="mt-2">
-              <UButton size="sm" @click="markTaskComplete(task.id)">Complete</UButton>
+            <div
+              v-if="user?.role === 'child' && !task.is_marked_complete"
+              class="mt-2"
+            >
+              <UButton size="sm" @click="markTaskComplete(task.id)"
+                >Complete</UButton
+              >
             </div>
-            <div v-else-if="user?.role === 'parent' && task.is_marked_complete" class="mt-2 space-x-2">
+            <div
+              v-else-if="user?.role === 'parent' && task.is_marked_complete"
+              class="mt-2 space-x-2"
+            >
               <UButton size="sm" @click="approveTask(task.id)">Approve</UButton>
-              <UButton size="sm" color="error" @click="rejectTask(task.id)">Reject</UButton>
+              <UButton size="sm" color="error" @click="rejectTask(task.id)"
+                >Reject</UButton
+              >
             </div>
-            <div v-else-if="user?.role === 'parent' && !task.is_marked_complete" class="mt-2 space-x-2">
+            <div
+              v-else-if="user?.role === 'parent' && !task.is_marked_complete"
+              class="mt-2 space-x-2"
+            >
               <UButton size="sm" @click="editTask(task)">Edit</UButton>
-              <UButton size="sm" color="error" @click="deleteTask(task.id)">Delete</UButton>
+              <UButton size="sm" color="error" @click="deleteTask(task.id)"
+                >Delete</UButton
+              >
             </div>
             <div v-else class="mt-2">
               <UButton disabled>Completed (Awaiting Approval)</UButton>
@@ -74,15 +104,28 @@
       <template #header>
         <h2 class="text-xl font-semibold">Edit Task</h2>
       </template>
-      <UForm :schema="taskSchema" :state="editingTask" class="space-y-4" @submit="updateTask">
+      <UForm
+        :schema="taskSchema"
+        :state="editingTask"
+        class="space-y-4"
+        @submit="updateTask"
+      >
         <UFormField label="Task Description" name="description">
           <UInput v-model="editingTask.description" class="w-full" />
         </UFormField>
         <UFormField label="Points" name="points">
-          <UInput v-model.number="editingTask.points" type="number" class="w-full" />
+          <UInput
+            v-model.number="editingTask.points"
+            type="number"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Task Type" name="task_type">
-          <USelect v-model="editingTask.task_type" :options="taskTypeOptions" class="w-full" />
+          <USelect
+            v-model="editingTask.task_type"
+            :options="taskTypeOptions"
+            class="w-full"
+          />
         </UFormField>
         <div class="space-x-2">
           <UButton type="submit" color="primary">Update Task</UButton>
@@ -94,15 +137,18 @@
 </template>
 
 <script setup lang="ts">
-import type { Task, Notification, User } from '~/types'
+import type { Task, User } from '~/types'
 import { ref, computed } from 'vue'
 import { useFetch } from '#imports'
 import * as z from 'zod'
+import { useToast } from '#imports'
+
+const toast = useToast()
 
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
 
-const notification = ref<Notification | null>(null)
+const notification = ref<{ message: string; type: string } | null>(null)
 
 // Fetch tasks data using useFetch directly in setup
 const {
@@ -131,7 +177,10 @@ const taskError = ref('')
 const taskSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   points: z.number().min(1, 'Points must be at least 1'),
-  kid_id: z.number().nullable().refine((val) => val !== null, 'Child is required'),
+  kid_id: z
+    .number()
+    .nullable()
+    .refine((val) => val !== null, 'Child is required'),
   task_type: z.enum(['throw-away', 'perpetual']),
 })
 
@@ -160,16 +209,11 @@ const createTask = async () => {
 
     taskError.value = ''
 
-    // Show notification
-    notification.value = {
-      message: `Task created successfully with ID: ${response.id}`,
-      type: 'success',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task created successfully with ID: ${response.id}`,
+      color: 'green',
+    })
 
     // Refresh the task list
     await refresh()
@@ -187,25 +231,20 @@ const markTaskComplete = async (taskId: number) => {
       method: 'POST',
     })
 
-    // Show notification
-    notification.value = {
-      message: `Task marked as completed. Awaiting parent approval.`,
-      type: 'info',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task marked as completed. Awaiting parent approval.`,
+      color: 'blue',
+    })
 
     // Refresh the task list
     await refresh()
   } catch (err) {
     console.error('Error completing task:', err)
-    notification.value = {
-      message: 'Error completing task. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Error completing task. Please try again.',
+      color: 'red',
+    })
   }
 }
 
@@ -215,25 +254,20 @@ const approveTask = async (taskId: number) => {
       method: 'POST',
     })
 
-    // Show notification
-    notification.value = {
-      message: `Task completion approved. Points awarded.`,
-      type: 'success',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task completion approved. Points awarded.`,
+      color: 'green',
+    })
 
     // Refresh the task list
     await refresh()
   } catch (err) {
     console.error('Error approving task:', err)
-    notification.value = {
-      message: 'Error approving task. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Error approving task. Please try again.',
+      color: 'red',
+    })
   }
 }
 
@@ -243,25 +277,20 @@ const rejectTask = async (taskId: number) => {
       method: 'POST',
     })
 
-    // Show notification
-    notification.value = {
-      message: `Task completion rejected.`,
-      type: 'info',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task completion rejected.`,
+      color: 'blue',
+    })
 
     // Refresh the task list
     await refresh()
   } catch (err) {
     console.error('Error rejecting task:', err)
-    notification.value = {
-      message: 'Error rejecting task. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Error rejecting task. Please try again.',
+      color: 'red',
+    })
   }
 }
 
@@ -285,16 +314,11 @@ const updateTask = async () => {
       },
     })
 
-    // Show notification
-    notification.value = {
-      message: `Task updated successfully.`,
-      type: 'success',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task updated successfully.`,
+      color: 'green',
+    })
 
     // Reset editing state
     editingTask.value = null
@@ -303,10 +327,10 @@ const updateTask = async () => {
     await refresh()
   } catch (err) {
     console.error('Error updating task:', err)
-    notification.value = {
-      message: 'Error updating task. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Error updating task. Please try again.',
+      color: 'red',
+    })
   }
 }
 
@@ -323,25 +347,20 @@ const deleteTask = async (taskId: number) => {
       method: 'DELETE',
     })
 
-    // Show notification
-    notification.value = {
-      message: `Task deleted successfully.`,
-      type: 'success',
-    }
-
-    // Clear notification after 3 seconds
-    setTimeout(() => {
-      notification.value = null
-    }, 3000)
+    // Show toast
+    toast.add({
+      title: `Task deleted successfully.`,
+      color: 'green',
+    })
 
     // Refresh the task list
     await refresh()
   } catch (err) {
     console.error('Error deleting task:', err)
-    notification.value = {
-      message: 'Error deleting task. Please try again.',
-      type: 'error',
-    }
+    toast.add({
+      title: 'Error deleting task. Please try again.',
+      color: 'red',
+    })
   }
 }
 

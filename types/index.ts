@@ -59,8 +59,3 @@ export type UsersResponse = {
 export type UserResponse = {
   user: User
 }
-
-export type Notification = {
-  message: string
-  type: string
-}
