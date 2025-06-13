@@ -1,46 +1,61 @@
 <template>
-  <div>
-    <h1>My Wishlist</h1>
+  <UContainer>
+    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">My Wishlist</h1>
+
     <Notification
       v-if="notification"
       :message="notification.message"
       :type="notification.type"
     />
-    <form @submit.prevent="addToWishlist">
-      <h2>Add to Wishlist</h2>
-      <div>
-        <label for="description">Description:</label>
-        <input v-model="description" type="text" id="description" required />
-      </div>
-      <button type="submit">Add to Wishlist</button>
-    </form>
 
-    <h2>Wishlist Items</h2>
-    <ul v-if="data?.wishlist.length ?? 0 > 0">
-      <li v-for="item in data.wishlist" :key="item.id">
-        <h3>{{ item.description }}</h3>
-        <p>Status: {{ item.status }}</p>
-        <p v-if="item.status === 'pending'">
-          <button @click="approveItem(item.id)">Approve</button>
-          <button @click="rejectItem(item.id)">Reject</button>
-        </p>
-        <p v-if="item.status === 'approved'">Points: {{ item.points }}</p>
-      </li>
-    </ul>
-    <p v-else-if="status === 'pending'">Loading...</p>
-    <p v-else-if="error">{{ error.message }}</p>
-    <p v-else>No wishlist items</p>
-  </div>
+    <UCard class="mb-8">
+      <template #header>
+        <h2 class="text-xl font-semibold">Add to Wishlist</h2>
+      </template>
+      <UForm :schema="wishlistSchema" :state="description" class="space-y-4" @submit="addToWishlist">
+        <UFormField label="Description" name="description">
+          <UInput v-model="description" class="w-full" />
+        </UFormField>
+        <UButton type="submit" color="primary" :disabled="isLoading">
+          Add to Wishlist
+        </UButton>
+      </UForm>
+    </UCard>
+
+    <UCard>
+      <template #header>
+        <h2 class="text-xl font-semibold">Wishlist Items</h2>
+      </template>
+      <template #default>
+        <ul v-if="data?.wishlist.length ?? 0 > 0" class="space-y-4">
+          <li v-for="item in data.wishlist" :key="item.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+            <h3 class="font-semibold">{{ item.description }}</h3>
+            <p>Status: {{ item.status }}</p>
+            <p v-if="item.status === 'pending'" class="mt-2 space-x-2">
+              <UButton size="sm" @click="approveItem(item.id)">Approve</UButton>
+              <UButton size="sm" color="error" @click="rejectItem(item.id)">Reject</UButton>
+            </p>
+            <p v-if="item.status === 'approved'" class="mt-2">Points: {{ item.points }}</p>
+          </li>
+        </ul>
+        <p v-else-if="status === 'pending'" class="text-gray-500">Loading...</p>
+        <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
+        <p v-else class="text-gray-500">No wishlist items</p>
+      </template>
+    </UCard>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
 import type { WishlistResponse, Notification, WishlistItem } from '~/types'
 import { ref } from 'vue'
 import { useFetch } from '#imports'
+import * as z from 'zod'
 
 const description = ref('')
 const notification = ref<Notification | null>(null)
 const points = ref(0)
+const isLoading = ref(false)
 
 type WishlistData = {
   wishlist: WishlistItem[]
@@ -50,7 +65,13 @@ type WishlistData = {
 const { data, error, status, refresh } =
   await useFetch<WishlistResponse>('/api/wishlist')
 
+const wishlistSchema = z.object({
+  description: z.string().min(1, 'Description is required'),
+})
+
 const addToWishlist = async () => {
+  isLoading.value = true
+
   try {
     await $fetch('/api/wishlist', {
       method: 'POST',
@@ -77,10 +98,14 @@ const addToWishlist = async () => {
       message: 'Failed to add to wishlist. Please try again.',
       type: 'error',
     }
+  } finally {
+    isLoading.value = false
   }
 }
 
 const approveItem = async (id: number) => {
+  isLoading.value = true
+
   try {
     await $fetch(`/api/wishlist/${id}/approve`, {
       method: 'POST',
@@ -97,10 +122,14 @@ const approveItem = async (id: number) => {
       message: 'Failed to approve item. Please try again.',
       type: 'error',
     }
+  } finally {
+    isLoading.value = false
   }
 }
 
 const rejectItem = async (id: number) => {
+  isLoading.value = true
+
   try {
     await $fetch(`/api/wishlist/${id}/reject`, {
       method: 'POST',
@@ -116,93 +145,11 @@ const rejectItem = async (id: number) => {
       message: 'Failed to reject item. Please try again.',
       type: 'error',
     }
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
 
 <style scoped>
-h1,
-h2,
-h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-form div {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 2rem;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  h1,
-  h2,
-  h3 {
-    font-size: 1.2rem;
-  }
-
-  p {
-    font-size: 0.9rem;
-  }
-
-  input {
-    padding: 0.4rem;
-    font-size: 0.9rem;
-  }
-
-  button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1,
-  h2,
-  h3 {
-    font-size: 1rem;
-  }
-
-  p {
-    font-size: 0.8rem;
-  }
-
-  input {
-    padding: 0.3rem;
-    font-size: 0.8rem;
-  }
-
-  button {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
-  }
-}
 </style>

@@ -22,7 +22,6 @@
 
 <script setup lang="ts">
 import * as z from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
 
 const store = useStore()
 const toast = useToast()
@@ -40,12 +39,12 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-const onSubmit = async (event: FormSubmitEvent<Schema>) => {
+const onSubmit = async () => {
   state.isLoading = true
 
   try {
     await store.login(state.username, state.passcode)
-    return await navigateTo('/dashboard')
+    await navigateTo('/dashboard')
   } catch (error) {
     toast.add({ title: 'Something went wrong', progress: false })
   } finally {
@@ -54,4 +53,5 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

@@ -1,85 +1,76 @@
 <template>
   <div>
-    <h2>Parent Dashboard</h2>
-    <p>Manage your children's accounts and view their points.</p>
-    <div>
-      <h3>Create Task</h3>
-      <form @submit.prevent="createTask">
-        <div>
-          <label for="description">Task Description:</label>
-          <input
-            v-model="newTask.description"
-            type="text"
-            id="description"
-            required
-          />
-        </div>
-        <div>
-          <label for="points">Points:</label>
-          <input
-            v-model.number="newTask.points"
-            type="number"
-            id="points"
-            required
-          />
-        </div>
-        <div>
-          <label for="child">Child:</label>
-          <select v-model="newTask.kid_id" id="child" required>
-            <option v-for="child in children" :key="child.id" :value="child.id">
-              {{ child.username }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label for="taskType">Task Type:</label>
-          <select v-model="newTask.task_type" id="taskType" required>
-            <option value="throw-away">Throw-away (one-time)</option>
-            <option value="perpetual">Perpetual (recurring)</option>
-          </select>
-        </div>
-        <button type="submit">Create Task</button>
-      </form>
-      <p v-if="taskError">{{ taskError }}</p>
-    </div>
-    <div>
-      <h3>Children</h3>
-      <ul v-if="points.length > 0">
-        <li
-          v-for="child in points"
-          :key="child.child_id"
-          @click="navigateToChild(child.child_id)"
-        >
-          {{ child.username }} - {{ child.points }} points
-          <ul v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0">
-            <li
-              v-for="wish in childWishlists.get(child.child_id)"
-              :key="wish.id"
-            >
-              {{ wish.description }} ({{ wish.status }})
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <p v-else-if="status === 'pending'">Loading children data...</p>
-      <p v-else-if="error">{{ error.message }}</p>
-      <p v-else>No children found.</p>
-    </div>
-    <div v-if="user.role === 'parent'">
-      <h3>Manage Tasks</h3>
-      <ul v-if="tasks.length > 0">
-        <li v-for="task in tasks" :key="task.id">
-          {{ task.description }} ({{ task.task_type }}) -
-          {{ task.points }} points
-          <span v-if="task.is_marked_complete">
-            <button @click="approveTask(task.id)">Approve</button>
-            <button @click="rejectTask(task.id)">Reject</button>
-          </span>
-          <span v-else>(Not completed)</span>
-        </li>
-      </ul>
-      <p v-else>No tasks available for management.</p>
-    </div>
+    <h2 class="text-2xl font-bold mb-4">Parent Dashboard</h2>
+    <p class="mb-6">Manage your children's accounts and view their points.</p>
+
+    <UCard class="mb-8">
+      <template #header>
+        <h3 class="text-xl font-semibold">Create Task</h3>
+      </template>
+      <UForm :schema="taskSchema" :state="newTask" class="space-y-4" @submit="createTask">
+        <UFormField label="Task Description" name="description">
+          <UInput v-model="newTask.description" class="w-full" />
+        </UFormField>
+        <UFormField label="Points" name="points">
+          <UInput v-model.number="newTask.points" type="number" class="w-full" />
+        </UFormField>
+        <UFormField label="Child" name="kid_id">
+          <USelect v-model="newTask.kid_id" :options="childOptions" class="w-full" />
+        </UFormField>
+        <UFormField label="Task Type" name="task_type">
+          <USelect v-model="newTask.task_type" :options="taskTypeOptions" class="w-full" />
+        </UFormField>
+        <UButton type="submit" color="primary" :disabled="newTask.isLoading">
+          Create Task
+        </UButton>
+      </UForm>
+      <p v-if="taskError" class="text-red-500 mt-2">{{ taskError }}</p>
+    </UCard>
+
+    <UCard class="mb-8">
+      <template #header>
+        <h3 class="text-xl font-semibold">Children</h3>
+      </template>
+      <template #default>
+        <ul v-if="points.length > 0" class="space-y-4">
+          <li
+            v-for="child in points"
+            :key="child.child_id"
+            class="p-4 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-colors cursor-pointer"
+            @click="navigateToChild(child.child_id)"
+          >
+            <div class="font-semibold">{{ child.username }} - {{ child.points }} points</div>
+            <ul v-if="childWishlists.get(child.child_id)?.length ?? 0 > 0" class="mt-2 space-y-2">
+              <li v-for="wish in childWishlists.get(child.child_id)" :key="wish.id" class="text-sm">
+                {{ wish.description }} ({{ wish.status }})
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p v-else-if="status === 'pending'" class="text-gray-500">Loading children data...</p>
+        <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
+        <p v-else class="text-gray-500">No children found.</p>
+      </template>
+    </UCard>
+
+    <UCard v-if="user.role === 'parent'">
+      <template #header>
+        <h3 class="text-xl font-semibold">Manage Tasks</h3>
+      </template>
+      <template #default>
+        <ul v-if="tasks.length > 0" class="space-y-4">
+          <li v-for="task in tasks" :key="task.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+            <div class="font-semibold">{{ task.description }} ({{ task.task_type }}) - {{ task.points }} points</div>
+            <div v-if="task.is_marked_complete" class="mt-2 space-x-2">
+              <UButton size="sm" @click="approveTask(task.id)">Approve</UButton>
+              <UButton size="sm" color="red" @click="rejectTask(task.id)">Reject</UButton>
+            </div>
+            <div v-else class="text-gray-500 mt-2">(Not completed)</div>
+          </li>
+        </ul>
+        <p v-else class="text-gray-500">No tasks available for management.</p>
+      </template>
+    </UCard>
   </div>
 </template>
 
@@ -92,6 +83,7 @@ import type {
 } from '~/types'
 import { ref, watch, computed } from 'vue'
 import { useFetch } from '#imports'
+import * as z from 'zod'
 
 const { data, error, status } = await useFetch<UsersResponse>('/api/users')
 
@@ -140,15 +132,25 @@ const newTask = ref({
   points: 0,
   kid_id: null as number | null,
   task_type: 'throw-away',
+  isLoading: false,
 })
 
 const taskError = ref('')
+
+const taskSchema = z.object({
+  description: z.string().min(1, 'Description is required'),
+  points: z.number().min(1, 'Points must be at least 1'),
+  kid_id: z.number().nullable().refine((val) => val !== null, 'Child is required'),
+  task_type: z.enum(['throw-away', 'perpetual']),
+})
 
 const createTask = async () => {
   if (!newTask.value.kid_id) {
     taskError.value = 'Please select a child for the task'
     return
   }
+
+  newTask.value.isLoading = true
 
   try {
     const response = await $fetch<Task>('/api/tasks', {
@@ -162,6 +164,7 @@ const createTask = async () => {
       points: 0,
       kid_id: null,
       task_type: 'throw-away',
+      isLoading: false,
     }
 
     taskError.value = ''
@@ -171,6 +174,8 @@ const createTask = async () => {
   } catch (err) {
     console.error('Error creating task:', err)
     taskError.value = 'Failed to create task. Please try again.'
+  } finally {
+    newTask.value.isLoading = false
   }
 }
 
@@ -205,86 +210,19 @@ const rejectTask = async (taskId: number) => {
     alert('Failed to reject task')
   }
 }
+
+const childOptions = computed(() =>
+  children.value.map((child) => ({
+    label: child.username,
+    value: child.id,
+  }))
+)
+
+const taskTypeOptions = [
+  { label: 'Throw-away (one-time)', value: 'throw-away' },
+  { label: 'Perpetual (recurring)', value: 'perpetual' },
+]
 </script>
 
 <style scoped>
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-h3 {
-  font-size: 1.25rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #555;
-}
-
-form {
-  max-width: 400px;
-  margin-bottom: 2rem;
-}
-
-form div {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input,
-select,
-button {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 0.5rem;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  transition:
-    background-color 0.3s,
-    transform 0.2s;
-}
-
-li:hover {
-  background-color: #e0f7fa;
-  transform: translateX(5px);
-}
-
-@media (max-width: 600px) {
-  ul {
-    padding: 0 1rem;
-  }
-}
 </style>

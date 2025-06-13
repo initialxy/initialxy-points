@@ -1,122 +1,103 @@
 <template>
-  <div>
-    <h1>Tasks</h1>
+  <UContainer>
+    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Tasks</h1>
+
     <Notification
       v-if="notification"
       :message="notification.message"
       :type="notification.type"
     />
-    <div v-if="status === 'pending'">Loading...</div>
-    <div v-else-if="error">{{ error.message }}</div>
+
+    <div v-if="status === 'pending'" class="text-gray-500">Loading...</div>
+    <div v-else-if="error" class="text-red-500">{{ error.message }}</div>
 
     <!-- Task creation form for parents -->
-    <div v-if="user?.role === 'parent'">
-      <h2>Create Task</h2>
-      <form @submit.prevent="createTask">
-        <div>
-          <label for="description">Task Description:</label>
-          <input
-            v-model="newTask.description"
-            type="text"
-            id="description"
-            required
-          />
-        </div>
-        <div>
-          <label for="points">Points:</label>
-          <input
-            v-model.number="newTask.points"
-            type="number"
-            id="points"
-            required
-          />
-        </div>
-        <div>
-          <label for="child">Child:</label>
-          <select v-model="newTask.kid_id" id="child" required>
-            <option v-for="child in children" :key="child.id" :value="child.id">
-              {{ child.username }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label for="taskType">Task Type:</label>
-          <select v-model="newTask.task_type" id="taskType" required>
-            <option value="throw-away">Throw-away (one-time)</option>
-            <option value="perpetual">Perpetual (recurring)</option>
-          </select>
-        </div>
-        <button type="submit">Create Task</button>
-      </form>
-      <p v-if="taskError">{{ taskError }}</p>
-    </div>
+    <UCard v-if="user?.role === 'parent'" class="mb-8">
+      <template #header>
+        <h2 class="text-xl font-semibold">Create Task</h2>
+      </template>
+      <UForm :schema="taskSchema" :state="newTask" class="space-y-4" @submit="createTask">
+        <UFormField label="Task Description" name="description">
+          <UInput v-model="newTask.description" class="w-full" />
+        </UFormField>
+        <UFormField label="Points" name="points">
+          <UInput v-model.number="newTask.points" type="number" class="w-full" />
+        </UFormField>
+        <UFormField label="Child" name="kid_id">
+          <USelect v-model="newTask.kid_id" :options="childOptions" class="w-full" />
+        </UFormField>
+        <UFormField label="Task Type" name="task_type">
+          <USelect v-model="newTask.task_type" :options="taskTypeOptions" class="w-full" />
+        </UFormField>
+        <UButton type="submit" color="primary" :disabled="newTask.isLoading">
+          Create Task
+        </UButton>
+      </UForm>
+      <p v-if="taskError" class="text-red-500 mt-2">{{ taskError }}</p>
+    </UCard>
 
     <!-- Task list -->
-    <ul v-if="tasks?.length ?? 0 > 0">
-      <li v-for="task in tasks" :key="task.id">
-        <h2>{{ task.description }}</h2>
-        <p>Points: {{ task.points }}</p>
-        <p>Type: {{ task.task_type }}</p>
+    <UCard>
+      <template #header>
+        <h2 class="text-xl font-semibold">Task List</h2>
+      </template>
+      <template #default>
+        <ul v-if="tasks?.length ?? 0 > 0" class="space-y-4">
+          <li v-for="task in tasks" :key="task.id" class="p-4 bg-gray-100 rounded-lg shadow-sm">
+            <h2 class="font-semibold">{{ task.description }}</h2>
+            <p>Points: {{ task.points }}</p>
+            <p>Type: {{ task.task_type }}</p>
 
-        <!-- Actions based on user role -->
-        <div v-if="user?.role === 'child' && !task.is_marked_complete">
-          <button @click="markTaskComplete(task.id)">Complete</button>
-        </div>
-        <div v-else-if="user?.role === 'parent' && task.is_marked_complete">
-          <button @click="approveTask(task.id)">Approve</button>
-          <button @click="rejectTask(task.id)">Reject</button>
-        </div>
-        <div v-else-if="user?.role === 'parent' && !task.is_marked_complete">
-          <button @click="editTask(task)">Edit</button>
-          <button @click="deleteTask(task.id)">Delete</button>
-        </div>
-        <div v-else>
-          <button disabled>Completed (Awaiting Approval)</button>
-        </div>
-      </li>
-    </ul>
-    <p v-else>No tasks available</p>
+            <!-- Actions based on user role -->
+            <div v-if="user?.role === 'child' && !task.is_marked_complete" class="mt-2">
+              <UButton size="sm" @click="markTaskComplete(task.id)">Complete</UButton>
+            </div>
+            <div v-else-if="user?.role === 'parent' && task.is_marked_complete" class="mt-2 space-x-2">
+              <UButton size="sm" @click="approveTask(task.id)">Approve</UButton>
+              <UButton size="sm" color="error" @click="rejectTask(task.id)">Reject</UButton>
+            </div>
+            <div v-else-if="user?.role === 'parent' && !task.is_marked_complete" class="mt-2 space-x-2">
+              <UButton size="sm" @click="editTask(task)">Edit</UButton>
+              <UButton size="sm" color="error" @click="deleteTask(task.id)">Delete</UButton>
+            </div>
+            <div v-else class="mt-2">
+              <UButton disabled>Completed (Awaiting Approval)</UButton>
+            </div>
+          </li>
+        </ul>
+        <p v-else class="text-gray-500">No tasks available</p>
+      </template>
+    </UCard>
 
     <!-- Task edit form for parents -->
-    <div v-if="user?.role === 'parent' && editingTask">
-      <h2>Edit Task</h2>
-      <form @submit.prevent="updateTask">
-        <div>
-          <label for="editDescription">Task Description:</label>
-          <input
-            v-model="editingTask.description"
-            type="text"
-            id="editDescription"
-            required
-          />
+    <UCard v-if="user?.role === 'parent' && editingTask" class="mt-8">
+      <template #header>
+        <h2 class="text-xl font-semibold">Edit Task</h2>
+      </template>
+      <UForm :schema="taskSchema" :state="editingTask" class="space-y-4" @submit="updateTask">
+        <UFormField label="Task Description" name="description">
+          <UInput v-model="editingTask.description" class="w-full" />
+        </UFormField>
+        <UFormField label="Points" name="points">
+          <UInput v-model.number="editingTask.points" type="number" class="w-full" />
+        </UFormField>
+        <UFormField label="Task Type" name="task_type">
+          <USelect v-model="editingTask.task_type" :options="taskTypeOptions" class="w-full" />
+        </UFormField>
+        <div class="space-x-2">
+          <UButton type="submit" color="primary">Update Task</UButton>
+          <UButton color="gray" @click="cancelEdit">Cancel</UButton>
         </div>
-        <div>
-          <label for="editPoints">Points:</label>
-          <input
-            v-model.number="editingTask.points"
-            type="number"
-            id="editPoints"
-            required
-          />
-        </div>
-        <div>
-          <label for="editTaskType">Task Type:</label>
-          <select v-model="editingTask.task_type" id="editTaskType" required>
-            <option value="throw-away">Throw-away (one-time)</option>
-            <option value="perpetual">Perpetual (recurring)</option>
-          </select>
-        </div>
-        <button type="submit">Update Task</button>
-        <button type="button" @click="cancelEdit">Cancel</button>
-      </form>
-    </div>
-  </div>
+      </UForm>
+    </UCard>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
 import type { Task, Notification, User } from '~/types'
 import { ref, computed } from 'vue'
 import { useFetch } from '#imports'
+import * as z from 'zod'
 
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
@@ -142,15 +123,25 @@ const newTask = ref({
   points: 0,
   kid_id: null as number | null,
   task_type: 'throw-away',
+  isLoading: false,
 })
 
 const taskError = ref('')
+
+const taskSchema = z.object({
+  description: z.string().min(1, 'Description is required'),
+  points: z.number().min(1, 'Points must be at least 1'),
+  kid_id: z.number().nullable().refine((val) => val !== null, 'Child is required'),
+  task_type: z.enum(['throw-away', 'perpetual']),
+})
 
 const createTask = async () => {
   if (!newTask.value.kid_id) {
     taskError.value = 'Please select a child for the task'
     return
   }
+
+  newTask.value.isLoading = true
 
   try {
     const response = await $fetch<Task>('/api/tasks', {
@@ -164,6 +155,7 @@ const createTask = async () => {
       points: 0,
       kid_id: null,
       task_type: 'throw-away',
+      isLoading: false,
     }
 
     taskError.value = ''
@@ -184,6 +176,8 @@ const createTask = async () => {
   } catch (err) {
     console.error('Error creating task:', err)
     taskError.value = 'Failed to create task. Please try again.'
+  } finally {
+    newTask.value.isLoading = false
   }
 }
 
@@ -350,98 +344,16 @@ const deleteTask = async (taskId: number) => {
     }
   }
 }
+
+const childOptions = computed(() =>
+  children.value.map((child) => ({
+    label: child.username,
+    value: child.id,
+  }))
+)
+
+const taskTypeOptions = [
+  { label: 'Throw-away (one-time)', value: 'throw-away' },
+  { label: 'Perpetual (recurring)', value: 'perpetual' },
+]
 </script>
-
-<style scoped>
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-form {
-  max-width: 400px;
-  margin-bottom: 2rem;
-}
-
-form div {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input,
-select,
-button {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 0.5rem;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-li {
-  margin-bottom: 2rem;
-}
-
-@media (max-width: 768px) {
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  p {
-    font-size: 0.9rem;
-  }
-
-  button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.2rem;
-  }
-
-  p {
-    font-size: 0.8rem;
-  }
-
-  button {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
-  }
-}
-</style>
