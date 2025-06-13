@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <h1>Dashboard</h1>
+  <UContainer>
+    <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
     <template v-if="isParent">
       <ParentView />
     </template>
     <template v-else>
       <ChildView />
     </template>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">

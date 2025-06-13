@@ -1,40 +1,8 @@
 <template>
-  <div>
-    <h1>Welcome to initialxy-points</h1>
-    <p>Track points earned by kids and redeem them for rewards.</p>
-  </div>
+  <UContainer>
+    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Welcome to initialxy-points</h1>
+    <p class="text-lg md:text-xl lg:text-2xl">Track points earned by kids and redeem them for rewards.</p>
+  </UContainer>
 </template>
 
 <script setup lang="ts"></script>
-
-<style scoped>
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-p {
-  font-size: 1.2rem;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  p {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.2rem;
-  }
-
-  p {
-    font-size: 0.9rem;
-  }
-}
-</style>
