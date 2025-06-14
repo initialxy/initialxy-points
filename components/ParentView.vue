@@ -17,16 +17,13 @@
       </div>
     </UCard>
   </div>
-  <USkeleton v-else-if="status === 'pending'" />
-  <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
-  <p v-else class="text-gray-500">No children found.</p>
+  <USkeleton v-else-if="childrenDataStatus === 'pending'" />
 </template>
 
 <script setup lang="ts">
 const {
   data: childrenData,
-  error,
-  status,
+  status: childrenDataStatus,
 } = await useFetch<UsersResponse>('/api/users')
 const { data: tasksData, refresh: tasksRefresh } =
   await useFetch<TasksResponse>('/api/tasks')

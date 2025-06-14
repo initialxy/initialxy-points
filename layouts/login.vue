@@ -1,6 +1,8 @@
 <template>
   <UContainer class="pt-4 md:pt-8" r>
-    <slot />
+    <div class="relative">
+      <slot />
+    </div>
   </UContainer>
 </template>
 

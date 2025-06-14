@@ -138,9 +138,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useFetch } from '#imports'
 import * as z from 'zod'
-import { useToast } from '#imports'
 
 const toast = useToast()
 

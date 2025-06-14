@@ -4,3 +4,5 @@
 @theme {
   --font-sans: Roboto, "sans-serif";
 }
+
+body { overflow-x:hidden; }

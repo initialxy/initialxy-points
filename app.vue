@@ -13,11 +13,18 @@ const { loggedIn } = useUserSession()
 <style>
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.4s;
+  transition: all 0.3s;
+  position: absolute;
+  width: 100%;
 }
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-  filter: blur(1rem);
+}
+.page-enter-from {
+  transform: translateX(10rem);
+}
+.page-leave-to {
+  transform: translateX(-10rem);
 }
 </style>

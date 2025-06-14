@@ -11,8 +11,10 @@
       </nav>
     </header>
     <main>
-      <UContainer class="pt-4 md:pt-8" r>
-        <slot />
+      <UContainer class="pt-4 md:pt-8">
+        <div class="relative">
+          <slot />
+        </div>
       </UContainer>
     </main>
   </div>
