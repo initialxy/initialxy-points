@@ -1,30 +1,30 @@
 <template>
-  <div>
+  <div v-if="loggedIn">
     <header>
       <nav>
         <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink to="/dashboard" v-if="loggedIn">Dashboard</NuxtLink>
-        <NuxtLink to="/tasks" v-if="loggedIn">Tasks</NuxtLink>
-        <NuxtLink to="/rewards" v-if="loggedIn">Rewards</NuxtLink>
-        <NuxtLink to="/login" v-if="!loggedIn">Login</NuxtLink>
-        <button @click="logoutClicked" v-if="loggedIn">Logout</button>
+        <NuxtLink to="/dashboard">Dashboard</NuxtLink>
+        <NuxtLink to="/tasks">Tasks</NuxtLink>
+        <NuxtLink to="/rewards">Rewards</NuxtLink>
+        <NuxtLink to="/login">Login</NuxtLink>
+        <button @click="logoutClicked">Logout</button>
       </nav>
     </header>
     <main>
-      <slot />
+      <UContainer class="pt-4 md:pt-8" r>
+        <slot />
+      </UContainer>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { User } from '~/types'
-
-const { user: sessionUser, loggedIn } = useUserSession()
-const user = sessionUser as Ref<User | null>
+const { loggedIn } = useUserSession()
 const store = useStore()
 
 const logoutClicked = async () => {
   await store.logout()
+  await sleep(200)
   await navigateTo('/login')
 }
 </script>
@@ -47,51 +47,5 @@ nav button {
   border: none;
   color: white;
   cursor: pointer;
-}
-
-main {
-  padding: 1rem;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  header,
-  main {
-    padding: 0.5rem;
-  }
-
-  nav a {
-    font-size: 0.9rem;
-  }
-
-  nav button {
-    font-size: 0.9rem;
-    padding: 0.2rem 0.4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  header,
-  main {
-    padding: 0.2rem;
-  }
-
-  nav a {
-    font-size: 0.8rem;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  nav {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  nav button {
-    font-size: 0.8rem;
-    padding: 0.1rem 0.2rem;
-    margin-top: 0.5rem;
-  }
 }
 </style>

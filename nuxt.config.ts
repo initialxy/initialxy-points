@@ -12,7 +12,9 @@ export default defineNuxtConfig({
     'nuxt-auth-utils',
     '@pinia/nuxt'
   ],
-
+  future: {
+    compatibilityVersion: 4,
+  },
   app: {
     head: {
       viewport: 'width=device-width, initial-scale=1, maximum-scale=1'

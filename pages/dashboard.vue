@@ -1,11 +1,9 @@
 <template>
-  <ParentView v-if="isParent" />
-  <ChildView v-else />
+  <ParentView v-if="user?.role === 'parent'" />
+  <ChildView v-else-if="user?.role === 'child'" />
 </template>
 
 <script setup lang="ts">
-import type { User } from '~/types'
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
-const isParent = computed(() => user.value?.role === 'parent')
 </script>

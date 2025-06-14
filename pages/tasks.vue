@@ -137,7 +137,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Task, User } from '~/types'
 import { ref, computed } from 'vue'
 import { useFetch } from '#imports'
 import * as z from 'zod'
@@ -147,8 +146,6 @@ const toast = useToast()
 
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
-
-const notification = ref<{ message: string; type: string } | null>(null)
 
 // Fetch tasks data using useFetch directly in setup
 const {
@@ -212,7 +209,6 @@ const createTask = async () => {
     // Show toast
     toast.add({
       title: `Task created successfully with ID: ${response.id}`,
-      color: 'green',
     })
 
     // Refresh the task list
@@ -234,7 +230,6 @@ const markTaskComplete = async (taskId: number) => {
     // Show toast
     toast.add({
       title: `Task marked as completed. Awaiting parent approval.`,
-      color: 'blue',
     })
 
     // Refresh the task list
@@ -243,7 +238,6 @@ const markTaskComplete = async (taskId: number) => {
     console.error('Error completing task:', err)
     toast.add({
       title: 'Error completing task. Please try again.',
-      color: 'red',
     })
   }
 }
@@ -257,7 +251,6 @@ const approveTask = async (taskId: number) => {
     // Show toast
     toast.add({
       title: `Task completion approved. Points awarded.`,
-      color: 'green',
     })
 
     // Refresh the task list
@@ -266,7 +259,6 @@ const approveTask = async (taskId: number) => {
     console.error('Error approving task:', err)
     toast.add({
       title: 'Error approving task. Please try again.',
-      color: 'red',
     })
   }
 }
@@ -280,7 +272,6 @@ const rejectTask = async (taskId: number) => {
     // Show toast
     toast.add({
       title: `Task completion rejected.`,
-      color: 'blue',
     })
 
     // Refresh the task list
@@ -289,7 +280,6 @@ const rejectTask = async (taskId: number) => {
     console.error('Error rejecting task:', err)
     toast.add({
       title: 'Error rejecting task. Please try again.',
-      color: 'red',
     })
   }
 }
@@ -317,7 +307,6 @@ const updateTask = async () => {
     // Show toast
     toast.add({
       title: `Task updated successfully.`,
-      color: 'green',
     })
 
     // Reset editing state
@@ -329,7 +318,6 @@ const updateTask = async () => {
     console.error('Error updating task:', err)
     toast.add({
       title: 'Error updating task. Please try again.',
-      color: 'red',
     })
   }
 }
@@ -350,7 +338,6 @@ const deleteTask = async (taskId: number) => {
     // Show toast
     toast.add({
       title: `Task deleted successfully.`,
-      color: 'green',
     })
 
     // Refresh the task list
@@ -359,7 +346,6 @@ const deleteTask = async (taskId: number) => {
     console.error('Error deleting task:', err)
     toast.add({
       title: 'Error deleting task. Please try again.',
-      color: 'red',
     })
   }
 }

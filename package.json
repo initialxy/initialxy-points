@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "format": "prettier --write \"{components,composables,layouts,middleware,pages,server,stores,types}/**/*.{ts,vue}\"",
+    "format": "prettier --write \"{components,composables,layouts,middleware,pages,server,stores,shared,utils}/**/*.{ts,vue}\"",
     "admin": "tsx ./server/database/admin.ts"
   },
   "dependencies": {

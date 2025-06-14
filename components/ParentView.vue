@@ -1,32 +1,28 @@
 <template>
-  <UContainer class="mb-8">
-    <div v-if="childrenData?.users.length ?? 0 > 0" class="space-y-4">
-      <UCard v-for="child in childrenData?.users" :key="child.id">
-        <div>
-          <h2>{{ child.username }} - {{ child.points }} points</h2>
-          <div v-for="task in getMarkedCompleteTasksForChild(child)">
-            {{ task.description }} - {{ task.points }}
-            <UButtonGroup>
-              <UButton
-                label="Approve"
-                color="primary"
-                @click="approveTask(task)"
-              />
-              <UButton label="Reject" color="info" @click="rejectTask(task)" />
-            </UButtonGroup>
-          </div>
+  <div v-if="childrenData?.users.length ?? 0 > 0" class="space-y-4">
+    <UCard v-for="child in childrenData?.users" :key="child.id">
+      <div>
+        <h2>{{ child.username }} - {{ child.points }} points</h2>
+        <div v-for="task in getMarkedCompleteTasksForChild(child)">
+          {{ task.description }} - {{ task.points }}
+          <UButtonGroup>
+            <UButton
+              label="Approve"
+              color="primary"
+              @click="approveTask(task)"
+            />
+            <UButton label="Reject" color="info" @click="rejectTask(task)" />
+          </UButtonGroup>
         </div>
-      </UCard>
-    </div>
-    <USkeleton v-else-if="status === 'pending'" />
-    <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
-    <p v-else class="text-gray-500">No children found.</p>
-  </UContainer>
+      </div>
+    </UCard>
+  </div>
+  <USkeleton v-else-if="status === 'pending'" />
+  <p v-else-if="error" class="text-red-500">{{ error.message }}</p>
+  <p v-else class="text-gray-500">No children found.</p>
 </template>
 
 <script setup lang="ts">
-import type { UsersResponse, Task, TasksResponse, User } from '~/types'
-
 const {
   data: childrenData,
   error,

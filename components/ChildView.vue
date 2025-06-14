@@ -65,8 +65,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TasksResponse, RewardsResponse, User } from '~/types'
-
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
 

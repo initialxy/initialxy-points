@@ -54,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import type { RewardsResponse } from '~/types'
 import * as z from 'zod'
 
 const newReward = ref({
