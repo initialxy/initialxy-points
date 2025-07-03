@@ -16,7 +16,7 @@
 - [x] Two types of users: parents (admins) and children
 - [x] Parents can create tasks (throw-away or perpetual) and define points for completion
 - [x] Parents can define rewards and their point values
-- [x] children can redeem rewards with points (requires parent approval)
+- [x] Children can redeem rewards with points (requires parent approval)
 - [x] Points visibility for parents and children
 
 ### 2.2 Additional Features
@@ -28,9 +28,9 @@
 ### 3.1 Parent User Stories
 - As a parent, I want to create tasks for my children so that they can earn points.
 - As a parent, I want to define rewards and their point values so that my children know what they can earn.
-- As a parent, I want to see all children' points so that I can track their progress.
+- As a parent, I want to see all children's points so that I can track their progress.
 
-### 3.2 child User Stories
+### 3.2 Child User Stories
 - As a child, I want to see my tasks and earn points by completing them.
 - As a child, I want to see my points so that I know how many rewards I can get.
 - As a child, I want to redeem points for rewards and get parent approval.

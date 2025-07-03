@@ -6,6 +6,7 @@ This document provides comprehensive information about the API endpoints availab
 1. [Authentication](#authentication)
 2. [Tasks](#tasks)
 3. [Rewards](#rewards)
+4. [Users](#users)
 5. [Points](#points)
 
 ## Authentication
@@ -39,30 +40,45 @@ Authenticates a user with a username and passcode.
 - 400: Invalid input
 - 401: Invalid username or passcode
 
-### POST /api/auth/register
-Registers a new user.
 
-**Request:**
-```json
-{
-  "username": "string",
-  "passcode": "string",
-  "role": "string" // 'parent' or 'kid'
-}
-```
+## Users
+
+### GET /api/users/[id]
+Retrieves a specific user by ID.
 
 **Response:**
 ```json
 {
   "id": "number",
   "username": "string",
-  "role": "string"
+  "role": "string",
+  "points": "number"
 }
 ```
 
 **Status Codes:**
-- 201: User created successfully
-- 400: Invalid input
+- 200: Successful retrieval
+- 404: User not found
+
+### GET /api/users
+Retrieves all users.
+
+**Response:**
+```json
+{
+  "users": [
+    {
+      "id": "number",
+      "username": "string",
+      "role": "string",
+      "points": "number"
+    }
+  ]
+}
+```
+
+**Status Codes:**
+- 200: Successful retrieval
 
 ## Tasks
 
@@ -120,6 +136,52 @@ Creates a new task for a kid (parent-only endpoint).
 - 400: Invalid input
 - 403: Forbidden (not a parent user)
 
+### DELETE /api/tasks/[id]
+Deletes a task by ID.
+
+**Response:**
+```json
+{
+  "message": "Task deleted successfully"
+}
+```
+
+**Status Codes:**
+- 200: Task deleted successfully
+- 400: Invalid task ID
+- 403: Forbidden (not authorized)
+- 404: Task not found
+
+### PUT /api/tasks/[id]
+Updates a task by ID.
+
+**Request:**
+```json
+{
+  "description": "string",
+  "points": "number",
+  "task_type": "string" // 'throw-away' or 'perpetual'
+}
+```
+
+**Response:**
+```json
+{
+  "id": "number",
+  "description": "string",
+  "points": "number",
+  "task_type": "string",
+  "child_id": "number",
+  "parent_id": "number"
+}
+```
+
+**Status Codes:**
+- 200: Task updated successfully
+- 400: Invalid input
+- 403: Forbidden (not authorized)
+- 404: Task not found
+
 ### POST /api/tasks/[id]/mark_complete
 Marks a task as completed by a kid user (pending parent approval).
 
@@ -168,6 +230,22 @@ Rejects a task completion by a parent user.
 - 400: Invalid task ID or task not marked as completed
 - 403: Forbidden (not a parent user)
 - 404: Task not found
+
+## Points
+
+### GET /api/points
+Retrieves the points for the authenticated user.
+
+**Response:**
+```json
+{
+  "points": "number"
+}
+```
+
+**Status Codes:**
+- 200: Successful retrieval
+- 403: Forbidden (not authorized)
 
 ## Rewards
 
