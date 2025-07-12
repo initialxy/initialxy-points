@@ -107,14 +107,14 @@ Retrieves tasks for the authenticated user.
 - 403: Forbidden (not authorized)
 
 ### POST /api/tasks
-Creates a new task for a kid (parent-only endpoint).
+Creates a new task for a child (parent-only endpoint).
 
 **Request:**
 ```json
 {
   "description": "string",
   "points": "number",
-  "kid_id": "number",
+  "child_id": "number",
   "task_type": "string" // 'throw-away' or 'perpetual'
 }
 ```
@@ -183,7 +183,7 @@ Updates a task by ID.
 - 404: Task not found
 
 ### POST /api/tasks/[id]/mark_complete
-Marks a task as completed by a kid user (pending parent approval).
+Marks a task as completed by a child user (pending parent approval).
 
 **Response:**
 ```json
@@ -195,7 +195,7 @@ Marks a task as completed by a kid user (pending parent approval).
 **Status Codes:**
 - 200: Task marked as completed
 - 400: Invalid task ID or task already completed
-- 403: Forbidden (not a kid user)
+- 403: Forbidden (not a child user)
 - 404: Task not found
 
 ### POST /api/tasks/[id]/approve_complete

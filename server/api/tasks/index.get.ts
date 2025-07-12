@@ -1,6 +1,5 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../database'
-import { Task, TasksResponse, User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()

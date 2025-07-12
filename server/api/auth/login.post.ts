@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 import { validateString } from '../../utils/validation'
-import { User } from '~/types'
 
 interface DbUser extends User {
   passcode: string

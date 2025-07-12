@@ -1,6 +1,5 @@
 import { defineEventHandler, H3Event, readBody } from 'h3'
 import { getDb } from '../../database'
-import { User, TaskResponse } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -15,9 +14,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const body = await readBody(event)
-  const { description, points, kid_id, task_type } = body
+  const { description, points, child_id, task_type } = body
 
-  if (!description || !points || !kid_id || !task_type) {
+  if (!description || !points || !child_id || !task_type) {
     return {
       statusCode: 400,
       body: { message: 'Missing required fields' },
@@ -33,7 +32,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const result = await db.run(
     'INSERT INTO tasks (description, points, child_id, task_type, parent_id) VALUES (?, ?, ?, ?, ?)',
-    [description, points, kid_id, task_type, user.id]
+    [description, points, child_id, task_type, user.id]
   )
 
   const taskId = result.lastID as number
@@ -44,7 +43,7 @@ export default defineEventHandler(async (event: H3Event) => {
       description,
       points,
       task_type,
-      child_id: kid_id,
+      child_id,
       parent_id: user.id,
     },
   } as TaskResponse
