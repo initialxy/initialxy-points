@@ -1,18 +1,27 @@
 <template>
   <div v-if="childrenData?.users.length ?? 0 > 0" class="space-y-4">
     <UCard v-for="child in childrenData?.users" :key="child.id">
-      <div>
-        <h2>{{ child.username }} - {{ child.points }} points</h2>
-        <div v-for="task in getMarkedCompleteTasksForChild(child)">
-          {{ task.description }} - {{ task.points }}
-          <UButtonGroup>
-            <UButton
-              label="Approve"
-              color="primary"
-              @click="approveTask(task)"
-            />
-            <UButton label="Reject" color="info" @click="rejectTask(task)" />
-          </UButtonGroup>
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-semibold">{{ child.username }}</h2>
+          <p class="text-gray-600">{{ child.points }} points</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <UButton
+            icon="i-heroicons-minus-circle"
+            color="error"
+            variant="ghost"
+            @click="decrementPoints(child)"
+            :disabled="loadingPoints === child.id"
+          />
+          <span class="text-2xl font-bold">{{ child.points }}</span>
+          <UButton
+            icon="i-heroicons-plus-circle"
+            color="success"
+            variant="ghost"
+            @click="incrementPoints(child)"
+            :disabled="loadingPoints === child.id"
+          />
         </div>
       </div>
     </UCard>
@@ -24,46 +33,44 @@
 const {
   data: childrenData,
   status: childrenDataStatus,
+  refresh,
 } = await useFetch<UsersResponse>('/api/users')
-const { data: tasksData, refresh: tasksRefresh } =
-  await useFetch<TasksResponse>('/api/tasks')
 
-const getMarkedCompleteTasksForChild = (child: User) => {
-  const tasks = tasksData.value?.tasks
-  if (tasks == null) {
-    return []
-  }
+const loadingPoints = ref<number | null>(null)
 
-  return tasks.filter(
-    (task) => task.child_id === child.id && task.is_marked_complete
-  )
-}
-
-const approveTask = async (task: Task) => {
+const incrementPoints = async (child: User) => {
+  loadingPoints.value = child.id
   try {
-    await $fetch(`/api/tasks/${task.id}/approve_complete`, {
-      method: 'POST',
+    const newPoints = (child.points || 0) + 1
+    await $fetch(`/api/users/${child.id}/points`, {
+      method: 'PUT',
+      body: { points: newPoints },
     })
-    alert('Task completion approved')
-    // Refresh tasks
-    await tasksRefresh()
+    // Refresh the user data
+    await refresh()
   } catch (err) {
-    console.error('Error approving task:', err)
-    alert('Failed to approve task')
+    console.error('Error incrementing points:', err)
+    alert('Failed to increment points')
+  } finally {
+    loadingPoints.value = null
   }
 }
 
-const rejectTask = async (task: Task) => {
+const decrementPoints = async (child: User) => {
+  loadingPoints.value = child.id
   try {
-    await $fetch(`/api/tasks/${task.id}/reject_complete`, {
-      method: 'POST',
+    const newPoints = Math.max((child.points || 0) - 1, 0)
+    await $fetch(`/api/users/${child.id}/points`, {
+      method: 'PUT',
+      body: { points: newPoints },
     })
-    alert('Task completion rejected')
-    // Refresh tasks
-    await tasksRefresh()
+    // Refresh the user data
+    await refresh()
   } catch (err) {
-    console.error('Error rejecting task:', err)
-    alert('Failed to reject task')
+    console.error('Error decrementing points:', err)
+    alert('Failed to decrement points')
+  } finally {
+    loadingPoints.value = null
   }
 }
 </script>
