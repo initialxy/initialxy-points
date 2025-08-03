@@ -1,77 +1,64 @@
 <template>
-  <div v-if="childrenData?.users.length ?? 0 > 0" class="space-y-4">
+  <div v-if="childrenData?.users.length ?? 0 > 0">
     <UCard v-for="child in childrenData?.users" :key="child.id">
       <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-semibold">{{ child.username }}</h2>
-          <p class="text-gray-600">{{ child.points }} points</p>
-        </div>
+        <h2 class="text-xl font-semibold">{{ child.username }}</h2>
         <div class="flex items-center space-x-2">
           <UButton
-            icon="i-heroicons-minus-circle"
+            icon="i-heroicons-minus"
             color="error"
-            variant="ghost"
-            @click="decrementPoints(child)"
-            :disabled="loadingPoints === child.id"
+            variant="soft"
+            size="xl"
+            class="m-2"
+            @click="changePoints(child, -1)"
           />
           <span class="text-2xl font-bold">{{ child.points }}</span>
           <UButton
-            icon="i-heroicons-plus-circle"
+            icon="i-heroicons-plus"
             color="success"
-            variant="ghost"
-            @click="incrementPoints(child)"
-            :disabled="loadingPoints === child.id"
+            variant="soft"
+            size="xl"
+            class="m-2"
+            @click="changePoints(child, 1)"
           />
         </div>
       </div>
     </UCard>
   </div>
-  <USkeleton v-else-if="childrenDataStatus === 'pending'" />
 </template>
 
 <script setup lang="ts">
+const DEBOUNCE_WAIT_MS = 300
+const toast = useToast()
+
 const {
   data: childrenData,
-  status: childrenDataStatus,
   refresh,
 } = await useFetch<UsersResponse>('/api/users')
 
-const loadingPoints = ref<number | null>(null)
-
-const incrementPoints = async (child: User) => {
-  loadingPoints.value = child.id
+const debouncedUpdatePoints = debounce(async (childId: number, newPoints: number) => {
   try {
-    const newPoints = (child.points || 0) + 1
-    await $fetch(`/api/users/${child.id}/points`, {
+    await $fetch(`/api/users/${childId}/points`, {
       method: 'PUT',
       body: { points: newPoints },
     })
-    // Refresh the user data
     await refresh()
   } catch (err) {
-    console.error('Error incrementing points:', err)
-    alert('Failed to increment points')
-  } finally {
-    loadingPoints.value = null
+    console.error('Error updating points:', err)
+    toast.add({ title: 'Failed to update points', progress: false })
   }
-}
+}, DEBOUNCE_WAIT_MS)
 
-const decrementPoints = async (child: User) => {
-  loadingPoints.value = child.id
-  try {
-    const newPoints = Math.max((child.points || 0) - 1, 0)
-    await $fetch(`/api/users/${child.id}/points`, {
-      method: 'PUT',
-      body: { points: newPoints },
-    })
-    // Refresh the user data
-    await refresh()
-  } catch (err) {
-    console.error('Error decrementing points:', err)
-    alert('Failed to decrement points')
-  } finally {
-    loadingPoints.value = null
-  }
+const changePoints = async (child: User, delta: number) => {
+  const updatedPoints = Math.max((child.points || 0) + delta, 0)
+  const updatedData = {
+    users: childrenData.value?.users.map(u => 
+      u.id === child.id ? { ...u, points: updatedPoints } : u
+    )
+  } as UsersResponse
+  childrenData.value = updatedData
+  
+  debouncedUpdatePoints(child.id, updatedPoints)
 }
 </script>
 

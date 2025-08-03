@@ -1,15 +1,5 @@
 <template>
   <div v-if="loggedIn">
-    <header>
-      <nav>
-        <NuxtLink to="/">Home</NuxtLink>
-        <NuxtLink to="/dashboard">Dashboard</NuxtLink>
-        <NuxtLink to="/tasks">Tasks</NuxtLink>
-        <NuxtLink to="/rewards">Rewards</NuxtLink>
-        <NuxtLink to="/login">Login</NuxtLink>
-        <button @click="logoutClicked">Logout</button>
-      </nav>
-    </header>
     <main>
       <UContainer class="pt-4 md:pt-8">
         <div class="relative">
@@ -17,6 +7,15 @@
         </div>
       </UContainer>
     </main>
+    
+    <UButton
+      icon="i-heroicons-arrow-left-on-rectangle"
+      color="error"
+      variant="solid"
+      size="xl"
+      class="fixed bottom-4 left-4 z-10"
+      @click="logoutClicked"
+    />
   </div>
 </template>
 
@@ -32,22 +31,4 @@ const logoutClicked = async () => {
 </script>
 
 <style scoped>
-header {
-  background-color: #007bff;
-  color: white;
-  padding: 1rem;
-}
-
-nav a {
-  margin-right: 1rem;
-  color: white;
-  text-decoration: none;
-}
-
-nav button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
 </style>
