@@ -4,7 +4,7 @@
     <div class="text-6xl font-extrabold text-primary">
       {{ user?.points || 0 }}
     </div>
-    <p class="text-xl text-gray-600">Points earned so far</p>
+    <p class="text-xl text-gray-600">earned so far</p>
   </div>
 </template>
 
