@@ -2,7 +2,9 @@ import { defineEventHandler, readValidatedBody, createError } from 'h3'
 import { z } from 'zod'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
-import { validateString } from '../../utils/validation'
+import { useLocalStorage } from '@vueuse/core'
+
+const SESSION_MAX_AGE = 60 * 60 * 24 * 14 // 2 week
 
 interface DbUser extends User {
   passcode: string
@@ -60,7 +62,9 @@ export default defineEventHandler(async (event) => {
   }
 
   // Set the user session
-  await setUserSession(event, { user })
+  await setUserSession(event, { user }, {
+    maxAge: SESSION_MAX_AGE
+  })
 
   return { user }
 })

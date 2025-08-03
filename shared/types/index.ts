@@ -5,6 +5,11 @@ export type User = {
   points: number
 }
 
+export type RememberedUser = {
+  username: string
+  timestamp: number
+}
+
 export type Task = {
   id: number
   description: string

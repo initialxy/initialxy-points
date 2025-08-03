@@ -9,8 +9,9 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/test-utils',
     '@nuxt/ui',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
     'nuxt-auth-utils',
-    '@pinia/nuxt'
   ],
   future: {
     compatibilityVersion: 4,
