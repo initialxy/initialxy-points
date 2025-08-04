@@ -9,7 +9,7 @@
             color="error"
             variant="soft"
             size="xl"
-            class="m-2"
+            class="m-2 touch-manipulation"
             @click="changePoints(child, -1)"
           />
           <span class="text-2xl font-bold m-2">{{ child.points }}</span>
@@ -18,7 +18,7 @@
             color="success"
             variant="soft"
             size="xl"
-            class="m-2"
+            class="m-2 touch-manipulation"
             @click="changePoints(child, 1)"
           />
         </div>
