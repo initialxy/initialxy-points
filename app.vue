@@ -11,6 +11,9 @@ const { loggedIn } = useUserSession()
 </script>
 
 <style>
+html {
+  font-size: 20px; /* Scale the app */
+}
 .page-enter-active,
 .page-leave-active {
   transition: all 0.3s;

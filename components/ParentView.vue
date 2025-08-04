@@ -12,7 +12,7 @@
             class="m-2"
             @click="changePoints(child, -1)"
           />
-          <span class="text-2xl font-bold">{{ child.points }}</span>
+          <span class="text-2xl font-bold m-2">{{ child.points }}</span>
           <UButton
             icon="i-heroicons-plus"
             color="success"

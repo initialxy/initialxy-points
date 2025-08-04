@@ -1,0 +1,17 @@
+{
+  "name": "initialxy-points",
+  "short_name": "Points!",
+  "lang": "en-US",
+  "theme_color": "#0f172b",
+  "background_color": "#0f172b",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "favicon-196x196.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
