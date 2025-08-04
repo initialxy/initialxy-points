@@ -1,10 +1,10 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full space-y-4">
-    <h1 class="text-3xl font-bold">Your Points</h1>
-    <div class="text-6xl font-extrabold text-primary">
+  <div class="h-full w-full">
+    <h1 class="text-3xl font-bold text-center">Your Points</h1>
+    <div class="text-6xl font-extrabold text-primary text-center">
       {{ user?.points || 0 }}
     </div>
-    <p class="text-xl text-gray-600">earned so far</p>
+    <p class="text-xl text-gray-600 text-center">earned so far</p>
   </div>
 </template>
 
