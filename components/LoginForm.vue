@@ -2,12 +2,11 @@
   <UCard variant="subtle">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
       <UFormField
-        label="Who?"
         name="username"
         type="text"
         v-if="!rememberedUsersState.some(user => user.isSelected)"
       >
-        <UInput v-model="state.username" class="w-full" />
+        <UInput placeholder="Who?" v-model="state.username" class="w-full" />
       </UFormField>
 
       <ul v-if="rememberedUsersState.length > 0" class="w-full">
@@ -29,8 +28,8 @@
         </li>
       </ul>
 
-      <UFormField label="Passcode" name="passcode">
-        <UInput v-model="state.passcode" type="password" class="w-full" />
+      <UFormField name="passcode">
+        <UInput placeholder="Passcode" v-model="state.passcode" type="password" class="w-full" />
       </UFormField>
       <UButton
         type="submit"

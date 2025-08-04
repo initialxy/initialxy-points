@@ -1,6 +1,9 @@
 <template>
   <div v-if="childrenData?.users.length ?? 0 > 0">
-    <UCard v-for="child in childrenData?.users" :key="child.id">
+    <UCard
+      v-for="child in childrenData?.users" :key="child.id"
+      class="mb-4"
+    >
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">{{ child.username }}</h2>
         <div class="flex items-center space-x-2">
