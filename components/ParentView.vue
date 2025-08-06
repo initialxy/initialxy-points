@@ -1,8 +1,9 @@
 <template>
-  <div v-if="childrenData?.users.length ?? 0 > 0">
+  <div v-if="childrenData?.users.length ?? 0 > 0" class="w-full">
     <UCard
       v-for="child in childrenData?.users" :key="child.id"
-      class="mb-4"
+      class="mb-4 max-w-100 ml-auto mr-auto"
+      variant="subtle"
     >
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">{{ child.username }}</h2>
@@ -15,7 +16,7 @@
             class="m-2 touch-manipulation"
             @click="changePoints(child, -1)"
           />
-          <span class="text-2xl font-bold m-2">{{ child.points }}</span>
+          <span class="text-2xl font-bold inline-block w-10 text-center">{{ child.points }}</span>
           <UButton
             icon="i-heroicons-plus"
             color="success"
