@@ -12,23 +12,19 @@
       <ul v-if="rememberedUsersState.length > 0" class="w-full">
         <li
           v-for="user in rememberedUsersState"
-          :key="user.username" class="mb-6"
+          :key="user.username" class="mb-4"
           :class="{'hidden': isAnyUserSelected && !user.isSelected}"
         >
-          <input
-            type="checkbox"
-            :id="'option-' + user.username" value=""
-            class="hidden peer"
+          <UCheckbox
+            variant="card"
+            default-value
+            indicator="hidden" 
+            :label="user.username"
+            class="bg-slate-100 dark:bg-slate-800"
             v-model="user.isSelected"
             @change="selectUser(user)"
+            :ui="{'wrapper': 'text-left'}"
           />
-          <label
-            :for="'option-' + user.username"
-            class="inline-flex items-center justify-between p-5 w-full rounded-md border-0 bg-slate-100 dark:bg-slate-800 ring ring-inset ring-accented peer-checked:ring-primary">
-            <div class="block">
-              {{ user.username }}
-            </div>
-          </label>
         </li>
       </ul>
 
