@@ -19,7 +19,7 @@ async function initializeDatabase(db: Database): Promise<Database> {
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
-        passcode TEXT NOT NULL,
+        password TEXT NOT NULL,
         role TEXT NOT NULL CHECK(role IN ('parent', 'child')),
         points INTEGER DEFAULT 0
       );
@@ -60,14 +60,14 @@ async function listUsers(db: Database) {
 async function addUser(
   db: Database,
   username: string,
-  passcode: string,
+  password: string,
   role: string = 'child'
 ) {
-  // Hash the passcode before saving
-  const hashedPasscode = await bcrypt.hash(passcode, 10)
+  // Hash the password before saving
+  const hashedPassword = await bcrypt.hash(password, 10)
   await db.run(
-    'INSERT INTO users (username, passcode, role) VALUES (?, ?, ?)',
-    [username, hashedPasscode, role]
+    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+    [username, hashedPassword, role]
   )
   console.log(`User ${username} added with role ${role}`)
 }
@@ -94,14 +94,14 @@ async function changeUserRole(db: Database, username: string, role: string) {
   console.log(`User ${username}'s role changed to ${role}`)
 }
 
-async function setPasscode(db: Database, username: string, passcode: string) {
-  // Hash the passcode before saving
-  const hashedPasscode = await bcrypt.hash(passcode, 10)
-  await db.run('UPDATE users SET passcode = ? WHERE username = ?', [
-    hashedPasscode,
+async function setPassword(db: Database, username: string, password: string) {
+  // Hash the password before saving
+  const hashedPassword = await bcrypt.hash(password, 10)
+  await db.run('UPDATE users SET password = ? WHERE username = ?', [
+    hashedPassword,
     username,
   ])
-  console.log(`User ${username}'s passcode updated`)
+  console.log(`User ${username}'s password updated`)
 }
 
 async function showHelp() {
@@ -110,11 +110,11 @@ Admin Console Commands:
   help - Show this help message
   init-db - Initialize database
   list - Show all users and their roles
-  add-user <username> <passcode> [role] - Add a new user
+  add-user <username> <password> [role] - Add a new user
   delete-user <username> - Delete a user
   rename-user <oldUsername> <newUsername> - Rename a user
   change-user-role <username> <role> - Change a user's role
-  set-passcode <username> <passcode> - Set a new passcode for a user
+  set-password <username> <password> - Set a new password for a user
   exit - Exit the admin console
 `)
 }
@@ -158,10 +158,10 @@ async function main() {
           break
         case 'add-user':
           if (args.length < 2) {
-            console.log('Usage: add-user <username> <passcode> [role]')
+            console.log('Usage: add-user <username> <password> [role]')
           } else {
-            const [username, passcode, role] = args
-            await addUser(db, username, passcode, role || 'child')
+            const [username, password, role] = args
+            await addUser(db, username, password, role || 'child')
           }
           break
         case 'delete-user':
@@ -188,12 +188,12 @@ async function main() {
             await changeUserRole(db, username, role)
           }
           break
-        case 'set-passcode':
+        case 'set-password':
           if (args.length < 2) {
-            console.log('Usage: set-passcode <username> <passcode>')
+            console.log('Usage: set-password <username> <password>')
           } else {
-            const [username, passcode] = args
-            await setPasscode(db, username, passcode)
+            const [username, password] = args
+            await setPassword(db, username, password)
           }
           break
         case 'exit':

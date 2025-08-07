@@ -40,7 +40,7 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 ## Database Schema
 
 ### Tables
-1. **users**: Stores user information (id, username, passcode, role, points)
+1. **users**: Stores user information (id, username, password, role, points)
 2. **tasks**: Stores tasks for children (id, description, points, child_id, parent_id, task_type, is_marked_complete)
 3. **rewards**: Stores rewards created by parents (id, description, points, parent_id)
 

@@ -2,33 +2,32 @@ import { defineEventHandler, readValidatedBody, createError } from 'h3'
 import { z } from 'zod'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
-import { useLocalStorage } from '@vueuse/core'
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 14 // 2 week
 
 interface DbUser extends User {
-  passcode: string
+  password: string
 }
 
 const bodySchema = z.object({
   username: z.string(),
-  passcode: z.string().min(3),
+  password: z.string().min(3),
 })
 
 export default defineEventHandler(async (event) => {
   const db = await getDb()
-  const { username, passcode } = await readValidatedBody(
+  const { username, password } = await readValidatedBody(
     event,
     bodySchema.parse
   )
 
   const validatedUsername = validateString(username)
-  const validatedPasscode = validateString(passcode)
+  const validatedPassword = validateString(password)
 
-  if (!validatedUsername || !validatedPasscode) {
+  if (!validatedUsername || !validatedPassword) {
     throw createError({
       statusCode: 400,
-      message: 'Username and passcode are required',
+      message: 'Username and password are required',
     })
   }
 
@@ -41,16 +40,16 @@ export default defineEventHandler(async (event) => {
   if (dbUser == null) {
     throw createError({
       statusCode: 401,
-      message: 'Invalid username or passcode',
+      message: 'Invalid username or password',
     })
   }
 
-  const isValid = await bcrypt.compare(validatedPasscode, dbUser.passcode)
+  const isValid = await bcrypt.compare(validatedPassword!, dbUser.password)
 
   if (!isValid) {
     throw createError({
       statusCode: 401,
-      message: 'Invalid username or passcode',
+      message: 'Invalid username or password',
     })
   }
 

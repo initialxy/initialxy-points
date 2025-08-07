@@ -12,13 +12,13 @@ This document provides comprehensive information about the API endpoints availab
 ## Authentication
 
 ### POST /api/auth/login
-Authenticates a user with a username and passcode.
+Authenticates a user with a username and password.
 
 **Request:**
 ```json
 {
   "username": "string",
-  "passcode": "string"
+  "password": "string"
 }
 ```
 
@@ -38,7 +38,7 @@ Authenticates a user with a username and passcode.
 **Status Codes:**
 - 200: Successful login
 - 400: Invalid input
-- 401: Invalid username or passcode
+- 401: Invalid username or password
 
 
 ## Users

@@ -28,8 +28,8 @@
         </li>
       </ul>
 
-      <UFormField name="passcode">
-        <UInput placeholder="Passcode" v-model="state.passcode" type="password" class="w-full" />
+      <UFormField name="password">
+        <UInput placeholder="Password" v-model="state.password" type="password" class="w-full" />
       </UFormField>
       <div>
         <UButton
@@ -80,13 +80,13 @@ rememberedUsersState.value = rememberedUsers.value.map(user => ({
 
 const state = reactive({
   username: '',
-  passcode: '',
+  password: '',
   isLoading: false,
 })
 
 const schema = z.object({
   username: z.string(),
-  passcode: z.string().min(3, 'Must be at least 3 characters'),
+  password: z.string().min(3, 'Must be at least 3 characters'),
 })
 
 const isAnyUserSelected =
@@ -105,7 +105,7 @@ const onSubmit = async () => {
   state.isLoading = true
 
   try {
-    await store.login(state.username, state.passcode)
+    await store.login(state.username, state.password)
     const { user: sessionUser } = useUserSession()
     const user = sessionUser as Ref<User | null>
     if (user.value != null) {

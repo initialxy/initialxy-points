@@ -5,7 +5,7 @@
 - **Project Description:** A simple web app that helps track points earned by children and allows them to redeem points for rewards.
 - **Target Audience:** Parents and children
 - **Project Goals:**
-  - Implement a passcode-based authentication system
+  - Implement a password-based authentication system
   - Create a system for parents to assign tasks and rewards
   - Provide visibility of points for both parents and children
 
@@ -80,7 +80,7 @@
 - [x] Phase 4: Deployment (1 week)
 
 ## 8. Risks & Challenges
-- [x] Ensuring security with passcode-based authentication
+- [x] Ensuring security with password-based authentication
 - [x] Making the app intuitive for children to use
 - [x] Handling edge cases in points and rewards management
 
