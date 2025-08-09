@@ -17,13 +17,16 @@ export const useStore = defineStore('main', () => {
 
       const newUser = {
         username: sessionUser.user.username,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }
-      rememberedUsers.value = rememberedUsers.value
-        .filter(u => u.username !== newUser.username)
+      rememberedUsers.value = rememberedUsers.value.filter(
+        (u) => u.username !== newUser.username
+      )
       rememberedUsers.value.unshift(newUser)
-      rememberedUsers.value = rememberedUsers.value
-        .slice(0, MAX_USERS_TO_REMEMBER)
+      rememberedUsers.value = rememberedUsers.value.slice(
+        0,
+        MAX_USERS_TO_REMEMBER
+      )
     } catch (err) {
       console.error('Login error:', err)
       throw err

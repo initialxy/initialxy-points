@@ -61,9 +61,13 @@ export default defineEventHandler(async (event) => {
   }
 
   // Set the user session
-  await setUserSession(event, { user }, {
-    maxAge: SESSION_MAX_AGE
-  })
+  await setUserSession(
+    event,
+    { user },
+    {
+      maxAge: SESSION_MAX_AGE,
+    }
+  )
 
   return { user }
 })

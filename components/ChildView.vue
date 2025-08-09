@@ -2,7 +2,7 @@
   <div class="w-full">
     <UCard class="max-w-100 ml-auto mr-auto" variant="subtle">
       <h1 class="text-3xl font-bold text-center mb-4">
-        <span class="text-info">{{user?.username}}</span> earned
+        <span class="text-info">{{ user?.username }}</span> earned
       </h1>
       <div class="text-6xl font-extrabold text-primary text-center mb-4">
         {{ user?.points || 0 }}

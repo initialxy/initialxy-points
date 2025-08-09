@@ -119,7 +119,8 @@ async function setPassword(db: Database, username: string, password: string) {
 }
 
 async function showLogs(db: Database, count: number) {
-  const logs = await db.all(`
+  const logs = await db.all(
+    `
     SELECT l.id, l.timestamp, u.username as actor, l.action_type,
            r.username as recipient, l.points_before, l.points_after
     FROM logs l
@@ -127,13 +128,21 @@ async function showLogs(db: Database, count: number) {
     LEFT JOIN users r ON l.recipient_id = r.id
     ORDER BY l.timestamp DESC
     LIMIT ?
-  `, [count])
-  
+  `,
+    [count]
+  )
+
   console.log(`\nTop ${count} log entries:`)
-  console.log('ID | Timestamp | Actor | Action Type | Recipient | Points Before | Points After')
-  console.log('---|-----------|-------|-------------|-----------|---------------|-------------')
+  console.log(
+    'ID | Timestamp | Actor | Action Type | Recipient | Points Before | Points After'
+  )
+  console.log(
+    '---|-----------|-------|-------------|-----------|---------------|-------------'
+  )
   logs.forEach((log: any) => {
-    console.log(`${log.id} | ${log.timestamp} | ${log.actor} | ${log.action_type} | ${log.recipient || '-'} | ${log.points_before || '-'} | ${log.points_after || '-'}`)
+    console.log(
+      `${log.id} | ${log.timestamp} | ${log.actor} | ${log.action_type} | ${log.recipient || '-'} | ${log.points_before || '-'} | ${log.points_after || '-'}`
+    )
   })
   console.log('')
 }

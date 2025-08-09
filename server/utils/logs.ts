@@ -1,9 +1,6 @@
 import { Database } from 'sqlite'
 
-export async function logAction(
-  db: Database,
-  log: Log
-): Promise<void> {
+export async function logAction(db: Database, log: Log): Promise<void> {
   await db.run(
     `INSERT INTO logs (actor_id, action_type, recipient_id, points_before, points_after, additional_context)
      VALUES (?, ?, ?, ?, ?, ?)`,

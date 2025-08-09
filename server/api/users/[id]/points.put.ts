@@ -39,12 +39,8 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const pointsBefore = existingUser.points
-  
-  await db.run(
-    'UPDATE users SET points = ? WHERE id = ?',
-    points,
-    id
-  )
+
+  await db.run('UPDATE users SET points = ? WHERE id = ?', points, id)
 
   const log = {
     actor_id: user.id,
@@ -52,9 +48,9 @@ export default defineEventHandler(async (event: H3Event) => {
     recipient_id: existingUser.id,
     points_before: pointsBefore,
     points_after: points,
-    additional_context: null
+    additional_context: null,
   }
-  
+
   await logAction(db, log)
 
   return { message: 'Points updated successfully' }

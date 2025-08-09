@@ -7,7 +7,7 @@
         </div>
       </UContainer>
     </main>
-    
+
     <UButton
       icon="i-lucide-log-out"
       color="error"
@@ -30,5 +30,4 @@ const logoutClicked = async () => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

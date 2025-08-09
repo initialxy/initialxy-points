@@ -1,7 +1,8 @@
 <template>
   <div v-if="childrenData?.users.length ?? 0 > 0" class="w-full">
     <UCard
-      v-for="child in childrenData?.users" :key="child.id"
+      v-for="child in childrenData?.users"
+      :key="child.id"
       class="mb-4 max-w-100 ml-auto mr-auto"
       variant="subtle"
     >
@@ -23,7 +24,9 @@
             class="w-15 m-0"
             size="xl"
             :ui="{ base: 'text-center' }"
-            @update:modelValue="debouncedUpdatePoints(child.id, child.points || 0)"
+            @update:modelValue="
+              debouncedUpdatePoints(child.id, child.points || 0)
+            "
           />
           <UButton
             icon="i-lucide-plus"
@@ -43,33 +46,34 @@
 const DEBOUNCE_WAIT_MS = 300
 const toast = useToast()
 
-const {
-  data: childrenData,
-  refresh,
-} = await useFetch<UsersResponse>('/api/users')
+const { data: childrenData, refresh } =
+  await useFetch<UsersResponse>('/api/users')
 
-const debouncedUpdatePoints = debounce(async (childId: number, newPoints: number) => {
-  try {
-    await $fetch(`/api/users/${childId}/points`, {
-      method: 'PUT',
-      body: { points: newPoints },
-    })
-    await refresh()
-  } catch (err) {
-    console.error('Error updating points:', err)
-    toast.add({ title: 'Failed to update points', progress: false })
-  }
-}, DEBOUNCE_WAIT_MS)
+const debouncedUpdatePoints = debounce(
+  async (childId: number, newPoints: number) => {
+    try {
+      await $fetch(`/api/users/${childId}/points`, {
+        method: 'PUT',
+        body: { points: newPoints },
+      })
+      await refresh()
+    } catch (err) {
+      console.error('Error updating points:', err)
+      toast.add({ title: 'Failed to update points', progress: false })
+    }
+  },
+  DEBOUNCE_WAIT_MS
+)
 
 const changePoints = async (child: User, delta: number) => {
   const updatedPoints = Math.max((child.points || 0) + delta, 0)
   const updatedData = {
-    users: childrenData.value?.users.map(u => 
+    users: childrenData.value?.users.map((u) =>
       u.id === child.id ? { ...u, points: updatedPoints } : u
-    )
+    ),
   } as UsersResponse
   childrenData.value = updatedData
-  
+
   debouncedUpdatePoints(child.id, updatedPoints)
 }
 </script>

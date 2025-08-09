@@ -1,35 +1,37 @@
 <template>
   <UCard variant="subtle">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField
-        name="username"
-        type="text"
-        v-if="!isAnyUserSelected"
-      >
+      <UFormField name="username" type="text" v-if="!isAnyUserSelected">
         <UInput placeholder="Who?" v-model="state.username" class="w-full" />
       </UFormField>
 
       <ul v-if="rememberedUsersState.length > 0" class="w-full">
         <li
           v-for="user in rememberedUsersState"
-          :key="user.username" class="mb-4"
-          :class="{'hidden': isAnyUserSelected && !user.isSelected}"
+          :key="user.username"
+          class="mb-4"
+          :class="{ hidden: isAnyUserSelected && !user.isSelected }"
         >
           <UCheckbox
             variant="card"
             default-value
-            indicator="hidden" 
+            indicator="hidden"
             :label="user.username"
             class="bg-neutral-100 dark:bg-neutral-800"
             v-model="user.isSelected"
             @change="selectUser(user)"
-            :ui="{'wrapper': 'text-left'}"
+            :ui="{ wrapper: 'text-left' }"
           />
         </li>
       </ul>
 
       <UFormField name="password">
-        <UInput placeholder="Password" v-model="state.password" type="password" class="w-full" />
+        <UInput
+          placeholder="Password"
+          v-model="state.password"
+          type="password"
+          class="w-full"
+        />
       </UFormField>
       <div>
         <UButton
@@ -70,7 +72,7 @@ const toast = useToast()
 
 const rememberedUsers = store.useRememberedUsers()
 const rememberedUsersState = ref<RememberedUserState[]>([])
-rememberedUsersState.value = rememberedUsers.value.map(user => ({
+rememberedUsersState.value = rememberedUsers.value.map((user) => ({
   username: user.username,
   isSelected: false,
 }))
@@ -86,13 +88,14 @@ const schema = z.object({
   password: z.string().min(3, 'Must be at least 3 characters'),
 })
 
-const isAnyUserSelected =
-  computed(() => rememberedUsersState.value.some(user => user.isSelected))
+const isAnyUserSelected = computed(() =>
+  rememberedUsersState.value.some((user) => user.isSelected)
+)
 
 // Fill form with user data
 const selectUser = (selectedUser: RememberedUserState) => {
   state.username = selectedUser.username
-  rememberedUsersState.value = rememberedUsersState.value.map(user => {
+  rememberedUsersState.value = rememberedUsersState.value.map((user) => {
     user.isSelected = user.username === selectedUser.username
     return user
   })
@@ -113,12 +116,11 @@ const onSubmit = async () => {
 
 const back = () => {
   state.username = ''
-  rememberedUsersState.value = rememberedUsersState.value.map(user => {
+  rememberedUsersState.value = rememberedUsersState.value.map((user) => {
     user.isSelected = false
     return user
   })
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
