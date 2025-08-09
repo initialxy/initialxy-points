@@ -13,16 +13,24 @@
             color="error"
             variant="soft"
             size="xl"
-            class="m-2 touch-manipulation"
+            class="m-0 touch-manipulation"
             @click="changePoints(child, -1)"
           />
-          <span class="text-2xl font-bold inline-block w-10 text-center">{{ child.points }}</span>
+          <UInput
+            v-model="child.points"
+            type="number"
+            variant="none"
+            class="w-15 m-0"
+            size="xl"
+            :ui="{ base: 'text-center' }"
+            @update:modelValue="debouncedUpdatePoints(child.id, child.points || 0)"
+          />
           <UButton
             icon="i-heroicons-plus"
             color="success"
             variant="soft"
             size="xl"
-            class="m-2 touch-manipulation"
+            class="ml-0 touch-manipulation"
             @click="changePoints(child, 1)"
           />
         </div>
