@@ -59,9 +59,6 @@
 
 <script setup lang="ts">
 import * as z from 'zod'
-import { useLocalStorage } from '@vueuse/core'
-
-const MAX_USERS_TO_REMEMBER = 3
 
 type RememberedUserState = {
   username: string
@@ -71,7 +68,7 @@ type RememberedUserState = {
 const store = useStore()
 const toast = useToast()
 
-const rememberedUsers = useLocalStorage<RememberedUser[]>('rememberedUsers', [])
+const rememberedUsers = store.useRememberedUsers()
 const rememberedUsersState = ref<RememberedUserState[]>([])
 rememberedUsersState.value = rememberedUsers.value.map(user => ({
   username: user.username,
@@ -106,15 +103,6 @@ const onSubmit = async () => {
 
   try {
     await store.login(state.username, state.password)
-    const { user: sessionUser } = useUserSession()
-    const user = sessionUser as Ref<User | null>
-    if (user.value != null) {
-      const newUser = {username: user.value.username, timestamp: Date.now()}
-      const prevUsers = rememberedUsers.value
-        .filter(u => u.username !== newUser.username)
-      rememberedUsers.value = [newUser, ...prevUsers]
-        .slice(0, MAX_USERS_TO_REMEMBER)
-    }
     await navigateTo('/dashboard')
   } catch (error) {
     toast.add({ title: 'Something went wrong', progress: false })
