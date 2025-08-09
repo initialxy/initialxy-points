@@ -8,6 +8,8 @@ This document provides comprehensive information about the API endpoints availab
 3. [Rewards](#rewards)
 4. [Users](#users)
 5. [Points](#points)
+6. [Logs](#logs)
+</search_and_replace>
 
 ## Authentication
 
@@ -291,4 +293,33 @@ Creates a new reward (parent-only endpoint).
 **Status Codes:**
 - 201: Reward created successfully
 - 400: Invalid input
+## Logs
+
+### GET /api/logs
+Retrieves logs of user actions. Parent users can see all logs, while child users can only see logs where they are the recipient.
+
+**Query Parameters:**
+- `limit` - Number of log entries to return (default: 50)
+
+**Response:**
+```json
+{
+  "logs": [
+    {
+      "id": "number",
+      "timestamp": "string",
+      "actor": "string",
+      "action_type": "string",
+      "recipient": "string",
+      "points_before": "number",
+      "points_after": "number",
+      "additional_context": "string"
+    }
+  ]
+}
+```
+
+**Status Codes:**
+- 200: Successful retrieval
+- 401: Unauthorized
 - 403: Forbidden (not a parent user)

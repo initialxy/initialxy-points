@@ -32,6 +32,17 @@ export type CreatedIdResponseBody = {
   createdId: number
 }
 
+export type Log = {
+  id?: number
+  timestamp?: string
+  actor_id: number
+  action_type: string
+  recipient_id?: number | null
+  points_before?: number | null
+  points_after?: number | null
+  additional_context?: string | null
+}
+
 // Response types for API endpoints
 export type TaskResponse = {
   task: Task
@@ -53,13 +64,6 @@ export type UserResponse = {
   user: User
 }
 
-export type Log = {
-  id?: number
-  timestamp?: string
-  actor_id: number
-  action_type: string
-  recipient_id?: number | null
-  points_before?: number | null
-  points_after?: number | null
-  additional_context?: string | null
+export type LogsResponse = {
+  logs: Log[]
 }
