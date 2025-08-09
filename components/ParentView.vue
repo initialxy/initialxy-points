@@ -9,7 +9,7 @@
         <h2 class="text-xl font-semibold">{{ child.username }}</h2>
         <div class="flex items-center space-x-2">
           <UButton
-            icon="i-heroicons-minus"
+            icon="i-lucide-minus"
             color="error"
             variant="soft"
             size="xl"
@@ -26,7 +26,7 @@
             @update:modelValue="debouncedUpdatePoints(child.id, child.points || 0)"
           />
           <UButton
-            icon="i-heroicons-plus"
+            icon="i-lucide-plus"
             color="success"
             variant="soft"
             size="xl"

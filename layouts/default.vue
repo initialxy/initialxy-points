@@ -9,7 +9,7 @@
     </main>
     
     <UButton
-      icon="i-heroicons-arrow-left-on-rectangle"
+      icon="i-lucide-log-out"
       color="error"
       variant="solid"
       size="xl"
