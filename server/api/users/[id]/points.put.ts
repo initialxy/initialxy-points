@@ -1,5 +1,6 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
+import { logAction } from '../../../utils/logs'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -37,12 +38,24 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Update points
+  const pointsBefore = existingUser.points
+  
   await db.run(
     'UPDATE users SET points = ? WHERE id = ?',
     points,
     id
   )
+
+  const log = {
+    actor_id: user.id,
+    action_type: 'change_points',
+    recipient_id: existingUser.id,
+    points_before: pointsBefore,
+    points_after: points,
+    additional_context: null
+  }
+  
+  await logAction(db, log)
 
   return { message: 'Points updated successfully' }
 })

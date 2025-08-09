@@ -52,3 +52,14 @@ export type UsersResponse = {
 export type UserResponse = {
   user: User
 }
+
+export type Log = {
+  id?: number
+  timestamp?: string
+  actor_id: number
+  action_type: string
+  recipient_id?: number | null
+  points_before?: number | null
+  points_after?: number | null
+  additional_context?: string | null
+}

@@ -13,7 +13,8 @@ async function initializeDatabase(db: Database): Promise<Database> {
   if (
     !tableNames.includes('users') ||
     !tableNames.includes('tasks') ||
-    !tableNames.includes('rewards')
+    !tableNames.includes('rewards') ||
+    !tableNames.includes('logs')
   ) {
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
@@ -42,6 +43,19 @@ async function initializeDatabase(db: Database): Promise<Database> {
         points INTEGER NOT NULL,
         parent_id INTEGER,
         FOREIGN KEY(parent_id) REFERENCES users(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actor_id INTEGER NOT NULL,
+        action_type TEXT NOT NULL,
+        recipient_id INTEGER,
+        points_before INTEGER,
+        points_after INTEGER,
+        additional_context TEXT,
+        FOREIGN KEY(actor_id) REFERENCES users(id),
+        FOREIGN KEY(recipient_id) REFERENCES users(id)
       );
     `)
   }
@@ -104,6 +118,26 @@ async function setPassword(db: Database, username: string, password: string) {
   console.log(`User ${username}'s password updated`)
 }
 
+async function showLogs(db: Database, count: number) {
+  const logs = await db.all(`
+    SELECT l.id, l.timestamp, u.username as actor, l.action_type,
+           r.username as recipient, l.points_before, l.points_after
+    FROM logs l
+    JOIN users u ON l.actor_id = u.id
+    LEFT JOIN users r ON l.recipient_id = r.id
+    ORDER BY l.timestamp DESC
+    LIMIT ?
+  `, [count])
+  
+  console.log(`\nTop ${count} log entries:`)
+  console.log('ID | Timestamp | Actor | Action Type | Recipient | Points Before | Points After')
+  console.log('---|-----------|-------|-------------|-----------|---------------|-------------')
+  logs.forEach((log: any) => {
+    console.log(`${log.id} | ${log.timestamp} | ${log.actor} | ${log.action_type} | ${log.recipient || '-'} | ${log.points_before || '-'} | ${log.points_after || '-'}`)
+  })
+  console.log('')
+}
+
 async function showHelp() {
   console.log(`
 Admin Console Commands:
@@ -115,6 +149,7 @@ Admin Console Commands:
   rename-user <oldUsername> <newUsername> - Rename a user
   change-user-role <username> <role> - Change a user's role
   set-password <username> <password> - Set a new password for a user
+  show-logs <n> - Show top n log entries
   exit - Exit the admin console
 `)
 }
@@ -194,6 +229,18 @@ async function main() {
           } else {
             const [username, password] = args
             await setPassword(db, username, password)
+          }
+          break
+        case 'show-logs':
+          if (args.length < 1) {
+            console.log('Usage: show-logs <n>')
+          } else {
+            const count = parseInt(args[0])
+            if (isNaN(count) || count <= 0) {
+              console.log('Please provide a valid positive number')
+            } else {
+              await showLogs(db, count)
+            }
           }
           break
         case 'exit':
