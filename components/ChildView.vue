@@ -7,7 +7,10 @@
       <div class="text-6xl font-extrabold text-primary text-center mb-4">
         {{ user?.points || 0 }}
       </div>
-      <p class="text-xl text-center opacity-50">points so far</p>
+      <p class="text-xl text-center opacity-50">
+        points. Keep it up!
+        <UIcon name="i-lucide-thumbs-up"/>
+      </p>
     </UCard>
   </div>
 </template>

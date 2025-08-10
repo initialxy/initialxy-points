@@ -38,8 +38,10 @@ export default defineNuxtConfig({
         { name: 'msapplication-starturl', content: '/'},
         { name: 'msapplication-TileImage', content: '/mstile-144x144.png'},
         { name: 'msapplication-square310x310logo', content: '/mstile-310x310.png'},
-        { name: 'msapplication-TileColor', content: '#0f172b'},
-        { name: 'theme-color', content: '#0f172b'},
+        { name: 'msapplication-TileColor', media: '(prefers-color-scheme: light)', content: '#ffffff'},
+        { name: 'msapplication-TileColor', media: '(prefers-color-scheme: dark)', content: '#061b2b'},
+        { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#ffffff'},
+        { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#061b2b'},
       ],
     },
     pageTransition: { name: 'page', mode: 'in-out' }

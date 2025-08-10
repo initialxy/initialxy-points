@@ -8,14 +8,18 @@
       </UContainer>
     </main>
 
-    <UButton
-      icon="i-lucide-log-out"
-      color="error"
-      variant="solid"
-      size="xl"
-      class="fixed bottom-4 left-4 z-10"
-      @click="logoutClicked"
-    />
+    <div class="fixed bottom-4 left-4 z-10 overflow-hidden">
+      <UButton
+        icon="i-lucide-log-out"
+        color="error"
+        variant="solid"
+        size="xl"
+        @click="logoutClicked"
+        block
+        class="w-10 h-10 rounded-full flex"
+        :ui="{leadingIcon: 'text-lg'}"
+      />
+    </div>
   </div>
 </template>
 
