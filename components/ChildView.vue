@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full">
-    <UCard class="max-w-100 ml-auto mr-auto" variant="subtle">
+  <div class="max-w-100 mx-auto">
+    <UCard class="mb-4" variant="subtle">
       <h1 class="text-3xl font-bold text-center mb-4">
         <span class="text-info">{{ user?.username }}</span> earned
       </h1>

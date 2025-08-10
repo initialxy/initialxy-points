@@ -1,3 +1,7 @@
+export type JustId = {
+  id: number
+}
+
 export type User = {
   id: number
   username: string
@@ -34,7 +38,7 @@ export type CreatedIdResponseBody = {
 
 export type Log = {
   id?: number
-  timestamp?: string
+  timestamp?: number
   actor_id: number
   action_type: string
   recipient_id?: number | null

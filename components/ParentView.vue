@@ -1,9 +1,9 @@
 <template>
-  <div v-if="childrenData?.users.length ?? 0 > 0" class="w-full">
+  <div v-if="childrenData?.users.length ?? 0 > 0" class="max-w-100 mx-auto">
     <UCard
       v-for="child in childrenData?.users"
       :key="child.id"
-      class="mb-4 max-w-100 ml-auto mr-auto"
+      class="mb-4"
       variant="subtle"
     >
       <div class="flex items-center justify-between">
@@ -44,10 +44,17 @@
 
 <script setup lang="ts">
 const DEBOUNCE_WAIT_MS = 300
+
+const emit = defineEmits(['updatePoints', 'submit'])
+
 const toast = useToast()
 
-const { data: childrenData, refresh } =
-  await useFetch<UsersResponse>('/api/users')
+const { data: childrenData, refresh } = await useFetch<UsersResponse>(
+  '/api/users',
+  {
+    query: { role: 'child' },
+  }
+)
 
 const debouncedUpdatePoints = debounce(
   async (childId: number, newPoints: number) => {
@@ -57,6 +64,8 @@ const debouncedUpdatePoints = debounce(
         body: { points: newPoints },
       })
       await refresh()
+
+      emit('updatePoints', { childId, points: newPoints })
     } catch (err) {
       console.error('Error updating points:', err)
       toast.add({ title: 'Failed to update points', progress: false })

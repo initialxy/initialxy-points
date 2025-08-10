@@ -154,7 +154,9 @@ const {
 } = await useFetch<{ tasks: Task[] }>('/api/tasks')
 
 // Fetch children data for parent task creation
-const { data: usersData } = await useFetch<{ users: User[] }>('/api/users')
+const { data: usersData } = await useFetch<{ users: User[] }>('/api/users', {
+  query: { role: 'all' },
+})
 const children = computed(
   () => usersData.value?.users.filter((u) => u.role === 'child') || []
 )
