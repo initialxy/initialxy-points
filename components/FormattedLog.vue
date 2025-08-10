@@ -50,7 +50,7 @@ const info = computed(() => {
 const additional = computed(() => {
   switch (props.log.action_type) {
     case ACTION_CHANGE_POINTS:
-      return `points from ${props.log.points_before} to ${props.log.points_after}`
+      return `points ${props.log.points_before} → ${props.log.points_after}`
     default:
       return ''
   }
