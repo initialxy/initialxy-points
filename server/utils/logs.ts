@@ -6,8 +6,8 @@ export async function logAction(db: Database, log: Log): Promise<void> {
   if (log.action_type === 'change_points') {
     // Check if we have a similar log line for change_points in the last 30
     // seconds
-    const existingLog: JustId | undefined = await db.get(
-      `SELECT id
+    const existingLog: Log | undefined = await db.get(
+      `SELECT id, actor_id, action_type, recipient_id, points_before, points_after
        FROM logs 
        WHERE actor_id = ? 
        AND action_type = ? 
@@ -21,13 +21,18 @@ export async function logAction(db: Database, log: Log): Promise<void> {
     )
 
     if (existingLog) {
-      await db.run(
-        `UPDATE logs 
-         SET points_after = ?, timestamp = CURRENT_TIMESTAMP 
-         WHERE id = ?`,
-        log.points_after,
-        existingLog.id
-      )
+      // If we just end up with the same points as before then perform a delete
+      if (existingLog.points_before === log.points_after) {
+        await db.run(`DELETE FROM logs WHERE id = ?`, existingLog.id)
+      } else {
+        await db.run(
+          `UPDATE logs
+           SET points_after = ?, timestamp = CURRENT_TIMESTAMP
+           WHERE id = ?`,
+          log.points_after,
+          existingLog.id
+        )
+      }
       return
     }
   }
