@@ -39,31 +39,36 @@ const getUsername = (userId: number): string => {
   return user ? user.username : ''
 }
 
-const items: TimelineItem[] = props.logs.map((log) => {
-  const username = getUsername(log.actor_id)
-  const actionType = log.action_type
-  const date = new Date(log.timestamp || 0).toISOString()
+const items: Ref<TimelineItem[]> = computed(() =>
+  props.logs.map((log) => {
+    const username = getUsername(log.actor_id)
+    const actionType = log.action_type
+    const date = new Date(log.timestamp || 0).toISOString()
 
-  switch (actionType) {
-    case 'change_points':
-      const pointsChange = (log.points_after || 0) - (log.points_before || 0)
-      const action = `${pointsChange > 0 ? 'added' : 'reduced'} ${Math.abs(pointsChange)} points to ${getUsername(log.recipient_id || 0)}`
-      const icon =
-        pointsChange > 0 ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
-      const description = `${getUsername(log.recipient_id || 0)} now has ${log.points_after} points`
-      return {
-        username,
-        date,
-        action,
-        icon,
-        description,
-      }
-  }
+    switch (actionType) {
+      case 'change_points':
+        const pointsChange = (log.points_after || 0) - (log.points_before || 0)
+        const action =
+          `${pointsChange > 0 ? 'gave' : 'removed'} ` +
+          `${Math.abs(pointsChange)} points ${pointsChange > 0 ? 'to' : 'from'} ` +
+          `${getUsername(log.recipient_id || 0)}`
+        const description = `${getUsername(log.recipient_id || 0)} now has ${log.points_after || 0} points`
+        const icon =
+          pointsChange > 0 ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'
+        return {
+          username,
+          date,
+          action,
+          description,
+          icon,
+        }
+    }
 
-  return {
-    username,
-    date,
-    action: actionType,
-  }
-})
+    return {
+      username,
+      date,
+      action: actionType,
+    }
+  })
+)
 </script>
