@@ -1,5 +1,6 @@
 import { Database } from 'sqlite'
 
+const MAX_NUM_LOGS_RETENTION = 1000
 const LOG_CHANGE_POINTS_DEBOUNCE_SECONDS = 30
 
 export async function logAction(db: Database, log: Log): Promise<void> {
@@ -46,5 +47,18 @@ export async function logAction(db: Database, log: Log): Promise<void> {
     log.points_before ?? null,
     log.points_after ?? null,
     log.additional_context ?? null
+  )
+
+  // Delete old logs for retention
+  await db.run(
+    `DELETE FROM logs
+    WHERE id NOT IN (
+      SELECT id FROM (
+        SELECT id FROM logs
+        ORDER BY timestamp DESC
+        LIMIT ?
+      )
+    )`,
+    MAX_NUM_LOGS_RETENTION
   )
 }

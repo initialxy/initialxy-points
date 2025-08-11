@@ -57,6 +57,12 @@ async function initializeDatabase(db: Database): Promise<Database> {
         FOREIGN KEY(actor_id) REFERENCES users(id),
         FOREIGN KEY(recipient_id) REFERENCES users(id)
       );
+
+      CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON logs(timestamp);
+      CREATE INDEX IF NOT EXISTS idx_logs_recipient_id ON logs(recipient_id);
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+      CREATE INDEX IF NOT EXISTS idx_tasks_child_id ON tasks(child_id);
+      CREATE INDEX IF NOT EXISTS idx_tasks_parent_id ON tasks(parent_id);
     `)
   }
 
@@ -124,7 +130,7 @@ async function showLogs(db: Database, count: number) {
     SELECT l.id, l.timestamp, u.username as actor, l.action_type,
            r.username as recipient, l.points_before, l.points_after
     FROM logs l
-    JOIN users u ON l.actor_id = u.id
+    LEFT JOIN users u ON l.actor_id = u.id
     LEFT JOIN users r ON l.recipient_id = r.id
     ORDER BY l.timestamp DESC
     LIMIT ?
