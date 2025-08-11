@@ -2,7 +2,7 @@
 
 A simple web app that helps track points earned by kids and allows them to redeem points for rewards.
 
-This project was created as a personal Raspberry Pi project to help manage my children's point-based reward system. I wanted to experiment with fully local development using my Radeon RX 7900 XTX, so I generated much of the code with local LLMs while still maintaining strict quality control - reviewing every line of code to ensure it meets my expectations.
+This project was created as a personal Raspberry Pi project to help manage my children's point-based reward system. I wanted to experiment with fully local vibe coding using my Radeon RX 7900 XTX, so I generated as much of the code as possible with local LLMs models while still reviewing every line of code to ensure it meets my expectations.
 
 **Important Security Notice**: This application is designed for use in a home network environment only. It is not intended for public access or production use and is not secure. Do not deploy this application publicly.
 

@@ -85,7 +85,7 @@
         </div>
       </Transition>
       <Transition
-        enter-active-class="duration-150 bounce-timing"
+        enter-active-class="duration-150 bounce-timing delay-100"
         enter-from-class="transform opacity-0 translate-y-20"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
@@ -106,7 +106,7 @@
         </div>
       </Transition>
       <Transition
-        enter-active-class="duration-150 bounce-timing"
+        enter-active-class="duration-150 bounce-timing delay-200"
         enter-from-class="transform opacity-0 translate-y-10"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
