@@ -65,6 +65,27 @@
     <div class="fixed bottom-4 left-4 z-10 overflow-hidden">
       <Transition
         enter-active-class="duration-150 ease-in-out"
+        enter-from-class="transform opacity-0 translate-y-30"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="duration-150 ease-in-out"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 translate-y-30"
+      >
+        <div v-if="isMoreExpanded" key="logout-button">
+          <UButton
+            icon="i-lucide-log-out"
+            color="error"
+            variant="solid"
+            size="xl"
+            @click="logoutClicked"
+            block
+            class="w-10 h-10 rounded-full flex my-4"
+            :ui="{ leadingIcon: 'text-lg' }"
+          />
+        </div>
+      </Transition>
+      <Transition
+        enter-active-class="duration-150 ease-in-out"
         enter-from-class="transform opacity-0 translate-y-20"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
@@ -92,13 +113,13 @@
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="transform opacity-0 translate-y-10"
       >
-        <div v-if="isMoreExpanded" key="logout-button">
+        <div v-if="isMoreExpanded" key="refresh-button">
           <UButton
-            icon="i-lucide-log-out"
-            color="error"
+            icon="i-lucide-refresh-ccw"
+            color="info"
             variant="solid"
             size="xl"
-            @click="logoutClicked"
+            @click="refresh"
             block
             class="w-10 h-10 rounded-full flex my-4"
             :ui="{ leadingIcon: 'text-lg' }"
@@ -110,7 +131,8 @@
         color="secondary"
         variant="solid"
         size="xl"
-        @click="toggleMore"
+        @click="isMoreExpanded = !isMoreExpanded"
+        @blur="isMoreExpanded = false"
         block
         class="w-10 h-10 rounded-full flex"
         :ui="{ leadingIcon: 'text-lg' }"
@@ -140,10 +162,6 @@ const schema = z.object({
   newPassword: z.string().min(4, 'Must be at least 4 characters'),
   confirmNewPassword: z.string().min(4, 'Must be at least 4 characters'),
 })
-
-const toggleMore = async () => {
-  isMoreExpanded.value = !isMoreExpanded.value
-}
 
 const logoutClicked = async () => {
   await store.logout()
@@ -198,5 +216,9 @@ const changePasswordSubmit = async () => {
       progress: false,
     })
   }
+}
+
+const refresh = async () => {
+  refreshNuxtData()
 }
 </script>
