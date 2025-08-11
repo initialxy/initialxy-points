@@ -132,7 +132,7 @@
         variant="solid"
         size="xl"
         @click="isMoreExpanded = !isMoreExpanded"
-        @blur="isMoreExpanded = false"
+        @blur="dismissMenu"
         block
         class="w-10 h-10 rounded-full flex"
         :ui="{ leadingIcon: 'text-lg' }"
@@ -220,5 +220,12 @@ const changePasswordSubmit = async () => {
 
 const refresh = async () => {
   refreshNuxtData()
+}
+
+const dismissMenu = async () => {
+  // Add a little delay so that clicks on other menu buttons could be registered
+  // before it's gone
+  await sleep(200)
+  isMoreExpanded.value = false
 }
 </script>
