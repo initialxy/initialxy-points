@@ -63,28 +63,37 @@
     </UModal>
 
     <div class="fixed bottom-4 left-4 z-10 overflow-hidden">
-      <UButton
-        v-if="isMoreExpanded"
-        icon="i-lucide-square-asterisk"
-        color="info"
-        variant="solid"
-        size="xl"
-        @click="changePassword"
-        block
-        class="w-10 h-10 rounded-full flex my-4"
-        :ui="{ leadingIcon: 'text-lg' }"
-      />
-      <UButton
-        v-if="isMoreExpanded"
-        icon="i-lucide-log-out"
-        color="error"
-        variant="solid"
-        size="xl"
-        @click="logoutClicked"
-        block
-        class="w-10 h-10 rounded-full flex my-4"
-        :ui="{ leadingIcon: 'text-lg' }"
-      />
+      <transition
+        enter-active-class="duration-100 ease-in"
+        enter-from-class="transform opacity-0 translate-y-5"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="duration-100 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 translate-y-5"
+      >
+        <div v-if="isMoreExpanded" key="buttons">
+          <UButton
+            icon="i-lucide-square-asterisk"
+            color="info"
+            variant="solid"
+            size="xl"
+            @click="changePassword"
+            block
+            class="w-10 h-10 rounded-full flex my-4"
+            :ui="{ leadingIcon: 'text-lg' }"
+          />
+          <UButton
+            icon="i-lucide-log-out"
+            color="error"
+            variant="solid"
+            size="xl"
+            @click="logoutClicked"
+            block
+            class="w-10 h-10 rounded-full flex my-4"
+            :ui="{ leadingIcon: 'text-lg' }"
+          />
+        </div>
+      </transition>
       <UButton
         icon="i-lucide-menu"
         color="secondary"
@@ -180,5 +189,3 @@ const changePasswordSubmit = async () => {
   }
 }
 </script>
-
-<style scoped></style>
