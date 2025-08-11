@@ -17,8 +17,20 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const logs: Log[] = await db.all(
     `
-      SELECT id, CAST(strftime('%s', timestamp) AS INTEGER) * 1000 AS timestamp, actor_id, action_type, recipient_id, points_before, points_after, additional_context
+      SELECT
+        logs.id AS id,
+        CAST(strftime('%s', timestamp) AS INTEGER) * 1000 AS timestamp,
+        actor_id,
+        actors.username AS actor_username,
+        action_type,
+        recipient_id,
+        recipients.username AS recipient_username,
+        points_before,
+        points_after,
+        additional_context
       FROM logs
+      LEFT JOIN users AS actors ON logs.actor_id = actors.id
+      LEFT JOIN users AS recipients ON logs.recipient_id = recipients.id
       WHERE ${cond}
       ORDER BY timestamp DESC
       LIMIT ?

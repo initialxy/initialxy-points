@@ -36,8 +36,10 @@ export type Log = {
   id?: number
   timestamp?: number
   actor_id: number
+  actor_username?: string | null
   action_type: string
   recipient_id?: number | null
+  recipient_username?: string | null
   points_before?: number | null
   points_after?: number | null
   additional_context?: string | null
