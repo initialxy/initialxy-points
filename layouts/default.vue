@@ -63,15 +63,15 @@
     </UModal>
 
     <div class="fixed bottom-4 left-4 z-10 overflow-hidden">
-      <transition
-        enter-active-class="duration-100 ease-in"
-        enter-from-class="transform opacity-0 translate-y-5"
+      <Transition
+        enter-active-class="duration-150 ease-in-out"
+        enter-from-class="transform opacity-0 translate-y-20"
         enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="duration-100 ease-in"
+        leave-active-class="duration-150 ease-in-out"
         leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="transform opacity-0 translate-y-5"
+        leave-to-class="transform opacity-0 translate-y-20"
       >
-        <div v-if="isMoreExpanded" key="buttons">
+        <div v-if="isMoreExpanded" key="change-password-button">
           <UButton
             icon="i-lucide-square-asterisk"
             color="info"
@@ -82,6 +82,17 @@
             class="w-10 h-10 rounded-full flex my-4"
             :ui="{ leadingIcon: 'text-lg' }"
           />
+        </div>
+      </Transition>
+      <Transition
+        enter-active-class="duration-150 ease-in-out"
+        enter-from-class="transform opacity-0 translate-y-10"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="duration-150 ease-in-out"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 translate-y-10"
+      >
+        <div v-if="isMoreExpanded" key="logout-button">
           <UButton
             icon="i-lucide-log-out"
             color="error"
@@ -93,7 +104,7 @@
             :ui="{ leadingIcon: 'text-lg' }"
           />
         </div>
-      </transition>
+      </Transition>
       <UButton
         icon="i-lucide-menu"
         color="secondary"
