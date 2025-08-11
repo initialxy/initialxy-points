@@ -62,9 +62,9 @@
       </template>
     </UModal>
 
-    <div class="fixed bottom-4 left-4 z-10 overflow-hidden">
+    <div class="fixed bottom-4 left-4 z-10">
       <Transition
-        enter-active-class="duration-150 ease-in-out"
+        enter-active-class="duration-150 bounce-timing"
         enter-from-class="transform opacity-0 translate-y-30"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
@@ -85,7 +85,7 @@
         </div>
       </Transition>
       <Transition
-        enter-active-class="duration-150 ease-in-out"
+        enter-active-class="duration-150 bounce-timing"
         enter-from-class="transform opacity-0 translate-y-20"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
@@ -106,7 +106,7 @@
         </div>
       </Transition>
       <Transition
-        enter-active-class="duration-150 ease-in-out"
+        enter-active-class="duration-150 bounce-timing"
         enter-from-class="transform opacity-0 translate-y-10"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="duration-150 ease-in-out"
@@ -229,3 +229,9 @@ const dismissMenu = async () => {
   isMoreExpanded.value = false
 }
 </script>
+
+<style>
+.bounce-timing {
+  transition-timing-function: cubic-bezier(0.22, 1.14, 0.69, 1.58);
+}
+</style>
