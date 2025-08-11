@@ -7,9 +7,7 @@ This document provides comprehensive information about the API endpoints availab
 2. [Tasks](#tasks)
 3. [Rewards](#rewards)
 4. [Users](#users)
-5. [Points](#points)
-6. [Logs](#logs)
-</search_and_replace>
+5. [Logs](#logs)
 
 ## Authentication
 
@@ -27,7 +25,6 @@ Authenticates a user with a username and password.
 **Response:**
 ```json
 {
-  "token": "string",
   "user": {
     "id": "number",
     "username": "string",
@@ -42,6 +39,29 @@ Authenticates a user with a username and password.
 - 400: Invalid input
 - 401: Invalid username or password
 
+### POST /api/auth/password
+Changes the password for the authenticated user.
+
+**Request:**
+```json
+{
+  "currentPassword": "string",
+  "newPassword": "string"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "string",
+  "success": "boolean"
+}
+```
+
+**Status Codes:**
+- 200: Password changed successfully
+- 400: Invalid input or current password is incorrect
+- 401: Unauthorized
 
 ## Users
 
@@ -51,19 +71,25 @@ Retrieves a specific user by ID.
 **Response:**
 ```json
 {
-  "id": "number",
-  "username": "string",
-  "role": "string",
-  "points": "number"
+  "user": {
+    "id": "number",
+    "username": "string",
+    "role": "string",
+    "points": "number"
+  }
 }
 ```
 
 **Status Codes:**
 - 200: Successful retrieval
+- 403: Forbidden (not authorized)
 - 404: User not found
 
 ### GET /api/users
 Retrieves all users.
+
+**Query Parameters:**
+- `role` - Filter by user role ('child', 'parent', or 'all') (default: 'child')
 
 **Response:**
 ```json
@@ -81,6 +107,29 @@ Retrieves all users.
 
 **Status Codes:**
 - 200: Successful retrieval
+
+### PUT /api/users/[id]/points
+Updates points for a specific child user (parent-only endpoint).
+
+**Request:**
+```json
+{
+  "points": "number"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Points updated successfully"
+}
+```
+
+**Status Codes:**
+- 200: Points updated successfully
+- 400: Invalid points value
+- 403: Forbidden (not a parent user)
+- 404: User not found or not a child
 
 ## Tasks
 
@@ -124,32 +173,27 @@ Creates a new task for a child (parent-only endpoint).
 **Response:**
 ```json
 {
-  "id": "number",
-  "description": "string",
-  "points": "number",
-  "task_type": "string",
-  "child_id": "number",
-  "parent_id": "number"
+  "task": {
+    "id": "number",
+    "description": "string",
+    "points": "number",
+    "task_type": "string",
+    "child_id": "number",
+    "parent_id": "number"
+  }
 }
 ```
 
 **Status Codes:**
-- 201: Task created successfully
+- 200: Task created successfully
 - 400: Invalid input
 - 403: Forbidden (not a parent user)
 
 ### DELETE /api/tasks/[id]
 Deletes a task by ID.
 
-**Response:**
-```json
-{
-  "message": "Task deleted successfully"
-}
-```
-
 **Status Codes:**
-- 200: Task deleted successfully
+- 204: Task deleted successfully
 - 400: Invalid task ID
 - 403: Forbidden (not authorized)
 - 404: Task not found
@@ -169,12 +213,15 @@ Updates a task by ID.
 **Response:**
 ```json
 {
-  "id": "number",
-  "description": "string",
-  "points": "number",
-  "task_type": "string",
-  "child_id": "number",
-  "parent_id": "number"
+  "task": {
+    "id": "number",
+    "description": "string",
+    "points": "number",
+    "task_type": "string",
+    "child_id": "number",
+    "parent_id": "number",
+    "is_marked_complete": "boolean"
+  }
 }
 ```
 
@@ -233,26 +280,13 @@ Rejects a task completion by a parent user.
 - 403: Forbidden (not a parent user)
 - 404: Task not found
 
-## Points
-
-### GET /api/points
-Retrieves the points for the authenticated user.
-
-**Response:**
-```json
-{
-  "points": "number"
-}
-```
-
-**Status Codes:**
-- 200: Successful retrieval
-- 403: Forbidden (not authorized)
-
 ## Rewards
 
 ### GET /api/rewards
 Retrieves available rewards.
+
+**Query Parameters:**
+- `child_id` - Filter by child ID (optional). If provided, returns rewards for that specific child. If not provided and user is a child, returns rewards for the authenticated child's parent.
 
 **Response:**
 ```json
@@ -261,7 +295,8 @@ Retrieves available rewards.
     {
       "id": "number",
       "description": "string",
-      "points": "number"
+      "points": "number",
+      "parent_id": "number"
     }
   ]
 }
@@ -269,6 +304,7 @@ Retrieves available rewards.
 
 **Status Codes:**
 - 200: Successful retrieval
+- 403: Forbidden (if user is not authorized to access the rewards)
 
 ### POST /api/rewards
 Creates a new reward (parent-only endpoint).
@@ -284,15 +320,16 @@ Creates a new reward (parent-only endpoint).
 **Response:**
 ```json
 {
-  "id": "number",
-  "description": "string",
-  "points": "number"
+  "message": "Reward created successfully",
+  "createdId": "number"
 }
 ```
 
 **Status Codes:**
 - 201: Reward created successfully
-- 400: Invalid input
+- 400: Invalid input (description and points are required)
+- 403: Forbidden (not a parent user)
+
 ## Logs
 
 ### GET /api/logs
@@ -307,10 +344,12 @@ Retrieves logs of user actions. Parent users can see all logs, while child users
   "logs": [
     {
       "id": "number",
-      "timestamp": "string",
-      "actor": "string",
+      "timestamp": "number",
+      "actor_id": "number",
+      "actor_username": "string",
       "action_type": "string",
-      "recipient": "string",
+      "recipient_id": "number",
+      "recipient_username": "string",
       "points_before": "number",
       "points_after": "number",
       "additional_context": "string"
@@ -322,4 +361,3 @@ Retrieves logs of user actions. Parent users can see all logs, while child users
 **Status Codes:**
 - 200: Successful retrieval
 - 401: Unauthorized
-- 403: Forbidden (not a parent user)

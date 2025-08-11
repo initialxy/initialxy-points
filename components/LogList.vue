@@ -37,7 +37,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
       case 'change_points':
         const pointsChange = (log.points_after || 0) - (log.points_before || 0)
         const action =
-          `${pointsChange > 0 ? 'gave' : 'removed'} ` +
+          `${pointsChange > 0 ? 'gave' : 'took'} ` +
           `${Math.abs(pointsChange)} points ${pointsChange > 0 ? 'to' : 'from'} ` +
           `${recipientUsername}`
         const description = `${recipientUsername} now has ${log.points_after || 0} points`

@@ -1,28 +1,24 @@
-# initialxy-points (Work in Progress)
+# initialxy-points
 
-A simple web app that helps track points earned by my kids and allows them to redeem points for rewards.
-I wanted to play with fully local vibe coding on my Radeon RX 7900 XTX. So I will try to generate as much code with local LLMs as possible. But don't worry, I'm a prideful software engineer. I will review every line of code to ensure it meets my expectations exactly. Though it is currently completely broken, so don't bother using it.
+A simple web app that helps track points earned by kids and allows them to redeem points for rewards.
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Setup](#setup)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
+This project was created as a personal Raspberry Pi project to help manage my children's point-based reward system. I wanted to experiment with fully local development using my Radeon RX 7900 XTX, so I generated much of the code with local LLMs while still maintaining strict quality control - reviewing every line of code to ensure it meets my expectations.
+
+**Important Security Notice**: This application is designed for use in a home network environment only. It is not intended for public access or production use and is not secure. Do not deploy this application publicly.
+
+![Demo](demo.gif)
+![Demo Light](demo_light.jpg)
 
 ## Project Overview
 
-initialxy-points is designed to help parents track their kids' progress through tasks and rewards. It features a simple, intuitive interface for both parents and kids.
+initialxy-points is designed to help parents track their children's points that they earn through tasks and activities. It features a simple, intuitive interface for both parents and kids to manage rewards and point tracking.
 
 ## Features
 
-- Passcode-based authentication for parents and children
-- Task management system for parents to assign tasks to children
-- Reward system with point values
-- Points tracking and visibility
-- Responsive design for mobile and desktop
+- Point tracking for children's tasks and activities
+- Parent-child role-based access control
+- Activity logging
+- Admin console for database management
 
 ## Setup
 
@@ -34,32 +30,59 @@ npm install
 
 ## Development Server
 
+First, run the admin console to initialize your database:
+
+```bash
+npm run admin
+```
+
+This will launch an admin console for managing users. Enter a SQLite database file path to get started (e.g., `database.sqlite`). Run `init-db` to create database tables.
+
+During development, you can create a `.env` file with the following variables:
+
+* `NUXT_SESSION_PASSWORD` - A secret password for session encryption. When you run the development server for the first time, one will be generated for you.
+* `DB_PATH` - Path to the SQLite database file that you just created and initialized (e.g., `database.sqlite`).
+
 Start the development server on `http://localhost:3000`:
 
 ```bash
 npm run dev
 ```
 
-## Production
+### Admin Console Commands
 
-Build the application for production:
+The admin console provides these commands:
+
+- `help` - Show this help message
+- `init-db` - Initialize database
+- `list` - Show all users and their roles
+- `add-user <username> <password> [role]` - Add a new user
+- `delete-user <username>` - Delete a user
+- `rename-user <oldUsername> <newUsername>` - Rename a user
+- `change-user-role <username> <role>` - Change a user's role
+- `set-password <username> <password>` - Set a new password for a user
+- `show-logs <n>` - Show top n log entries
+- `exit` - Exit the admin console
+
+## Deployment
+
+[Follow Nuxt Deployment process](https://nuxt.com/docs/4.x/getting-started/deployment). Build the application for production:
 
 ```bash
 npm run build
 ```
 
-Locally preview production build:
+Make sure you set `NUXT_SESSION_PASSWORD` and `DB_PATH` environment variables before running the node server. You can generate a new session password with:
 
 ```bash
-npm run preview
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## Usage
+Start the node server:
 
-1. **Register Users**: Start by registering parent and child users through the application interface.
-2. **Parent Dashboard**: Parents can create tasks and rewards, view children's points.
-3. **Child Dashboard**: Children can view their tasks, and track their points.
-4. **API Access**: Developers can interact with the application's functionality through the REST API.
+```bash
+node .output/server/index.mjs
+```
 
 ## API Documentation
 
