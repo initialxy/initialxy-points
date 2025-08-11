@@ -9,7 +9,7 @@
       </div>
       <p class="text-xl text-center opacity-50">
         points. Keep it up!
-        <UIcon name="i-lucide-thumbs-up"/>
+        <UIcon name="i-lucide-thumbs-up" />
       </p>
     </UCard>
   </div>

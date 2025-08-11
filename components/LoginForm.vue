@@ -1,8 +1,13 @@
 <template>
   <UCard variant="subtle">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField name="username" type="text" v-if="!isAnyUserSelected">
-        <UInput placeholder="Who?" v-model="state.username" class="w-full" />
+      <UFormField name="username" v-if="!isAnyUserSelected">
+        <UInput
+          placeholder="Who?"
+          type="text"
+          v-model="state.username"
+          class="w-full"
+        />
       </UFormField>
 
       <ul v-if="rememberedUsersState.length > 0" class="w-full">
@@ -85,7 +90,7 @@ const state = reactive({
 
 const schema = z.object({
   username: z.string(),
-  password: z.string().min(3, 'Must be at least 3 characters'),
+  password: z.string().min(4, 'Must be at least 4 characters'),
 })
 
 const isAnyUserSelected = computed(() =>
@@ -108,7 +113,11 @@ const onSubmit = async () => {
     await store.login(state.username, state.password)
     await navigateTo('/dashboard')
   } catch (error) {
-    toast.add({ title: 'Something went wrong', progress: false })
+    toast.add({
+      title: 'Something went wrong',
+      progress: false,
+      color: 'error',
+    })
   } finally {
     state.isLoading = false
   }

@@ -11,7 +11,7 @@ interface DbUser extends User {
 
 const bodySchema = z.object({
   username: z.string(),
-  password: z.string().min(3),
+  password: z.string().min(4),
 })
 
 export default defineEventHandler(async (event) => {
