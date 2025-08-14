@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-const DEBOUNCE_WAIT_MS = 300
+const DEBOUNCE_WAIT_MS = 1000
 
 const emit = defineEmits(['updatePoints', 'submit'])
 

@@ -1,0 +1,15 @@
+.output
+.data
+.nuxt
+.nitro
+.cache
+.vscode
+dist
+
+.env
+.output
+package-lock.json
+node_modules
+
+*.log
+*.sqlite
