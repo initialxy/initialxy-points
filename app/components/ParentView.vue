@@ -8,6 +8,13 @@
     >
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">{{ child.username }}</h2>
+        <UBadge
+          variant="subtle"
+          color="primary"
+          size="xl"
+          :icon="`i-lucide-clipboard-list`"
+          >{{ getTaskCount(child.id) }}</UBadge
+        >
         <div class="flex items-center space-x-2">
           <UButton
             icon="i-lucide-minus"
@@ -55,6 +62,14 @@ const { data: childrenData, refresh } = await useFetch<UsersResponse>(
     query: { role: 'child' },
   }
 )
+
+const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
+
+const getTaskCount = (childId: number) => {
+  if (!tasksData.value?.tasks) return 0
+  return tasksData.value.tasks.filter((task) => task.child_id === childId)
+    .length
+}
 
 const debouncedUpdatePoints = debounce(
   async (childId: number, newPoints: number) => {
