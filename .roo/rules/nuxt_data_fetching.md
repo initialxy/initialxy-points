@@ -1,4 +1,4 @@
-# Nuxt 3 Data Fetching Reference
+# Nuxt 4 Data Fetching Reference
 
 ## Core Concepts
 - `useFetch`: SSR-safe reactive data fetching for component initialization

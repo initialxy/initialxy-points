@@ -38,10 +38,10 @@
 ## 4. Technical Requirements
 
 ### 4.1 Tech Stack
-- Frontend: Vue.js with Nuxt.js framework
+- Frontend: Vue.js with Nuxt 4 framework
   - Modules: nuxt/fonts, nuxt/icon, nuxt/ui
 - State Management: Pinia
-- Backend: Nuxt.js (full-stack mode)
+- Backend: Nuxt 4 (full-stack mode)
 - Database: SQLite
 - TypeScript: Full TypeScript safety
 

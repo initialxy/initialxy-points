@@ -1,5 +1,5 @@
-**Nuxt 3 Auto-Import Feature Overview**  
-Nuxt 3 simplifies development by automatically importing common Vue and Nuxt utilities, components, and custom code without explicit `import` statements. This reduces boilerplate and enhances productivity.
+**Nuxt 4 Auto-Import Feature Overview**
+Nuxt 4 simplifies development by automatically importing common Vue and Nuxt utilities, components, and custom code without explicit `import` statements. This reduces boilerplate and enhances productivity.
 
 ---
 
@@ -37,5 +37,5 @@ Nuxt 3 simplifies development by automatically importing common Vue and Nuxt uti
 
 ---
 
-### **Why It Matters**  
-Nuxt 3’s auto-imports streamline development by eliminating repetitive imports, while maintaining type safety and performance. Most files (components, composables, utilities) don’t require explicit imports, making the code cleaner and faster to write.
+### **Why It Matters**
+Nuxt 4's auto-imports streamline development by eliminating repetitive imports, while maintaining type safety and performance. Most files (components, composables, utilities) don't require explicit imports, making the code cleaner and faster to write.

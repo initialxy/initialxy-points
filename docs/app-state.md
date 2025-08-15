@@ -6,7 +6,7 @@ initialxy-points is a full-stack Nuxt.js application designed to help track poin
 ## Project Structure
 
 ### Frontend
-- **Framework**: Nuxt.js (Vue.js)
+- **Framework**: Nuxt 4 (Vue.js)
 - **State Management**: Pinia
 - **Routing**: Vue Router
 

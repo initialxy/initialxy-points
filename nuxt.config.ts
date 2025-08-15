@@ -16,6 +16,23 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  // Nuxt 4 specific configurations
+  experimental: {
+    // Enable granular cached data (default in Nuxt 4)
+    granularCachedData: true,
+    // Enable purge cached data (default in Nuxt 4)
+    purgeCachedData: true,
+    // Enable shared prerender data (default in Nuxt 4)
+    sharedPrerenderData: true,
+    // Enable pending when idle (default in Nuxt 4)
+    pendingWhenIdle: false,
+    // Enable shallow function reactivity (default in Nuxt 4)
+    defaults: {
+      useAsyncData: {
+        deep: false
+      }
+    }
+  },
   app: {
     head: {
       title: 'Points!',
@@ -44,10 +61,19 @@ export default defineNuxtConfig({
         { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#061b2b'},
       ],
     },
-    pageTransition: { name: 'page', mode: 'in-out' }
+    pageTransition: { name: 'page', mode: 'in-out' },
+    // SPA loading template location (Nuxt 4 default)
+    spaLoaderTag: 'div',
+    spaLoaderAttrs: {
+      id: '__nuxt'
+    }
   },
   css: ['~/assets/css/main.css'],
   pinia: {
     storesDirs: ['./stores/**'],
   },
+  features: {
+    // Enable inline styles for better performance
+    inlineStyles: false
+  }
 })
