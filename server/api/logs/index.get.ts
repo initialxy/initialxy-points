@@ -7,13 +7,27 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const { limit } = getQuery(event)
+  const { limit, recipient_id } = getQuery(event)
 
   const numLimit = parseInt((limit as string) || DEFAULT_LIMIT)
-  const cond =
-    user.role === 'parent'
-      ? '1 = 1' // Dummy condition
-      : 'recipient_id = ?'
+
+  // Check if we should filter by recipient_id
+  let cond = ''
+  let params: any[] = []
+
+  if (recipient_id && (user.role === 'parent' || user.id === recipient_id)) {
+    // Parent can see logs for any child, child can only see their own logs
+    cond = 'recipient_id = ?'
+    params = [recipient_id, numLimit]
+  } else if (user.role === 'parent') {
+    // Parent sees all logs
+    cond = '1 = 1'
+    params = [numLimit]
+  } else {
+    // Child user only sees their own logs
+    cond = 'recipient_id = ?'
+    params = [user.id, numLimit]
+  }
 
   const logs: Log[] = await db.all(
     `
@@ -35,7 +49,7 @@ export default defineEventHandler(async (event: H3Event) => {
       ORDER BY timestamp DESC
       LIMIT ?
       `,
-    user.role === 'parent' ? [numLimit] : [user.id, numLimit]
+    params
   )
 
   return { logs } as LogsResponse

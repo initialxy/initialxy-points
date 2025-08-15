@@ -1,51 +1,42 @@
 <template>
   <div class="max-w-4xl mx-auto p-4">
-    <UButton :to="`/dashboard`" variant="soft" color="neutral" class="mb-4">
-      &larr; Back to Dashboard
-    </UButton>
-
-    <UCard>
-      <template #header>
-        <h1 class="text-2xl font-bold">Child Details</h1>
-      </template>
-
-      <div class="space-y-6">
-        <div>
-          <h2 class="text-lg font-semibold mb-3">Child Information</h2>
-          <UCard variant="subtle">
-            <p><span class="font-medium">Child ID:</span> {{ childId }}</p>
-            <p>
-              <span class="font-medium">Username:</span> Child {{ childId }}
-            </p>
-            <p><span class="font-medium">Points:</span> 150</p>
-          </UCard>
+    <div class="max-w-100 mx-auto">
+      <UCard class="mb-4" variant="subtle">
+        <h1 class="text-3xl font-bold text-center mb-4">
+          <span class="text-secondary">{{ child?.user?.username }}</span>
+          <span class="text-neutral-500"> earned</span>
+        </h1>
+        <div class="text-6xl font-extrabold text-primary text-center mb-4">
+          {{ child?.user?.points || 0 }}
+          <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
+        <p class="text-xl text-center text-neutral-500">
+          <UIcon name="i-lucide-thumbs-up" />
+          Keep it up!
+        </p>
+      </UCard>
+    </div>
 
-        <div>
-          <h2 class="text-lg font-semibold mb-3">Pending Tasks</h2>
-          <UCard variant="subtle">
-            <ul class="list-disc pl-5 space-y-2">
-              <li>Clean your room (10 points)</li>
-              <li>Do homework (20 points)</li>
-            </ul>
-          </UCard>
-        </div>
+    <hr
+      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+    />
 
-        <div>
-          <h2 class="text-lg font-semibold mb-3">Completed Tasks</h2>
-          <UCard variant="subtle">
-            <ul class="list-disc pl-5 space-y-2">
-              <li>Take out the trash (5 points)</li>
-              <li>Feed the dog (15 points)</li>
-            </ul>
-          </UCard>
-        </div>
-      </div>
-    </UCard>
+    <LogList :logs="logs?.logs || []" />
   </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const childId = route.params.id
+
+const MAX_LOG_LIMIT = 20
+
+const { data: child } = await useFetch<UserResponse>(`/api/users/${childId}`)
+
+const { data: logs } = await useFetch<LogsResponse>('/api/logs', {
+  query: {
+    limit: MAX_LOG_LIMIT,
+    recipient_id: childId,
+  },
+})
 </script>
