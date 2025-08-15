@@ -13,7 +13,9 @@
           color="primary"
           size="xl"
           :icon="`i-lucide-clipboard-list`"
-          >{{ getTaskCount(child.id) }}</UBadge
+          class="cursor-pointer"
+          @click="() => navigateTo(`/child/${child.id}`)"
+          >{{ getPendingTasksCount(child.id) }}</UBadge
         >
         <div class="flex items-center space-x-2">
           <UButton
@@ -65,10 +67,11 @@ const { data: childrenData, refresh } = await useFetch<UsersResponse>(
 
 const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
 
-const getTaskCount = (childId: number) => {
+const getPendingTasksCount = (childId: number) => {
   if (!tasksData.value?.tasks) return 0
-  return tasksData.value.tasks.filter((task) => task.child_id === childId)
-    .length
+  return tasksData.value.tasks.filter(
+    (task) => task.child_id === childId && task.is_marked_complete
+  ).length
 }
 
 const debouncedUpdatePoints = debounce(
