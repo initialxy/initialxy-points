@@ -10,7 +10,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "format": "prettier --write \"{components,composables,layouts,middleware,pages,server,stores,shared,utils}/**/*.{ts,vue}\"",
+    "format": "prettier --write \"{app/components,app/composables,app/layouts,app/middleware,app/pages,app/utils,server,stores,shared}/**/*.{ts,vue}\"",
     "admin": "tsx ./server/database/admin.ts"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "bcryptjs": "^3.0.2",
     "eslint": "^9.28.0",
     "jsonwebtoken": "^9.0.2",
-    "nuxt": "^3.17.4",
+    "nuxt": "^4.0.3",
     "nuxt-auth-utils": "^0.5.20",
     "pinia": "^3.0.3",
     "sanitize-html": "^2.17.0",
