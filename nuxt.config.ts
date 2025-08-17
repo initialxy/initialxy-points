@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     // Enable shallow function reactivity (default in Nuxt 4)
     defaults: {
       useAsyncData: {
-        deep: false
+        deep: true
       }
     }
   },

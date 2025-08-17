@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 const MAX_USERS_TO_REMEMBER = 3
 
 export const useStore = defineStore('main', () => {
+  const actionableUser: Ref<User | null> = ref(null)
+
   const login = async (username: string, password: string) => {
     const { fetch: refreshSession } = useUserSession()
     try {
@@ -41,5 +43,5 @@ export const useStore = defineStore('main', () => {
   const useRememberedUsers = () =>
     useLocalStorage<RememberedUser[]>('rememberedUsers', [])
 
-  return { login, logout, useRememberedUsers }
+  return { login, logout, useRememberedUsers, actionableUser }
 })

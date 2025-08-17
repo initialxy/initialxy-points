@@ -10,24 +10,16 @@ export default defineEventHandler(async (event: H3Event) => {
   const { limit, recipient_id } = getQuery(event)
 
   const numLimit = parseInt((limit as string) || DEFAULT_LIMIT)
+  const numRecipientId = parseInt((recipient_id || '0') as string)
 
-  // Check if we should filter by recipient_id
-  let cond = ''
-  let params: any[] = []
-
-  if (recipient_id && (user.role === 'parent' || user.id === recipient_id)) {
-    // Parent can see logs for any child, child can only see their own logs
-    cond = 'recipient_id = ?'
-    params = [recipient_id, numLimit]
-  } else if (user.role === 'parent') {
-    // Parent sees all logs
-    cond = '1 = 1'
-    params = [numLimit]
-  } else {
-    // Child user only sees their own logs
-    cond = 'recipient_id = ?'
-    params = [user.id, numLimit]
+  if (user.role === 'child' && numRecipientId !== user.id) {
+    throw createError({
+      statusCode: 401,
+      message: 'Child user can only query their own logs',
+    })
   }
+
+  const cond = numRecipientId > 0 ? 'recipient_id = ?' : '? >= 0' // dummy condition
 
   const logs: Log[] = await db.all(
     `
@@ -49,7 +41,7 @@ export default defineEventHandler(async (event: H3Event) => {
       ORDER BY timestamp DESC
       LIMIT ?
       `,
-    params
+    [numRecipientId, numLimit]
   )
 
   return { logs } as LogsResponse

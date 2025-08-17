@@ -94,12 +94,7 @@ const debouncedUpdatePoints = debounce(
 
 const changePoints = async (child: User, delta: number) => {
   const updatedPoints = Math.max((child.points || 0) + delta, 0)
-  const updatedData = {
-    users: childrenData.value?.users.map((u) =>
-      u.id === child.id ? { ...u, points: updatedPoints } : u
-    ),
-  } as UsersResponse
-  childrenData.value = updatedData
+  child.points = updatedPoints
 
   debouncedUpdatePoints(child.id, updatedPoints)
 }

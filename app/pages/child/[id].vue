@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto p-4">
+  <div>
     <div class="max-w-100 mx-auto">
       <UCard class="mb-4" variant="subtle">
         <h1 class="text-3xl font-bold text-center mb-4">
@@ -11,11 +11,23 @@
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
         <p class="text-xl text-center text-neutral-500">
-          <UIcon name="i-lucide-thumbs-up" />
-          Keep it up!
+          <UBadge
+            variant="subtle"
+            color="primary"
+            size="xl"
+            :icon="`i-lucide-clipboard-list`"
+          >
+            {{ getPendingTasksCount() }}
+          </UBadge>
         </p>
       </UCard>
     </div>
+
+    <hr
+      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+    />
+
+    <TaskList :tasks="tasks?.tasks || []" />
 
     <hr
       class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
@@ -26,17 +38,31 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-const childId = route.params.id
-
 const MAX_LOG_LIMIT = 20
 
-const { data: child } = await useFetch<UserResponse>(`/api/users/${childId}`)
+const route = useRoute()
+const store = useStore()
+const childId = route.params.id
 
+const { data: child } = await useFetch<UserResponse>(`/api/users/${childId}`)
+const { data: tasks } = await useFetch<TasksResponse>('/api/tasks')
 const { data: logs } = await useFetch<LogsResponse>('/api/logs', {
   query: {
     limit: MAX_LOG_LIMIT,
     recipient_id: childId,
   },
 })
+
+onMounted(() => {
+  store.actionableUser = child.value?.user || null
+})
+
+onUnmounted(() => {
+  store.actionableUser = null
+})
+
+const getPendingTasksCount = () => {
+  if (!tasks.value?.tasks) return 0
+  return tasks.value.tasks.filter((task) => task.is_marked_complete).length
+}
 </script>
