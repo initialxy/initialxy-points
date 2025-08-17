@@ -16,7 +16,7 @@
       <template #body>
         <UForm
           id="change-password-form"
-          :schema="schema"
+          :schema="passwordSchema"
           :state="passwordFormState"
           class="space-y-4"
           @submit="changePasswordSubmit"
@@ -62,7 +62,61 @@
       </template>
     </UModal>
 
-    <div class="fixed bottom-4 left-4 z-10">
+    <UModal
+      v-model:open="showCreateTaskModal"
+      title="New Task"
+      class="max-w-100"
+    >
+      <template #body>
+        <UForm
+          id="new-task-form"
+          :schema="newTaskSchema"
+          :state="newTaskState"
+          class="space-y-4"
+          @submit="newTaskSubmit"
+        >
+          <UFormField name="description">
+            <UInput
+              v-model="newTaskState.description"
+              type="text"
+              placeholder="Description"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField name="points">
+            <UInput
+              v-model="newTaskState.points"
+              type="number"
+              placeholder="Points"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField name="taskType">
+            <USelect
+              v-model="newTaskState.taskType"
+              :items="taskTypeItems"
+              class="w-full"
+            />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <div>
+          <UButton
+            form="new-task-form"
+            type="submit"
+            icon="i-lucide-check"
+            color="primary"
+            variant="solid"
+            class="w-full"
+          >
+            Create
+          </UButton>
+        </div>
+      </template>
+    </UModal>
+
+    <div class="fixed bottom-4 left-4 z-10 space-y-4">
       <Transition
         enter-active-class="duration-150 bounce-timing"
         enter-from-class="transform opacity-0 translate-y-30"
@@ -79,7 +133,7 @@
             size="xl"
             @click="logoutClicked"
             block
-            class="w-10 h-10 rounded-full flex my-4"
+            class="w-10 h-10 rounded-full flex"
             :ui="{ leadingIcon: 'text-lg' }"
           />
         </div>
@@ -98,9 +152,9 @@
             color="info"
             variant="solid"
             size="xl"
-            @click="changePassword"
+            @click="showPasswordModal = true"
             block
-            class="w-10 h-10 rounded-full flex my-4"
+            class="w-10 h-10 rounded-full flex"
             :ui="{ leadingIcon: 'text-lg' }"
           />
         </div>
@@ -121,7 +175,7 @@
             size="xl"
             @click="refresh"
             block
-            class="w-10 h-10 rounded-full flex my-4"
+            class="w-10 h-10 rounded-full flex"
             :ui="{ leadingIcon: 'text-lg' }"
           />
         </div>
@@ -139,8 +193,7 @@
       />
     </div>
 
-    <!-- Floating action buttons -->
-    <div class="fixed bottom-4 right-4 z-10">
+    <div class="fixed bottom-4 right-4 z-10 space-y-4">
       <Transition
         enter-active-class="duration-150 bounce-timing"
         enter-from-class="transform opacity-0 translate-y-10"
@@ -158,24 +211,35 @@
             color="info"
             variant="solid"
             size="xl"
+            @click="showCreateTaskModal = true"
             block
-            class="w-10 h-10 rounded-full flex my-4"
+            class="w-10 h-10 rounded-full flex"
             :ui="{ leadingIcon: 'text-lg' }"
           />
         </div>
       </Transition>
-      <UButton
-        v-if="store.actionableUser != null"
-        icon="i-lucide-plus"
-        color="primary"
-        variant="solid"
-        size="xl"
-        @click="isActionExpanded = !isActionExpanded"
-        @blur="dismissAction"
-        block
-        class="w-10 h-10 rounded-full flex"
-        :ui="{ leadingIcon: 'text-lg' }"
-      />
+      <Transition
+        enter-active-class="duration-150 bounce-timing"
+        enter-from-class="transform opacity-0 translate-y-10"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="duration-150 ease-in-out"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 translate-y-10"
+      >
+        <div v-if="store.actionableUser != null" key="action-button">
+          <UButton
+            icon="i-lucide-plus"
+            color="primary"
+            variant="solid"
+            size="xl"
+            @click="isActionExpanded = !isActionExpanded"
+            @blur="dismissAction"
+            block
+            class="w-10 h-10 rounded-full flex"
+            :ui="{ leadingIcon: 'text-lg' }"
+          />
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -190,6 +254,7 @@ const toast = useToast()
 const isMoreExpanded = ref(false)
 const isActionExpanded = ref(false)
 const showPasswordModal = ref(false)
+const showCreateTaskModal = ref(false)
 
 const passwordFormState = ref({
   currentPassword: '',
@@ -197,20 +262,37 @@ const passwordFormState = ref({
   confirmNewPassword: '',
 })
 
-const schema = z.object({
+const passwordSchema = z.object({
   currentPassword: z.string().min(4, 'Must be at least 4 characters'),
   newPassword: z.string().min(4, 'Must be at least 4 characters'),
   confirmNewPassword: z.string().min(4, 'Must be at least 4 characters'),
 })
 
+const newTaskState: Ref<{
+  description: string
+  points: number | null
+  taskType: 'throw-away' | 'perpetual'
+}> = ref({
+  description: '',
+  points: null,
+  taskType: 'throw-away',
+})
+
+const newTaskSchema = z.object({
+  description: z.string().min(4, 'Must be at least 4 characters'),
+  points: z.number().min(0, 'Must be at least 0').nullable(),
+  taskType: z.enum(['throw-away', 'perpetual']),
+})
+
+const taskTypeItems = ref([
+  { value: 'throw-away', label: 'Throw Away' },
+  { value: 'perpetual', label: 'Perpetual' },
+])
+
 const logoutClicked = async () => {
   await store.logout()
   await sleep(200)
   await navigateTo('/login')
-}
-
-const changePassword = async () => {
-  showPasswordModal.value = true
 }
 
 const changePasswordSubmit = async () => {
@@ -258,8 +340,45 @@ const changePasswordSubmit = async () => {
   }
 }
 
+const newTaskSubmit = async () => {
+  try {
+    await $fetch('/api/tasks', {
+      method: 'POST',
+      body: {
+        description: newTaskState.value.description,
+        points: newTaskState.value.points || 0,
+        child_id: store.actionableUser?.id || 0,
+        task_type: newTaskState.value.taskType,
+      },
+    })
+
+    toast.add({
+      title: 'Task created successfully',
+      color: 'success',
+      progress: false,
+    })
+
+    // Close modal and reset form
+    showCreateTaskModal.value = false
+    newTaskState.value = {
+      description: '',
+      points: 0,
+      taskType: 'throw-away',
+    }
+
+    await refresh()
+  } catch (error: any) {
+    toast.add({
+      title: error.data?.message || 'Failed to create task',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// @click throws a type error if you don't wrap it
 const refresh = async () => {
-  refreshNuxtData()
+  await refreshNuxtData()
 }
 
 const dismissMenu = async () => {

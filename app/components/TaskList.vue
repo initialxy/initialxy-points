@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 max-w-100 mx-auto">
     <div v-if="sortedTasks.length === 0" class="text-center py-4">
       <p class="text-muted">No task yet</p>
     </div>
