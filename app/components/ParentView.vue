@@ -12,12 +12,13 @@
           {{ child.username }}
         </h2>
         <UBadge
+          v-if="getNotificationsCount(child.id) > 0"
           variant="subtle"
           size="xl"
           icon="i-lucide-bell-ring"
           class="mx-2"
         >
-          {{ getPendingTasksCount(child.id) }}
+          {{ getNotificationsCount(child.id) }}
         </UBadge>
         <div class="flex items-center space-x-2">
           <UButton
@@ -69,7 +70,7 @@ const { data: childrenData, refresh } = await useFetch<UsersResponse>(
 
 const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
 
-const getPendingTasksCount = (childId: number) => {
+const getNotificationsCount = (childId: number) => {
   if (!tasksData.value?.tasks) return 0
   return tasksData.value.tasks.filter(
     (task) => task.child_id === childId && task.is_marked_complete

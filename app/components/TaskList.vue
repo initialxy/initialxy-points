@@ -35,7 +35,7 @@
           color="neutral"
           variant="outline"
         >
-          Pts: {{ task.points }}
+          Points: {{ task.points }}
         </UBadge>
         <div class="grow space-x-2 flex justify-end">
           <UButton
