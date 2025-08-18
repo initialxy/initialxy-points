@@ -5,16 +5,15 @@
       :key="child.id"
       class="mb-4"
       variant="subtle"
+      @click="navigateTo(`/child/${child.id}`)"
     >
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">{{ child.username }}</h2>
         <UBadge
           variant="subtle"
-          color="primary"
           size="xl"
-          :icon="`i-lucide-clipboard-list`"
-          class="cursor-pointer"
-          @click="() => navigateTo(`/child/${child.id}`)"
+          icon="i-lucide-clipboard-list"
+          class="cursor-pointer ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
           >{{ getPendingTasksCount(child.id) }}</UBadge
         >
         <div class="flex items-center space-x-2">
@@ -24,7 +23,7 @@
             variant="soft"
             size="xl"
             class="m-0 touch-manipulation"
-            @click="changePoints(child, -1)"
+            @click="changePoints(child, -1, $event)"
           />
           <UInput
             v-model="child.points"
@@ -43,7 +42,7 @@
             variant="soft"
             size="xl"
             class="ml-0 touch-manipulation"
-            @click="changePoints(child, 1)"
+            @click="changePoints(child, 1, $event)"
           />
         </div>
       </div>
@@ -92,12 +91,14 @@ const debouncedUpdatePoints = debounce(
   DEBOUNCE_WAIT_MS
 )
 
-const changePoints = async (child: User, delta: number) => {
+const changePoints = async (child: User, delta: number, event: Event) => {
+  event.stopPropagation()
   const updatedPoints = Math.max((child.points || 0) + delta, 0)
   child.points = updatedPoints
 
   debouncedUpdatePoints(child.id, updatedPoints)
 }
+
 </script>
 
 <style scoped></style>

@@ -13,9 +13,9 @@
         <p class="text-xl text-center text-neutral-500">
           <UBadge
             variant="subtle"
-            color="primary"
             size="xl"
-            :icon="`i-lucide-clipboard-list`"
+            icon="i-lucide-clipboard-list"
+            class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
           >
             {{ getPendingTasksCount() }}
           </UBadge>
