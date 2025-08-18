@@ -8,7 +8,9 @@
       @click="navigateTo(`/child/${child.id}`)"
     >
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold grow text-nowrap text-ellipsis">{{ child.username }}</h2>
+        <h2 class="text-xl font-semibold grow text-nowrap text-ellipsis">
+          {{ child.username }}
+        </h2>
         <UBadge
           variant="subtle"
           size="xl"
@@ -99,7 +101,6 @@ const changePoints = async (child: User, delta: number, event: Event) => {
 
   debouncedUpdatePoints(child.id, updatedPoints)
 }
-
 </script>
 
 <style scoped></style>

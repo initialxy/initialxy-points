@@ -45,7 +45,12 @@ const store = useStore()
 const childId = route.params.id
 
 const { data: child } = await useFetch<UserResponse>(`/api/users/${childId}`)
-const { data: tasks } = await useFetch<TasksResponse>('/api/tasks')
+const { data: tasks } = await useFetch<TasksResponse>('/api/tasks', {
+  query: {
+    child_id: childId,
+  },
+})
+
 const { data: logs } = await useFetch<LogsResponse>('/api/logs', {
   query: {
     limit: MAX_LOG_LIMIT,

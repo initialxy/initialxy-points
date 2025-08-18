@@ -3,18 +3,27 @@
     <div v-if="sortedTasks.length === 0" class="text-center py-4">
       <p class="text-muted">No task yet</p>
     </div>
-    <UCard v-else v-for="task in sortedTasks" :key="task.id" class="w-full" variant="subtle" :ui="{root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20'}">
+    <UCard
+      v-else
+      v-for="task in sortedTasks"
+      :key="task.id"
+      class="w-full"
+      variant="subtle"
+      :ui="{
+        root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
+      }"
+    >
       <p class="text-nowrap text-ellipsis">{{ task.description }}</p>
       <div class="flex justify-between items-start mt-2 space-x-2">
         <UBadge
-        v-if="task.is_marked_complete"
+          v-if="task.is_marked_complete"
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
           :color="task.is_marked_complete ? 'success' : 'neutral'"
           icon="i-lucide-alarm-clock-check"
           class="h-6 w-6 justify-center"
         />
         <UBadge
-        v-if="!task.is_marked_complete"
+          v-if="!task.is_marked_complete"
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
           :color="task.is_marked_complete ? 'success' : 'neutral'"
           icon="i-lucide-circle-dashed"
@@ -29,9 +38,25 @@
           Pts: {{ task.points }}
         </UBadge>
         <div class="grow space-x-2 flex justify-end">
-          <UButton v-if="task.is_marked_complete" size="sm" icon="i-lucide-x" color="error" variant="soft"/>
-          <UButton size="sm" icon="i-lucide-check" color="success" variant="soft"/>
-          <UButton size="sm" icon="i-lucide-pencil" color="neutral" variant="soft"/>
+          <UButton
+            v-if="task.is_marked_complete"
+            size="sm"
+            icon="i-lucide-x"
+            color="error"
+            variant="soft"
+          />
+          <UButton
+            size="sm"
+            icon="i-lucide-check"
+            color="success"
+            variant="soft"
+          />
+          <UButton
+            size="sm"
+            icon="i-lucide-pencil"
+            color="neutral"
+            variant="soft"
+          />
         </div>
       </div>
     </UCard>
