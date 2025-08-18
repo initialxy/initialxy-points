@@ -44,18 +44,21 @@
             icon="i-lucide-x"
             color="error"
             variant="soft"
+            @click="emit('reject', task)"
           />
           <UButton
             size="sm"
             icon="i-lucide-check"
             color="success"
             variant="soft"
+            @click="emit('complete', task)"
           />
           <UButton
             size="sm"
             icon="i-lucide-pencil"
             color="neutral"
             variant="soft"
+            @click="emit('edit', task)"
           />
         </div>
       </div>
@@ -65,6 +68,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
+const emit = defineEmits(['reject', 'complete', 'edit'])
 
 const props = defineProps<{
   tasks: Task[]
