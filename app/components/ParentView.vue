@@ -8,14 +8,15 @@
       @click="navigateTo(`/child/${child.id}`)"
     >
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold">{{ child.username }}</h2>
+        <h2 class="text-xl font-semibold grow text-nowrap text-ellipsis">{{ child.username }}</h2>
         <UBadge
           variant="subtle"
           size="xl"
-          icon="i-lucide-clipboard-list"
-          class="cursor-pointer ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
-          >{{ getPendingTasksCount(child.id) }}</UBadge
+          icon="i-lucide-bell-ring"
+          class="mx-2"
         >
+          {{ getPendingTasksCount(child.id) }}
+        </UBadge>
         <div class="flex items-center space-x-2">
           <UButton
             icon="i-lucide-minus"
@@ -51,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-const DEBOUNCE_WAIT_MS = 1000
+const DEBOUNCE_WAIT_MS = 500
 
 const emit = defineEmits(['updatePoints', 'submit'])
 
