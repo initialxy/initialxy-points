@@ -13,7 +13,6 @@ async function initializeDatabase(db: Database): Promise<Database> {
   if (
     !tableNames.includes('users') ||
     !tableNames.includes('tasks') ||
-    !tableNames.includes('rewards') ||
     !tableNames.includes('logs')
   ) {
     await db.exec(`
@@ -34,14 +33,6 @@ async function initializeDatabase(db: Database): Promise<Database> {
         task_type TEXT NOT NULL CHECK(task_type IN ('single-use', 'perpetual')),
         is_marked_complete BOOLEAN DEFAULT FALSE,
         FOREIGN KEY(child_id) REFERENCES users(id),
-        FOREIGN KEY(parent_id) REFERENCES users(id)
-      );
-
-      CREATE TABLE IF NOT EXISTS rewards (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        description TEXT NOT NULL,
-        points INTEGER NOT NULL,
-        parent_id INTEGER,
         FOREIGN KEY(parent_id) REFERENCES users(id)
       );
 
