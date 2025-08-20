@@ -57,7 +57,9 @@
 <script setup lang="ts">
 const DEBOUNCE_WAIT_MS = 500
 
-const emit = defineEmits(['updatePoints', 'submit'])
+const emit = defineEmits<{
+  (e: 'updatePoints', payload: { childId: number; points: number }): void
+}>()
 
 const toast = useToast()
 

@@ -47,91 +47,28 @@
       </div>
     </Transition>
 
-    <UModal
+    <TaskModal
       v-model:open="showCreateTaskModal"
+      v-model:task="newTaskState"
       title="New Task"
-      class="max-w-100"
-    >
-      <template #body>
-        <UForm
-          id="new-task-form"
-          :schema="newTaskSchema"
-          :state="newTaskState"
-          class="space-y-4"
-          @submit="newTaskSubmit"
-        >
-          <UFormField name="description">
-            <UInput
-              v-model="newTaskState.description"
-              type="text"
-              placeholder="Description"
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField name="points">
-            <UInput
-              v-model="newTaskState.points"
-              type="number"
-              placeholder="Points"
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField name="taskType">
-            <USelect
-              v-model="newTaskState.taskType"
-              :items="taskTypeItems"
-              class="w-full"
-            />
-          </UFormField>
-        </UForm>
-      </template>
-      <template #footer>
-        <div>
-          <UButton
-            form="new-task-form"
-            type="submit"
-            icon="i-lucide-check"
-            color="primary"
-            variant="solid"
-            class="w-full"
-          >
-            Create
-          </UButton>
-        </div>
-      </template>
-    </UModal>
+      submit-button-text="Create"
+      @submit="newTaskSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import * as z from 'zod'
-
 const store = useStore()
 const toast = useToast()
 
 const isActionExpanded = ref(false)
 const showCreateTaskModal = ref(false)
 
-const newTaskState: Ref<{
-  description: string
-  points: number | null
-  taskType: 'throw-away' | 'perpetual'
-}> = ref({
+const newTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
   taskType: 'throw-away',
 })
-
-const newTaskSchema = z.object({
-  description: z.string().min(4, 'Must be at least 4 characters'),
-  points: z.number().min(0, 'Must be at least 0').nullable(),
-  taskType: z.enum(['throw-away', 'perpetual']),
-})
-
-const taskTypeItems = ref([
-  { value: 'throw-away', label: 'Throw Away' },
-  { value: 'perpetual', label: 'Perpetual' },
-])
 
 const newTaskSubmit = async () => {
   try {
@@ -155,7 +92,7 @@ const newTaskSubmit = async () => {
     showCreateTaskModal.value = false
     newTaskState.value = {
       description: '',
-      points: 0,
+      points: null,
       taskType: 'throw-away',
     }
 

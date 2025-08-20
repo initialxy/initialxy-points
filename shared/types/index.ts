@@ -69,3 +69,10 @@ export type UserResponse = {
 export type LogsResponse = {
   logs: Log[]
 }
+
+// Partial task for form handling
+export type PartialTask = {
+  description: string
+  points: number | null
+  taskType: 'throw-away' | 'perpetual'
+}

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ParentView v-if="user?.role === 'parent'" @update-points="refreshLogs" />
+    <ParentView v-if="user?.role === 'parent'" @updatePoints="refresh" />
     <ChildView v-else-if="user?.role === 'child'" />
     <hr
       class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
@@ -21,4 +21,8 @@ const { data: logs, refresh: refreshLogs } = await useFetch<LogsResponse>(
     query: { limit: MAX_LOG_LIMIT },
   }
 )
+
+const refresh = async (_) => {
+  await refreshLogs()
+}
 </script>

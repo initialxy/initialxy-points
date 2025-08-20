@@ -41,65 +41,17 @@
     <LogList :logs="logs?.logs || []" />
 
     <!-- Edit Task Modal -->
-    <UModal
+    <TaskModal
       v-model:open="showEditTaskModal"
+      v-model:task="editTaskState"
       title="Edit Task"
-      class="max-w-100"
-    >
-      <template #body>
-        <UForm
-          id="edit-task-form"
-          :schema="editTaskSchema"
-          :state="editTaskState"
-          class="space-y-4"
-          @submit="editTaskSubmit"
-        >
-          <UFormField name="description">
-            <UInput
-              v-model="editTaskState.description"
-              type="text"
-              placeholder="Description"
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField name="points">
-            <UInput
-              v-model="editTaskState.points"
-              type="number"
-              placeholder="Points"
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField name="taskType">
-            <USelect
-              v-model="editTaskState.taskType"
-              :items="taskTypeItems"
-              class="w-full"
-            />
-          </UFormField>
-        </UForm>
-      </template>
-      <template #footer>
-        <div>
-          <UButton
-            form="edit-task-form"
-            type="submit"
-            icon="i-lucide-check"
-            color="primary"
-            variant="solid"
-            class="w-full"
-          >
-            Update
-          </UButton>
-        </div>
-      </template>
-    </UModal>
+      submit-button-text="Update"
+      @submit="editTaskSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import * as z from 'zod'
-
 const MAX_LOG_LIMIT = 20
 
 const route = useRoute()
@@ -130,7 +82,9 @@ onUnmounted(() => {
 })
 
 const getPendingTasksCount = () => {
-  if (!tasks.value?.tasks) return 0
+  if (!tasks.value?.tasks) {
+    return 0
+  }
   return tasks.value.tasks.filter((task) => task.is_marked_complete).length
 }
 
@@ -139,28 +93,11 @@ const showEditTaskModal = ref(false)
 const editingTask = ref<Task | null>(null)
 
 // Form state for editing
-const editTaskState: Ref<{
-  description: string
-  points: number | null
-  taskType: 'throw-away' | 'perpetual'
-}> = ref({
+const editTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
   taskType: 'throw-away',
 })
-
-// Schema for validation
-const editTaskSchema = z.object({
-  description: z.string().min(4, 'Must be at least 4 characters'),
-  points: z.number().min(0, 'Must be at least 0').nullable(),
-  taskType: z.enum(['throw-away', 'perpetual']),
-})
-
-// Task type items
-const taskTypeItems = ref([
-  { value: 'throw-away', label: 'Throw Away' },
-  { value: 'perpetual', label: 'Perpetual' },
-])
 
 // Handle edit event from TaskList component
 const handleEditTask = (task: Task) => {
@@ -227,7 +164,9 @@ const handleRejectTask = async (task: Task) => {
 
 // Submit edited task
 const editTaskSubmit = async () => {
-  if (!editingTask.value) return
+  if (!editingTask.value) {
+    return
+  }
 
   try {
     await $fetch(`/api/tasks/${editingTask.value.id}`, {

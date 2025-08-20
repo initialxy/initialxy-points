@@ -69,7 +69,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const emit = defineEmits(['reject', 'complete', 'edit'])
+const emit = defineEmits<{
+  (e: 'reject', task: Task): void
+  (e: 'complete', task: Task): void
+  (e: 'edit', task: Task): void
+}>()
 
 const props = defineProps<{
   tasks: Task[]
