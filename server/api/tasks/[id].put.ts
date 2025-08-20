@@ -22,16 +22,16 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const body = await readBody(event)
-  const { description, points, task_type } = body
+  const { description, points, recurrence_type } = body
 
-  if (description == null || points == null || task_type == null) {
+  if (description == null || points == null || recurrence_type == null) {
     return {
       statusCode: 400,
       body: { message: 'Missing required fields' },
     }
   }
 
-  if (task_type !== 'single-use' && task_type !== 'perpetual') {
+  if (recurrence_type !== 'single-use' && recurrence_type !== 'perpetual') {
     return {
       statusCode: 400,
       body: { message: 'Invalid task type' },
@@ -51,8 +51,8 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const result = await db.run(
-    'UPDATE tasks SET description = ?, points = ?, task_type = ? WHERE id = ?',
-    [description, points, task_type, taskId]
+    'UPDATE tasks SET description = ?, points = ?, recurrence_type = ? WHERE id = ?',
+    [description, points, recurrence_type, taskId]
   )
 
   if (result.changes === 0) {

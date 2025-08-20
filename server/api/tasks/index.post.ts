@@ -14,16 +14,16 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const body = await readBody(event)
-  const { description, points, child_id, task_type } = body
+  const { description, points, child_id, recurrence_type } = body
 
-  if (!description || !points || !child_id || !task_type) {
+  if (!description || !points || !child_id || !recurrence_type) {
     return {
       statusCode: 400,
       body: { message: 'Missing required fields' },
     }
   }
 
-  if (task_type !== 'single-use' && task_type !== 'perpetual') {
+  if (recurrence_type !== 'single-use' && recurrence_type !== 'perpetual') {
     return {
       statusCode: 400,
       body: { message: 'Invalid task type' },
@@ -31,8 +31,8 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const result = await db.run(
-    'INSERT INTO tasks (description, points, child_id, task_type, parent_id) VALUES (?, ?, ?, ?, ?)',
-    [description, points, child_id, task_type, user.id]
+    'INSERT INTO tasks (description, points, child_id, recurrence_type, parent_id) VALUES (?, ?, ?, ?, ?)',
+    [description, points, child_id, recurrence_type, user.id]
   )
 
   const taskId = result.lastID as number
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event: H3Event) => {
     description,
     points,
     child_id,
-    task_type,
+    recurrence_type,
     parent_id: user.id,
     is_marked_complete: false,
   }

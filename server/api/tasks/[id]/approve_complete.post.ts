@@ -32,7 +32,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (task.task_type === 'single-use') {
+  if (task.recurrence_type === 'single-use') {
     // For single-use tasks, delete the task after completion
     await db.run('DELETE FROM tasks WHERE id = ?', taskId)
   } else {

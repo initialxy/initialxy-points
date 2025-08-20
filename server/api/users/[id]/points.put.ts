@@ -16,12 +16,12 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const { id } = getRouterParams(event)
-  const { points } = await readBody(event)
+  const { points_change } = await readBody(event)
 
-  if (typeof points !== 'number' || points < 0) {
+  if (typeof points_change !== 'number') {
     return {
       statusCode: 400,
-      body: { message: 'Invalid points value' },
+      body: { message: 'Invalid points change value' },
     }
   }
 
@@ -39,15 +39,19 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const pointsBefore = existingUser.points
+  let newPoints = pointsBefore + points_change
+  if (newPoints < 0) {
+    newPoints = 0
+  }
 
-  await db.run('UPDATE users SET points = ? WHERE id = ?', points, id)
+  await db.run('UPDATE users SET points = ? WHERE id = ?', newPoints, id)
 
   const log = {
     actor_id: user.id,
     action_type: 'change_points',
     recipient_id: existingUser.id,
     points_before: pointsBefore,
-    points_after: points,
+    points_after: newPoints,
     additional_context: null,
   }
 

@@ -11,14 +11,14 @@ export async function logTaskAction(
   pointsBefore?: number,
   pointsAfter?: number
 ): Promise<void> {
-  const taskType = getReadableTaskType(task.task_type)
+  const recurrenceType = getReadableRecurrenceType(task.recurrence_type)
   const log = {
     actor_id: actorId,
     action_type: actionType,
     recipient_id: task.child_id,
     points_before: pointsBefore ?? null,
     points_after: pointsAfter ?? null,
-    additional_context: `${taskType} task: ${task.description} • ${task.points} points`,
+    additional_context: `${recurrenceType} task: ${task.description} • ${task.points} points`,
   }
 
   await logAction(db, log)

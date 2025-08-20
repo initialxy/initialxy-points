@@ -39,7 +39,7 @@
     <LogList :logs="logs?.logs || []" />
 
     <!-- Edit Task Modal -->
-    <TaskModal
+    <ActionEntityModal
       v-model:open="showEditTaskModal"
       v-model:task="editTaskState"
       title="Edit Task"
@@ -94,7 +94,7 @@ const editingTask = ref<Task | null>(null)
 const editTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
-  taskType: 'single-use',
+  recurrenceType: 'single-use',
 })
 
 // Handle edit event from TaskList component
@@ -103,7 +103,7 @@ const handleEditTask = (task: Task) => {
   editTaskState.value = {
     description: task.description,
     points: task.points,
-    taskType: task.task_type,
+    recurrenceType: task.recurrence_type,
   }
   showEditTaskModal.value = true
 }
@@ -195,7 +195,7 @@ const editTaskSubmit = async () => {
       body: {
         description: editTaskState.value.description,
         points: editTaskState.value.points || 0,
-        task_type: editTaskState.value.taskType,
+        recurrence_type: editTaskState.value.recurrenceType,
       },
     })
 

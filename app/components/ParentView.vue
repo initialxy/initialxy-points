@@ -72,6 +72,11 @@ const { data: childrenData, refresh } = await useFetch<UsersResponse>(
 
 const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
 
+// Keep track of points change by child during debounce, because API requires a
+// points_change instead of updating raw points value to be more race condition
+// resistant.
+const pointsDeltaByUserId = new Map<number, number>()
+
 const getNotificationsCount = (childId: number) => {
   if (!tasksData.value?.tasks) return 0
   return tasksData.value.tasks.filter(
@@ -79,30 +84,32 @@ const getNotificationsCount = (childId: number) => {
   ).length
 }
 
-const debouncedUpdatePoints = debounce(
-  async (childId: number, newPoints: number) => {
-    try {
-      await $fetch(`/api/users/${childId}/points`, {
-        method: 'PUT',
-        body: { points: newPoints },
-      })
-      await refresh()
+const debouncedUpdatePoints = debounce(async (child: User, delta: number) => {
+  try {
+    await $fetch(`/api/users/${child.id}/points`, {
+      method: 'PUT',
+      body: { points_change: delta },
+    })
+    pointsDeltaByUserId.clear()
+    await refresh()
 
-      emit('updatePoints', { childId, points: newPoints })
-    } catch (err) {
-      console.error('Error updating points:', err)
-      toast.add({ title: 'Failed to update points', progress: false })
-    }
-  },
-  DEBOUNCE_WAIT_MS
-)
+    emit('updatePoints', { childId: child.id, points: child.points })
+  } catch (err) {
+    console.error('Error updating points:', err)
+    toast.add({ title: 'Failed to update points', progress: false })
+  }
+}, DEBOUNCE_WAIT_MS)
 
 const changePoints = async (child: User, delta: number, event: Event) => {
   event.stopPropagation()
   const updatedPoints = Math.max((child.points || 0) + delta, 0)
+  const normalizedDelta = updatedPoints - (child.points || 0)
   child.points = updatedPoints
 
-  debouncedUpdatePoints(child.id, updatedPoints)
+  const accumulatedDelta =
+    (pointsDeltaByUserId.get(child.id) || 0) + normalizedDelta
+  pointsDeltaByUserId.set(child.id, accumulatedDelta)
+  debouncedUpdatePoints(child, accumulatedDelta)
 }
 </script>
 

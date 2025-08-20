@@ -1,5 +1,5 @@
-export function getReadableTaskType(taskType: string): string {
-  switch (taskType) {
+export function getReadableRecurrenceType(recurrenceType: string): string {
+  switch (recurrenceType) {
     case 'single-use':
       return 'Single use'
     case 'perpetual':
