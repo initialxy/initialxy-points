@@ -24,6 +24,7 @@
     />
 
     <TaskList
+      mode="parent"
       :tasks="tasks?.tasks || []"
       @edit="handleEditTask"
       @complete="handleCompleteTask"

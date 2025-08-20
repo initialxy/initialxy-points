@@ -15,11 +15,14 @@ const MAX_LOG_LIMIT = 20
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
 
+const query =
+  user.value?.role === 'parent'
+    ? { limit: MAX_LOG_LIMIT }
+    : { limit: MAX_LOG_LIMIT, recipient_id: user.value?.id || 0 }
+
 const { data: logs, refresh: refreshLogs } = await useFetch<LogsResponse>(
   '/api/logs',
-  {
-    query: { limit: MAX_LOG_LIMIT },
-  }
+  { query }
 )
 
 const refresh = async (_) => {

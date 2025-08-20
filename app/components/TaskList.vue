@@ -18,6 +18,7 @@
           {{ task.description }}
         </p>
         <UButton
+          v-if="props.mode === 'parent'"
           size="sm"
           icon="i-lucide-x"
           color="error"
@@ -58,6 +59,7 @@
             @click="emit('reject', task)"
           />
           <UButton
+            v-if="props.mode === 'parent' || !task.is_marked_complete"
             size="sm"
             icon="i-lucide-thumbs-up"
             color="success"
@@ -65,6 +67,7 @@
             @click="emit('complete', task)"
           />
           <UButton
+            v-if="props.mode === 'parent'"
             size="sm"
             icon="i-lucide-pencil"
             color="neutral"
@@ -111,6 +114,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   tasks: Task[]
+  mode: 'parent' | 'child'
 }>()
 
 const isDeleteConfirmationModalOpen = ref(false)
