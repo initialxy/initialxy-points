@@ -11,12 +11,8 @@
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
         <p class="text-xl text-center text-neutral-500">
-          <UBadge
-            variant="subtle"
-            size="xl"
-            icon="i-lucide-clipboard-list"
-            class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
-          >
+          <UBadge variant="subtle" size="xl" icon="i-lucide-bell-ring">
+            <UIcon name="i-lucide-clipboard-list" />
             {{ getPendingTasksCount() }}
           </UBadge>
         </p>
@@ -127,7 +123,6 @@ const handleCompleteTask = async (task: Task) => {
     // Refresh data to reflect changes
     await refreshNuxtData()
   } catch (error: any) {
-    console.error('Failed to approve task completion:', error)
     toast.add({
       title: 'Failed to approve task completion',
       color: 'error',
@@ -153,7 +148,6 @@ const handleRejectTask = async (task: Task) => {
     // Refresh data to reflect changes
     await refreshNuxtData()
   } catch (error: any) {
-    console.error('Failed to reject task completion:', error)
     toast.add({
       title: 'Failed to reject task completion',
       color: 'error',
@@ -192,7 +186,6 @@ const editTaskSubmit = async () => {
     // Refresh data to reflect changes
     await refreshNuxtData()
   } catch (error: any) {
-    console.error('Failed to update task:', error)
     toast.add({
       title: 'Failed to update task',
       color: 'error',

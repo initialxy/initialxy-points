@@ -28,13 +28,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (!task.is_marked_complete) {
-    return {
-      statusCode: 400,
-      body: { message: 'Task is not marked as completed yet' },
-    }
-  }
-
   // Handle task completion based on task type
   if (task.task_type === 'throw-away') {
     // For throw-away tasks, delete the task after completion

@@ -13,7 +13,9 @@
         root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
       }"
     >
-      <p class="text-nowrap text-ellipsis">{{ task.description }}</p>
+      <p class="text-nowrap text-ellipsis text-cyan-500">
+        {{ task.description }}
+      </p>
       <div class="flex justify-between items-start mt-2 space-x-2">
         <UBadge
           v-if="task.is_marked_complete"
