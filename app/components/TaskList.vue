@@ -88,16 +88,9 @@
         <p>Are you sure you want to delete this task?</p>
       </template>
       <template #footer>
-        <div class="space-x-2">
-          <UButton @click="deleteConfirmed" color="error"> Delete </UButton>
-          <UButton
-            @click="isDeleteConfirmationModalOpen = false"
-            variant="soft"
-            color="neutral"
-          >
-            Cancel
-          </UButton>
-        </div>
+        <UButton @click="deleteConfirmed" color="error" icon="i-lucide-trash">
+          Delete
+        </UButton>
       </template>
     </UModal>
   </div>
