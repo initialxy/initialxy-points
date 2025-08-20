@@ -76,7 +76,7 @@ const handleRejectTask = async (task: Task) => {
 
     // Show success toast
     toast.add({
-      title: 'Task marked as complete',
+      title: 'Task marked as incomplete',
       color: 'success',
       progress: false,
     })
