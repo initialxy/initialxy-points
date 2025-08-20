@@ -51,7 +51,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
         return {
           username,
           date,
-          action: 'marked a task complete',
+          action: 'finished a task',
           description: additionalContext,
           icon: 'i-lucide-thumbs-up',
         }
@@ -59,9 +59,9 @@ const items: Ref<TimelineItem[]> = computed(() =>
         return {
           username,
           date,
-          action: `approved task completion for ${recipientUsername}`,
+          action: `approved a task for ${recipientUsername}`,
           description:
-            `${additionalContext} ${recipientUsername} now has ` +
+            `${additionalContext}. ${recipientUsername} now has ` +
             `${log.points_after || 0} points`,
           icon: 'i-lucide-thumbs-up',
         }
@@ -69,31 +69,34 @@ const items: Ref<TimelineItem[]> = computed(() =>
         return {
           username,
           date,
-          action: 'rejected task completion',
+          action:
+            username === recipientUsername
+              ? `cancelled a task`
+              : `rejected a task for ${recipientUsername}`,
           description: additionalContext,
           icon: 'i-lucide-thumbs-down',
-        }
-      case 'update_task':
-        return {
-          username,
-          date,
-          action: 'updated a task',
-          description: additionalContext,
-          icon: 'i-lucide-pencil',
         }
       case 'create_task':
         return {
           username,
           date,
-          action: 'created a task for ${recipientUsername}',
+          action: `created a task for ${recipientUsername}`,
           description: additionalContext,
           icon: 'i-lucide-clipboard-list',
+        }
+      case 'update_task':
+        return {
+          username,
+          date,
+          action: `updated a task for ${recipientUsername}`,
+          description: additionalContext,
+          icon: 'i-lucide-pencil',
         }
       case 'delete_task':
         return {
           username,
           date,
-          action: 'deleted a task',
+          action: `deleted a task for ${recipientUsername}`,
           description: additionalContext,
           icon: 'i-lucide-x',
         }
