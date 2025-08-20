@@ -24,10 +24,10 @@
             class="w-full"
           />
         </UFormField>
-        <UFormField name="taskType">
+        <UFormField name="recurrenceType">
           <USelect
-            v-model="task.taskType"
-            :items="taskTypeItems"
+            v-model="task.recurrenceType"
+            :items="recurrenceTypeItems"
             class="w-full"
           />
         </UFormField>
@@ -61,7 +61,7 @@ defineProps<{
 }>()
 
 const task: Ref<PartialTask> = defineModel<PartialTask>('task', {
-  default: { description: '', points: null, taskType: 'single-use' },
+  default: { description: '', points: null, recurrenceType: 'single-use' },
 })
 
 const isOpen: Ref<boolean> = defineModel('open', {
@@ -75,13 +75,13 @@ const emit = defineEmits<{
 const taskSchema = z.object({
   description: z.string().min(4, 'Must be at least 4 characters'),
   points: z.number().min(0, 'Must be at least 0').nullable(),
-  taskType: z.enum(['single-use', 'perpetual']),
+  recurrenceType: z.enum(['single-use', 'perpetual']),
 })
 
-const taskTypeItems = ref(
+const recurrenceTypeItems = ref(
   ['single-use', 'perpetual'].map((value) => ({
     value,
-    label: getReadableTaskType(value),
+    label: getReadableRecurrenceType(value),
   }))
 )
 

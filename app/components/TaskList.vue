@@ -32,18 +32,18 @@
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
           :color="task.is_marked_complete ? 'success' : 'neutral'"
           icon="i-lucide-alarm-clock-check"
-          class="h-6 w-6 justify-center"
+          class="size-6 justify-center"
         />
         <UBadge
           v-if="!task.is_marked_complete"
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
           :color="task.is_marked_complete ? 'success' : 'neutral'"
           icon="i-lucide-circle-dashed"
-          class="h-6 w-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
+          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
         />
         <UBadge
           class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
-          :icon="getTaskTypeIcon(task)"
+          :icon="getRecurrenceTypeIcon(task)"
           color="neutral"
           variant="outline"
         >
@@ -130,8 +130,8 @@ const sortedTasks = computed(() => {
   })
 })
 
-const getTaskTypeIcon = (task: Task) => {
-  switch (task.task_type) {
+const getRecurrenceTypeIcon = (task: Task) => {
+  switch (task.recurrence_type) {
     case 'single-use':
       return 'i-lucide-square-check-big'
     case 'perpetual':

@@ -47,7 +47,7 @@
       </div>
     </Transition>
 
-    <TaskModal
+    <ActionEntityModal
       v-model:open="showCreateTaskModal"
       v-model:task="newTaskState"
       title="New Task"
@@ -67,7 +67,7 @@ const showCreateTaskModal = ref(false)
 const newTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
-  taskType: 'single-use',
+  recurrenceType: 'single-use',
 })
 
 const newTaskSubmit = async () => {
@@ -78,7 +78,7 @@ const newTaskSubmit = async () => {
         description: newTaskState.value.description,
         points: newTaskState.value.points || 0,
         child_id: store.actionableUser?.id || 0,
-        task_type: newTaskState.value.taskType,
+        recurrence_type: newTaskState.value.recurrenceType,
       },
     })
 
@@ -93,7 +93,7 @@ const newTaskSubmit = async () => {
     newTaskState.value = {
       description: '',
       points: null,
-      taskType: 'single-use',
+      recurrenceType: 'single-use',
     }
 
     await refreshNuxtData()
