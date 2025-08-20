@@ -1,5 +1,4 @@
 import { Database } from 'sqlite'
-import { Task } from '../../shared/types'
 
 const MAX_NUM_LOGS_RETENTION = 1000
 const LOG_CHANGE_POINTS_DEBOUNCE_SECONDS = 30
@@ -12,13 +11,14 @@ export async function logTaskAction(
   pointsBefore?: number,
   pointsAfter?: number
 ): Promise<void> {
+  const taskType = getReadableTaskType(task.task_type)
   const log = {
     actor_id: actorId,
     action_type: actionType,
     recipient_id: task.child_id,
     points_before: pointsBefore ?? null,
     points_after: pointsAfter ?? null,
-    additional_context: `${task.task_type} task: ${task.description} - ${task.points} points`,
+    additional_context: `${taskType} task: ${task.description} • ${task.points} points`,
   }
 
   await logAction(db, log)

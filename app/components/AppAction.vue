@@ -67,7 +67,7 @@ const showCreateTaskModal = ref(false)
 const newTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
-  taskType: 'throw-away',
+  taskType: 'single-use',
 })
 
 const newTaskSubmit = async () => {
@@ -93,7 +93,7 @@ const newTaskSubmit = async () => {
     newTaskState.value = {
       description: '',
       points: null,
-      taskType: 'throw-away',
+      taskType: 'single-use',
     }
 
     await refreshNuxtData()

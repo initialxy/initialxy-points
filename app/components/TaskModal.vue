@@ -61,7 +61,7 @@ defineProps<{
 }>()
 
 const task: Ref<PartialTask> = defineModel<PartialTask>('task', {
-  default: { description: '', points: null, taskType: 'throw-away' },
+  default: { description: '', points: null, taskType: 'single-use' },
 })
 
 const isOpen: Ref<boolean> = defineModel('open', {
@@ -75,13 +75,15 @@ const emit = defineEmits<{
 const taskSchema = z.object({
   description: z.string().min(4, 'Must be at least 4 characters'),
   points: z.number().min(0, 'Must be at least 0').nullable(),
-  taskType: z.enum(['throw-away', 'perpetual']),
+  taskType: z.enum(['single-use', 'perpetual']),
 })
 
-const taskTypeItems = ref([
-  { value: 'throw-away', label: 'Throw Away' },
-  { value: 'perpetual', label: 'Perpetual' },
-])
+const taskTypeItems = ref(
+  ['single-use', 'perpetual'].map((value) => ({
+    value,
+    label: getReadableTaskType(value),
+  }))
+)
 
 const handleSubmit = () => {
   emit('submit')

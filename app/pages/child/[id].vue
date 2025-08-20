@@ -94,7 +94,7 @@ const editingTask = ref<Task | null>(null)
 const editTaskState: Ref<PartialTask> = ref({
   description: '',
   points: null,
-  taskType: 'throw-away',
+  taskType: 'single-use',
 })
 
 // Handle edit event from TaskList component

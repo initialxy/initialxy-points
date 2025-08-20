@@ -15,7 +15,7 @@ export type Task = {
   description: string
   points: number
   child_id: number
-  task_type: 'throw-away' | 'perpetual'
+  task_type: 'single-use' | 'perpetual'
   parent_id: number
   is_marked_complete: boolean
 }
@@ -74,5 +74,5 @@ export type LogsResponse = {
 export type PartialTask = {
   description: string
   points: number | null
-  taskType: 'throw-away' | 'perpetual'
+  taskType: 'single-use' | 'perpetual'
 }

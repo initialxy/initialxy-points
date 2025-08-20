@@ -31,7 +31,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  if (task_type !== 'throw-away' && task_type !== 'perpetual') {
+  if (task_type !== 'single-use' && task_type !== 'perpetual') {
     return {
       statusCode: 400,
       body: { message: 'Invalid task type' },

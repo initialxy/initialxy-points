@@ -14,7 +14,7 @@
 ### 2.1 Core Features
 - [x] Passcode-based authentication for parents and children
 - [x] Two types of users: parents (admins) and children
-- [x] Parents can create tasks (throw-away or perpetual) and define points for completion
+- [x] Parents can create tasks (single-use or perpetual) and define points for completion
 - [x] Parents can define rewards and their point values
 - [x] Children can redeem rewards with points (requires parent approval)
 - [x] Points visibility for parents and children

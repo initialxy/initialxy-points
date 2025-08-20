@@ -13,8 +13,8 @@
         root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
       }"
     >
-      <div class="flex justify-between items-start space-x-2">
-        <p class="text-nowrap text-ellipsis text-cyan-500 grow">
+      <div class="flex justify-start items-start space-x-2">
+        <p class="truncate text-cyan-500 grow min-w-0">
           {{ task.description }}
         </p>
         <UButton
@@ -26,7 +26,7 @@
           @click="confirmDelete(task)"
         />
       </div>
-      <div class="flex justify-between items-start mt-2 space-x-2">
+      <div class="flex justify-start items-start mt-2 space-x-2">
         <UBadge
           v-if="task.is_marked_complete"
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
@@ -49,7 +49,7 @@
         >
           Points: {{ task.points }}
         </UBadge>
-        <div class="grow space-x-2 flex justify-end">
+        <div class="grow min-w-0 space-x-2 flex justify-end">
           <UButton
             v-if="task.is_marked_complete"
             size="sm"
@@ -82,6 +82,7 @@
     <UModal
       v-model:open="isDeleteConfirmationModalOpen"
       title="Confirm Deletion"
+      class="max-w-100"
     >
       <template #body>
         <p>Are you sure you want to delete this task?</p>
@@ -138,7 +139,7 @@ const sortedTasks = computed(() => {
 
 const getTaskTypeIcon = (task: Task) => {
   switch (task.task_type) {
-    case 'throw-away':
+    case 'single-use':
       return 'i-lucide-square-check-big'
     case 'perpetual':
       return 'i-lucide-recycle'

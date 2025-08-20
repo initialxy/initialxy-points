@@ -7,8 +7,8 @@
       variant="subtle"
       @click="navigateTo(`/child/${child.id}`)"
     >
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold grow text-nowrap text-ellipsis">
+      <div class="flex items-center justify-start">
+        <h2 class="text-xl font-semibold grow min-w-0 truncate">
           {{ child.username }}
         </h2>
         <UBadge

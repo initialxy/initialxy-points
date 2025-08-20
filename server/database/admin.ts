@@ -31,7 +31,7 @@ async function initializeDatabase(db: Database): Promise<Database> {
         points INTEGER NOT NULL,
         parent_id INTEGER,
         child_id INTEGER,
-        task_type TEXT NOT NULL CHECK(task_type IN ('throw-away', 'perpetual')),
+        task_type TEXT NOT NULL CHECK(task_type IN ('single-use', 'perpetual')),
         is_marked_complete BOOLEAN DEFAULT FALSE,
         FOREIGN KEY(child_id) REFERENCES users(id),
         FOREIGN KEY(parent_id) REFERENCES users(id)

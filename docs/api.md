@@ -147,7 +147,7 @@ Retrieves tasks for the authenticated user.
       "id": "number",
       "description": "string",
       "points": "number",
-      "task_type": "string", // 'throw-away' or 'perpetual'
+      "task_type": "string", // 'single-use' or 'perpetual'
       "child_id": "number",
       "parent_id": "number",
       "is_marked_complete": "boolean"
@@ -169,7 +169,7 @@ Creates a new task for a child (parent-only endpoint).
   "description": "string",
   "points": "number",
   "child_id": "number",
-  "task_type": "string" // 'throw-away' or 'perpetual'
+  "task_type": "string" // 'single-use' or 'perpetual'
 }
 ```
 
@@ -209,7 +209,7 @@ Updates a task by ID.
 {
   "description": "string",
   "points": "number",
-  "task_type": "string" // 'throw-away' or 'perpetual'
+  "task_type": "string" // 'single-use' or 'perpetual'
 }
 ```
 
