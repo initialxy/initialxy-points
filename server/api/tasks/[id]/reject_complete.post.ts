@@ -1,6 +1,5 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
-import { validateId } from '../../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -40,11 +39,12 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Reset the is_marked_complete flag
   await db.run(
     'UPDATE tasks SET is_marked_complete = FALSE WHERE id = ?',
     taskId
   )
+
+  await logTaskAction(db, 'reject_task_complete', user.id, task)
 
   return {
     statusCode: 200,

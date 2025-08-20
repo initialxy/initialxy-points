@@ -1,7 +1,28 @@
 import { Database } from 'sqlite'
+import { Task } from '../../shared/types'
 
 const MAX_NUM_LOGS_RETENTION = 1000
 const LOG_CHANGE_POINTS_DEBOUNCE_SECONDS = 30
+
+export async function logTaskAction(
+  db: Database,
+  actionType: string,
+  actorId: number,
+  task: Task,
+  pointsBefore?: number,
+  pointsAfter?: number
+): Promise<void> {
+  const log = {
+    actor_id: actorId,
+    action_type: actionType,
+    recipient_id: task.child_id,
+    points_before: pointsBefore ?? null,
+    points_after: pointsAfter ?? null,
+    additional_context: `${task.task_type} task: ${task.description} - ${task.points} points`,
+  }
+
+  await logAction(db, log)
+}
 
 export async function logAction(db: Database, log: Log): Promise<void> {
   if (log.action_type === 'change_points') {

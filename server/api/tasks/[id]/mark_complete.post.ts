@@ -1,6 +1,5 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
-import { validateId } from '../../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -15,7 +14,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Check if the task exists and belongs to the user
+  // Check if the task exists
   const task = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [taskId])
 
   if (task == null) {
@@ -40,11 +39,12 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Mark the task as completed (pending parent approval)
   await db.run(
     'UPDATE tasks SET is_marked_complete = TRUE WHERE id = ?',
     taskId
   )
+
+  await logTaskAction(db, 'mark_task_complete', user.id, task)
 
   return {
     statusCode: 200,

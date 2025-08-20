@@ -37,14 +37,19 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const taskId = result.lastID as number
 
+  const task = {
+    id: taskId,
+    description,
+    points,
+    child_id,
+    task_type,
+    parent_id: user.id,
+    is_marked_complete: false,
+  }
+
+  await logTaskAction(db, 'create_task', user.id, task)
+
   return {
-    task: {
-      id: taskId,
-      description,
-      points,
-      task_type,
-      child_id,
-      parent_id: user.id,
-    },
+    task,
   } as TaskResponse
 })

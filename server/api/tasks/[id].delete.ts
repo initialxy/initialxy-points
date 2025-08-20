@@ -6,7 +6,6 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  // Get task ID from URL parameters
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
   if (taskId == null) {
     return {
@@ -22,6 +21,18 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
+  // Get the task to log before deletion
+  const taskResult = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
+    taskId,
+  ])
+
+  if (taskResult == null) {
+    return {
+      statusCode: 404,
+      body: { message: 'Task not found or not authorized' },
+    }
+  }
+
   const result = await db.run('DELETE FROM tasks WHERE id = ?', [taskId])
 
   if (result.changes === 0) {
@@ -30,6 +41,8 @@ export default defineEventHandler(async (event: H3Event) => {
       body: { message: 'Task not found or not authorized' },
     }
   }
+
+  await logTaskAction(db, 'delete_task', user.id, taskResult)
 
   return {
     statusCode: 204,

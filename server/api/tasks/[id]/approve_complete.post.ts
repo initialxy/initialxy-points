@@ -1,6 +1,5 @@
 import { defineEventHandler, H3Event } from 'h3'
 import { getDb } from '../../../database'
-import { validateId } from '../../../utils/validation'
 
 export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
@@ -33,7 +32,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Handle task completion based on task type
   if (task.task_type === 'throw-away') {
     // For throw-away tasks, delete the task after completion
     await db.run('DELETE FROM tasks WHERE id = ?', taskId)
@@ -45,11 +43,31 @@ export default defineEventHandler(async (event: H3Event) => {
     )
   }
 
-  // Update the child's points balance
+  // Get the child's current points before updating
+  const child = await db.get<User>('SELECT points FROM users WHERE id = ?', [
+    task.child_id,
+  ])
+
+  if (!child) {
+    return {
+      statusCode: 404,
+      body: { message: 'Child user not found' },
+    }
+  }
+
   await db.run('UPDATE users SET points = points + ? WHERE id = ?', [
     task.points,
     task.child_id,
   ])
+
+  await logTaskAction(
+    db,
+    'approve_task_complete',
+    user.id,
+    task,
+    child.points,
+    child.points + task.points
+  )
 
   return {
     statusCode: 200,

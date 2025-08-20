@@ -6,7 +6,6 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  // Get task ID from URL parameters
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
   if (taskId == null) {
     return {
@@ -39,7 +38,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  // Get the current task to preserve child_id, parent_id, and is_marked_complete
+  // Check if task exists
   const taskResult = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
     taskId,
   ])
@@ -62,6 +61,8 @@ export default defineEventHandler(async (event: H3Event) => {
       body: { message: 'Task not found or not authorized' },
     }
   }
+
+  await logTaskAction(db, 'update_task', user.id, taskResult)
 
   return {
     task: taskResult,
