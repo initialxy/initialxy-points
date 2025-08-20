@@ -16,15 +16,20 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the task exists and belongs to the user
-  const task = await db.get<Task>(
-    'SELECT * FROM tasks WHERE id = ? AND child_id = ?',
-    [taskId, user.id]
-  )
+  const task = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [taskId])
 
-  if (!task) {
+  if (task == null) {
     return {
       statusCode: 404,
       body: { message: 'Task not found or not authorized' },
+    }
+  }
+
+  // Only allowed if user is parent or child acting on their assigned task
+  if (user.role !== 'parent' && user.id !== task.child_id) {
+    return {
+      statusCode: 403,
+      body: { message: 'Forbidden' },
     }
   }
 

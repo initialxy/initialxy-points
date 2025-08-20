@@ -43,14 +43,14 @@
           <UButton
             v-if="task.is_marked_complete"
             size="sm"
-            icon="i-lucide-x"
+            icon="i-lucide-thumbs-down"
             color="error"
             variant="soft"
             @click="emit('reject', task)"
           />
           <UButton
             size="sm"
-            icon="i-lucide-check"
+            icon="i-lucide-thumbs-up"
             color="success"
             variant="soft"
             @click="emit('complete', task)"

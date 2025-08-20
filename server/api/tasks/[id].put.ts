@@ -40,10 +40,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Get the current task to preserve child_id, parent_id, and is_marked_complete
-  const taskResult = await db.get(
-    'SELECT child_id, is_marked_complete FROM tasks WHERE id = ? AND parent_id = ?',
-    [taskId, user.id]
-  )
+  const taskResult = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
+    taskId,
+  ])
 
   if (taskResult == null) {
     return {
@@ -53,8 +52,8 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const result = await db.run(
-    'UPDATE tasks SET description = ?, points = ?, task_type = ? WHERE id = ? AND parent_id = ?',
-    [description, points, task_type, taskId, user.id]
+    'UPDATE tasks SET description = ?, points = ?, task_type = ? WHERE id = ?',
+    [description, points, task_type, taskId]
   )
 
   if (result.changes === 0) {
@@ -65,14 +64,6 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   return {
-    task: {
-      id: taskId,
-      description,
-      points,
-      task_type,
-      child_id: taskResult.child_id,
-      parent_id: user.id,
-      is_marked_complete: taskResult.is_marked_complete,
-    },
+    task: taskResult,
   } as TaskResponse
 })

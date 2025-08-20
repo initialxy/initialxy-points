@@ -22,10 +22,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
 
-  const result = await db.run(
-    'DELETE FROM tasks WHERE id = ? AND parent_id = ?',
-    [taskId, user.id]
-  )
+  const result = await db.run('DELETE FROM tasks WHERE id = ?', [taskId])
 
   if (result.changes === 0) {
     return {
