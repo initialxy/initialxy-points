@@ -13,9 +13,18 @@
         root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
       }"
     >
-      <p class="text-nowrap text-ellipsis text-cyan-500">
-        {{ task.description }}
-      </p>
+      <div class="flex justify-between items-start space-x-2">
+        <p class="text-nowrap text-ellipsis text-cyan-500 grow">
+          {{ task.description }}
+        </p>
+        <UButton
+          size="sm"
+          icon="i-lucide-x"
+          color="error"
+          variant="soft"
+          @click="confirmDelete(task)"
+        />
+      </div>
       <div class="flex justify-between items-start mt-2 space-x-2">
         <UBadge
           v-if="task.is_marked_complete"
@@ -65,21 +74,47 @@
         </div>
       </div>
     </UCard>
+
+    <!-- Confirmation Modal -->
+    <UModal
+      v-model:open="isDeleteConfirmationModalOpen"
+      title="Confirm Deletion"
+    >
+      <template #body>
+        <p>Are you sure you want to delete this task?</p>
+      </template>
+      <template #footer>
+        <div class="space-x-2">
+          <UButton @click="deleteConfirmed" color="error"> Delete </UButton>
+          <UButton
+            @click="isDeleteConfirmationModalOpen = false"
+            variant="soft"
+            color="neutral"
+          >
+            Cancel
+          </UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const emit = defineEmits<{
   (e: 'reject', task: Task): void
   (e: 'complete', task: Task): void
   (e: 'edit', task: Task): void
+  (e: 'delete', task: Task): void
 }>()
 
 const props = defineProps<{
   tasks: Task[]
 }>()
+
+const isDeleteConfirmationModalOpen = ref(false)
+const taskToDelete = ref<Task | null>(null)
 
 const sortedTasks = computed(() => {
   return [...props.tasks].sort((a, b) => {
@@ -105,6 +140,19 @@ const getTaskTypeIcon = (task: Task) => {
       return 'i-lucide-recycle'
     default:
       return 'i-lucide-circle-question-mark'
+  }
+}
+
+const confirmDelete = (task: Task) => {
+  taskToDelete.value = task
+  isDeleteConfirmationModalOpen.value = true
+}
+
+const deleteConfirmed = () => {
+  if (taskToDelete.value != null) {
+    emit('delete', taskToDelete.value)
+    isDeleteConfirmationModalOpen.value = false
+    taskToDelete.value = null
   }
 }
 </script>

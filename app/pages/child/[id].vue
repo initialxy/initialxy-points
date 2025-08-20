@@ -28,6 +28,7 @@
       @edit="handleEditTask"
       @complete="handleCompleteTask"
       @reject="handleRejectTask"
+      @delete="handleDeleteTask"
     />
 
     <hr
@@ -150,6 +151,31 @@ const handleRejectTask = async (task: Task) => {
   } catch (error: any) {
     toast.add({
       title: 'Failed to reject task completion',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// Handle delete event from TaskList component
+const handleDeleteTask = async (task: Task) => {
+  try {
+    await $fetch(`/api/tasks/${task.id}`, {
+      method: 'DELETE',
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Task deleted successfully',
+      color: 'success',
+      progress: false,
+    })
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    toast.add({
+      title: 'Failed to delete task',
       color: 'error',
       progress: false,
     })
