@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4 max-w-100 mx-auto">
-    <div v-if="sortedTasks.length === 0" class="text-center py-4">
+    <div v-if="sortedTasks.length === 0" class="text-center">
       <p class="text-muted">No task yet</p>
     </div>
     <UCard

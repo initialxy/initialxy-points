@@ -136,6 +136,9 @@ Updates points for a specific child user (parent-only endpoint).
 ### GET /api/tasks
 Retrieves tasks for the authenticated user.
 
+**Query Parameters:**
+- `child_id` - Filter by specific child ID (optional). If provided, returns tasks for that specific child. If not provided and user is a parent, returns all tasks.
+
 **Response:**
 ```json
 {
@@ -337,6 +340,7 @@ Retrieves logs of user actions. Parent users can see all logs, while child users
 
 **Query Parameters:**
 - `limit` - Number of log entries to return (default: 50)
+- `recipient_id` - Filter by specific recipient ID (optional)
 
 **Response:**
 ```json
