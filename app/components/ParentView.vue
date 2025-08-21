@@ -71,6 +71,7 @@ const { data: childrenData, refresh } = await useFetch<UsersResponse>(
 )
 
 const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
+const { data: rewardsData } = await useFetch<RewardsResponse>('/api/rewards')
 
 // Keep track of points change by child during debounce, because API requires a
 // points_change instead of updating raw points value to be more race condition
@@ -78,10 +79,18 @@ const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
 const pointsDeltaByUserId = new Map<number, number>()
 
 const getNotificationsCount = (childId: number) => {
-  if (!tasksData.value?.tasks) return 0
-  return tasksData.value.tasks.filter(
+  let count = 0
+
+  // Sum tasks and rewards that's awaiting parental approval
+  const tasksCount = (tasksData.value?.tasks || []).filter(
     (task) => task.child_id === childId && task.is_marked_complete
   ).length
+
+  const rewardsCount = (rewardsData.value?.rewards || []).filter(
+    (reward) => reward.child_id === childId && reward.is_redemption_requested
+  ).length
+
+  return tasksCount + rewardsCount
 }
 
 const debouncedUpdatePoints = debounce(async (child: User, delta: number) => {

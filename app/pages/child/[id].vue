@@ -14,6 +14,8 @@
           <UBadge variant="subtle" size="xl" icon="i-lucide-bell-ring">
             <UIcon name="i-lucide-clipboard-list" />
             {{ getPendingTasksCount() }}
+            <UIcon name="i-lucide-gift" />
+            {{ getPendingRewardsCount() }}
           </UBadge>
         </p>
       </UCard>
@@ -39,7 +41,10 @@
     <RewardList
       :rewards="rewards?.rewards || []"
       mode="parent"
-      @request-redemption="handleRequestRedemption"
+      @complete="handleCompleteReward"
+      @edit="handleEditReward"
+      @reject="handleRejectReward"
+      @delete="handleDeleteReward"
     />
 
     <hr
@@ -55,6 +60,15 @@
       title="Edit Task"
       submit-button-text="Update"
       @submit="editTaskSubmit"
+    />
+
+    <!-- Edit Reward Modal -->
+    <ActionEntityModal
+      v-model:open="showEditRewardModal"
+      v-model:actionItem="editRewardState"
+      title="Edit Reward"
+      submit-button-text="Update"
+      @submit="editRewardSubmit"
     />
   </div>
 </template>
@@ -95,12 +109,13 @@ onUnmounted(() => {
   store.actionableUser = null
 })
 
-const getPendingTasksCount = () => {
-  if (!tasks.value?.tasks) {
-    return 0
-  }
-  return tasks.value.tasks.filter((task) => task.is_marked_complete).length
-}
+const getPendingTasksCount = () =>
+  (tasks.value?.tasks || []).filter((task) => task.is_marked_complete).length
+
+const getPendingRewardsCount = () =>
+  (rewards.value?.rewards || []).filter(
+    (reward) => reward.is_redemption_requested
+  ).length
 
 // Edit task modal state
 const showEditTaskModal = ref(false)
@@ -237,8 +252,8 @@ const editTaskSubmit = async () => {
   }
 }
 
-// Handle reward redemption request from child
-const handleRequestRedemption = async (reward: Reward) => {
+// Approve redemption request from child
+const handleCompleteReward = async (reward: Reward) => {
   // Check if the child has enough points before allowing redemption
   if (
     child.value &&
@@ -247,7 +262,7 @@ const handleRequestRedemption = async (reward: Reward) => {
   ) {
     toast.add({
       title: 'Not enough points',
-      description: `Child needs ${reward.points} points to redeem this reward, but they only have ${child.value.user.points}`,
+      description: `Child does not have enough points to redeem this reward`,
       color: 'error',
       progress: false,
     })
@@ -255,13 +270,13 @@ const handleRequestRedemption = async (reward: Reward) => {
   }
 
   try {
-    await $fetch(`/api/rewards/${reward.id}/request_redemption`, {
+    await $fetch(`/api/rewards/${reward.id}/approve_redemption`, {
       method: 'POST',
     })
 
     // Show success toast
     toast.add({
-      title: 'Reward redemption requested',
+      title: 'Reward redemption approved',
       color: 'success',
       progress: false,
     })
@@ -269,25 +284,121 @@ const handleRequestRedemption = async (reward: Reward) => {
     // Refresh data to reflect changes
     await refreshNuxtData()
   } catch (error: any) {
-    // Handle specific error for insufficient points
-    if (error.data?.message && error.data.message.includes('enough points')) {
-      toast.add({
-        title: 'Not enough points',
-        description:
-          error.data.message +
-          (error.data.requiredPoints
-            ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}`
-            : ''),
-        color: 'error',
-        progress: false,
-      })
-    } else {
-      toast.add({
-        title: 'Failed to request reward redemption',
-        color: 'error',
-        progress: false,
-      })
-    }
+    toast.add({
+      title: 'Failed to approve reward redemption',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// Edit reward modal state
+const showEditRewardModal = ref(false)
+const editingReward = ref<Reward | null>(null)
+
+// Form state for editing reward
+const editRewardState: Ref<PartialActionItem> = ref({
+  description: '',
+  points: null,
+  recurrenceType: 'single-use',
+})
+
+// Handle edit event from RewardList component
+const handleEditReward = (reward: Reward) => {
+  editingReward.value = reward
+  editRewardState.value = {
+    description: reward.description,
+    points: reward.points,
+    recurrenceType: reward.recurrence_type,
+  }
+  showEditRewardModal.value = true
+}
+
+// Submit edited reward
+const editRewardSubmit = async () => {
+  if (!editingReward.value) {
+    return
+  }
+
+  try {
+    await $fetch(`/api/rewards/${editingReward.value.id}`, {
+      method: 'PUT',
+      body: {
+        description: editRewardState.value.description,
+        points: editRewardState.value.points || 0,
+        recurrence_type: editRewardState.value.recurrenceType,
+      },
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Reward updated successfully',
+      color: 'success',
+      progress: false,
+    })
+
+    // Close modal and reset form
+    showEditRewardModal.value = false
+    editingReward.value = null
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    toast.add({
+      title: 'Failed to update reward',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// Handle reject event from RewardList component
+const handleRejectReward = async (reward: Reward) => {
+  try {
+    await $fetch(`/api/rewards/${reward.id}/reject_redemption`, {
+      method: 'POST',
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Reward redemption rejected',
+      color: 'success',
+      progress: false,
+    })
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    toast.add({
+      title: 'Failed to reject reward redemption',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// Handle delete event from RewardList component
+const handleDeleteReward = async (reward: Reward) => {
+  try {
+    await $fetch(`/api/rewards/${reward.id}`, {
+      method: 'DELETE',
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Reward deleted successfully',
+      color: 'success',
+      progress: false,
+    })
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    toast.add({
+      title: 'Failed to delete reward',
+      color: 'error',
+      progress: false,
+    })
   }
 }
 </script>

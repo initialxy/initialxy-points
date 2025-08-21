@@ -2,7 +2,7 @@
   <UModal v-model:open="isOpen" :title="title" class="max-w-100">
     <template #body>
       <UForm
-        id="actionItem-form"
+        id="action-item-form"
         :schema="actionItemSchema"
         :state="actionItem"
         class="space-y-4"
@@ -36,7 +36,7 @@
     <template #footer>
       <div>
         <UButton
-          form="actionItem-form"
+          form="action-item-form"
           type="submit"
           icon="i-lucide-check"
           color="primary"

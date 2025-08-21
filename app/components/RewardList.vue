@@ -10,11 +10,11 @@
       class="w-full"
       variant="subtle"
       :ui="{
-        root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
+        root: 'ring-yellow-200 dark:ring-yellow-800 bg-yellow-200/20 dark:bg-yellow-800/20',
       }"
     >
       <div class="flex justify-start items-start space-x-2">
-        <p class="truncate text-cyan-500 grow min-w-0">
+        <p class="truncate text-yellow-500 grow min-w-0">
           {{ reward.description }}
         </p>
         <UButton
@@ -39,35 +39,17 @@
           :variant="reward.is_redemption_requested ? 'subtle' : 'outline'"
           :color="reward.is_redemption_requested ? 'success' : 'neutral'"
           icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
+          class="size-6 justify-center ring-yellow-200 dark:ring-yellow-800 bg-yellow-200/20 dark:bg-yellow-800/20 text-yellow-500"
         />
         <UBadge
-          class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
+          class="ring--200 dark:ring-yellow-800 bg-yellow-200/20 dark:bg-yellow-800/20 text-yellow-500"
           :icon="getRecurrenceTypeIcon(reward)"
           color="neutral"
           variant="outline"
         >
           Points: {{ reward.points }}
         </UBadge>
-        <UBadge
-          class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
-          icon="i-lucide-medal"
-          color="neutral"
-          variant="outline"
-        >
-          Reward
-        </UBadge>
         <div class="grow min-w-0 space-x-2 flex justify-end">
-          <!-- Child can request redemption -->
-          <UButton
-            v-if="props.mode === 'child' && !reward.is_redemption_requested"
-            size="sm"
-            icon="i-lucide-medal"
-            color="success"
-            variant="soft"
-            @click="emit('request-redemption', reward)"
-          />
-          <!-- Parent can approve/reject -->
           <UButton
             v-if="reward.is_redemption_requested"
             size="sm"
@@ -122,7 +104,6 @@ const emit = defineEmits<{
   (e: 'complete', reward: Reward): void
   (e: 'edit', reward: Reward): void
   (e: 'delete', reward: Reward): void
-  (e: 'request-redemption', reward: Reward): void
 }>()
 
 const props = defineProps<{

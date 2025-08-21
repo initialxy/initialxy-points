@@ -100,6 +100,30 @@ const items: Ref<TimelineItem[]> = computed(() =>
           description: additionalContext,
           icon: 'i-lucide-x',
         }
+      case 'create_reward':
+        return {
+          username,
+          date,
+          action: `created a reward`,
+          description: additionalContext,
+          icon: 'i-lucide-plus-circle',
+        }
+      case 'update_reward':
+        return {
+          username,
+          date,
+          action: `updated a reward`,
+          description: additionalContext,
+          icon: 'i-lucide-pencil',
+        }
+      case 'delete_reward':
+        return {
+          username,
+          date,
+          action: `deleted a reward`,
+          description: additionalContext,
+          icon: 'i-lucide-x',
+        }
       case 'request_redemption':
         return {
           username,

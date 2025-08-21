@@ -35,7 +35,7 @@
     <RewardList
       :rewards="rewards?.rewards || []"
       mode="child"
-      @request-redemption="handleRequestRedemption"
+      @complete="handleCompleteReward"
     />
   </div>
 </template>
@@ -109,7 +109,18 @@ const handleRejectTask = async (task: Task) => {
 }
 
 // Handle reward redemption request from child
-const handleRequestRedemption = async (reward: Reward) => {
+const handleCompleteReward = async (reward: Reward) => {
+  // Check if user has enough points for the reward
+  if (!user.value || !reward || user.value.points < reward.points) {
+    toast.add({
+      title: 'Not enough points',
+      description: `You don't have enough points to redeem this reward.`,
+      color: 'error',
+      progress: false,
+    })
+    return
+  }
+
   try {
     await $fetch(`/api/rewards/${reward.id}/request_redemption`, {
       method: 'POST',
@@ -125,25 +136,11 @@ const handleRequestRedemption = async (reward: Reward) => {
     // Refresh data to reflect changes
     await refreshNuxtData()
   } catch (error: any) {
-    // Handle specific error for insufficient points
-    if (error.data?.message && error.data.message.includes('enough points')) {
-      toast.add({
-        title: 'Not enough points',
-        description:
-          error.data.message +
-          (error.data.requiredPoints
-            ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}`
-            : ''),
-        color: 'error',
-        progress: false,
-      })
-    } else {
-      toast.add({
-        title: 'Failed to request reward redemption',
-        color: 'error',
-        progress: false,
-      })
-    }
+    toast.add({
+      title: 'Failed to request reward redemption',
+      color: 'error',
+      progress: false,
+    })
   }
 }
 </script>
