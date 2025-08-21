@@ -100,6 +100,35 @@ const items: Ref<TimelineItem[]> = computed(() =>
           description: additionalContext,
           icon: 'i-lucide-x',
         }
+      case 'request_redemption':
+        return {
+          username,
+          date,
+          action: `requested redemption of a reward`,
+          description: additionalContext,
+          icon: 'i-lucide-medal',
+        }
+      case 'approve_redemption':
+        return {
+          username,
+          date,
+          action: `approved reward redemption for ${recipientUsername}`,
+          description:
+            `${additionalContext}. ${recipientUsername} now has ` +
+            `${log.points_after || 0} points`,
+          icon: 'i-lucide-medal',
+        }
+      case 'reject_redemption':
+        return {
+          username,
+          date,
+          action:
+            username === recipientUsername
+              ? `cancelled reward redemption`
+              : `rejected reward redemption for ${recipientUsername}`,
+          description: additionalContext,
+          icon: 'i-lucide-thumbs-down',
+        }
     }
 
     return {

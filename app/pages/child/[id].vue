@@ -36,12 +36,22 @@
       class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
     />
 
+    <RewardList
+      :rewards="rewards?.rewards || []"
+      mode="parent"
+      @request-redemption="handleRequestRedemption"
+    />
+
+    <hr
+      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+    />
+
     <LogList :logs="logs?.logs || []" />
 
     <!-- Edit Task Modal -->
     <ActionEntityModal
       v-model:open="showEditTaskModal"
-      v-model:task="editTaskState"
+      v-model:actionItem="editTaskState"
       title="Edit Task"
       submit-button-text="Update"
       @submit="editTaskSubmit"
@@ -71,6 +81,12 @@ const { data: logs } = await useFetch<LogsResponse>('/api/logs', {
   },
 })
 
+const { data: rewards } = await useFetch<RewardsResponse>('/api/rewards', {
+  query: {
+    child_id: childId,
+  },
+})
+
 onMounted(() => {
   store.actionableUser = child.value?.user || null
 })
@@ -91,7 +107,7 @@ const showEditTaskModal = ref(false)
 const editingTask = ref<Task | null>(null)
 
 // Form state for editing
-const editTaskState: Ref<PartialTask> = ref({
+const editTaskState: Ref<PartialActionItem> = ref({
   description: '',
   points: null,
   recurrenceType: 'single-use',
@@ -218,6 +234,53 @@ const editTaskSubmit = async () => {
       color: 'error',
       progress: false,
     })
+  }
+}
+
+// Handle reward redemption request from child
+const handleRequestRedemption = async (reward: Reward) => {
+  // Check if the child has enough points before allowing redemption
+  if (child.value && child.value.user && child.value.user.points < reward.points) {
+    toast.add({
+      title: 'Not enough points',
+      description: `Child needs ${reward.points} points to redeem this reward, but they only have ${child.value.user.points}`,
+      color: 'error',
+      progress: false,
+    })
+    return
+  }
+
+  try {
+    await $fetch(`/api/rewards/${reward.id}/request_redemption`, {
+      method: 'POST',
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Reward redemption requested',
+      color: 'success',
+      progress: false,
+    })
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    // Handle specific error for insufficient points
+    if (error.data?.message && error.data.message.includes('enough points')) {
+      toast.add({
+        title: 'Not enough points',
+        description: error.data.message +
+          (error.data.requiredPoints ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}` : ''),
+        color: 'error',
+        progress: false,
+      })
+    } else {
+      toast.add({
+        title: 'Failed to request reward redemption',
+        color: 'error',
+        progress: false,
+      })
+    }
   }
 }
 </script>

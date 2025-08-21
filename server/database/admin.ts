@@ -13,7 +13,8 @@ async function initializeDatabase(db: Database): Promise<Database> {
   if (
     !tableNames.includes('users') ||
     !tableNames.includes('tasks') ||
-    !tableNames.includes('logs')
+    !tableNames.includes('logs') ||
+    !tableNames.includes('rewards')
   ) {
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
@@ -36,6 +37,18 @@ async function initializeDatabase(db: Database): Promise<Database> {
         FOREIGN KEY(parent_id) REFERENCES users(id)
       );
 
+      CREATE TABLE IF NOT EXISTS rewards (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        description TEXT NOT NULL,
+        points INTEGER NOT NULL,
+        parent_id INTEGER,
+        child_id INTEGER,
+        recurrence_type TEXT NOT NULL CHECK(recurrence_type IN ('single-use', 'perpetual')),
+        is_redemption_requested BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY(parent_id) REFERENCES users(id),
+        FOREIGN KEY(child_id) REFERENCES users(id)
+      );
+
       CREATE TABLE IF NOT EXISTS logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -54,6 +67,8 @@ async function initializeDatabase(db: Database): Promise<Database> {
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
       CREATE INDEX IF NOT EXISTS idx_tasks_child_id ON tasks(child_id);
       CREATE INDEX IF NOT EXISTS idx_tasks_parent_id ON tasks(parent_id);
+      CREATE INDEX IF NOT EXISTS idx_rewards_parent_id ON rewards(parent_id);
+      CREATE INDEX IF NOT EXISTS idx_rewards_child_id ON rewards(child_id);
     `)
   }
 

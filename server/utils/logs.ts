@@ -24,6 +24,27 @@ export async function logTaskAction(
   await logAction(db, log)
 }
 
+export async function logRewardAction(
+  db: Database,
+  actionType: string,
+  actorId: number,
+  reward: Reward,
+  pointsBefore?: number,
+  pointsAfter?: number
+): Promise<void> {
+  const recurrenceType = getReadableRecurrenceType(reward.recurrence_type)
+  const log = {
+    actor_id: actorId,
+    action_type: actionType,
+    recipient_id: reward.child_id,
+    points_before: pointsBefore ?? null,
+    points_after: pointsAfter ?? null,
+    additional_context: `${recurrenceType} reward: ${reward.description} • ${reward.points} points`,
+  }
+
+  await logAction(db, log)
+}
+
 export async function logAction(db: Database, log: Log): Promise<void> {
   if (log.action_type === 'change_points') {
     // Check if we have a similar log line for change_points in the last 30

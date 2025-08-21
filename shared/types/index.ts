@@ -24,7 +24,16 @@ export type Reward = {
   id: number
   description: string
   points: number
+  child_id: number
+  recurrence_type: 'single-use' | 'perpetual'
   parent_id: number
+  is_redemption_requested: boolean
+}
+
+export type PartialActionItem = {
+  description: string
+  points: number | null
+  recurrenceType: 'single-use' | 'perpetual'
 }
 
 export type CreatedIdResponseBody = {
@@ -54,6 +63,11 @@ export type TasksResponse = {
   tasks: Task[]
 }
 
+export type RewardResponse = {
+  reward: Reward
+}
+
+
 export type RewardsResponse = {
   rewards: Reward[]
 }
@@ -68,11 +82,4 @@ export type UserResponse = {
 
 export type LogsResponse = {
   logs: Log[]
-}
-
-// Partial task for form handling
-export type PartialTask = {
-  description: string
-  points: number | null
-  recurrenceType: 'single-use' | 'perpetual'
 }

@@ -2,15 +2,15 @@
   <UModal v-model:open="isOpen" :title="title" class="max-w-100">
     <template #body>
       <UForm
-        id="task-form"
-        :schema="taskSchema"
-        :state="task"
+        id="actionItem-form"
+        :schema="actionItemSchema"
+        :state="actionItem"
         class="space-y-4"
         @submit="handleSubmit"
       >
         <UFormField name="description">
           <UInput
-            v-model="task.description"
+            v-model="actionItem.description"
             type="text"
             placeholder="Description"
             class="w-full"
@@ -18,7 +18,7 @@
         </UFormField>
         <UFormField name="points">
           <UInput
-            v-model="task.points"
+            v-model="actionItem.points"
             type="number"
             placeholder="Points"
             class="w-full"
@@ -26,7 +26,7 @@
         </UFormField>
         <UFormField name="recurrenceType">
           <USelect
-            v-model="task.recurrenceType"
+            v-model="actionItem.recurrenceType"
             :items="recurrenceTypeItems"
             class="w-full"
           />
@@ -36,7 +36,7 @@
     <template #footer>
       <div>
         <UButton
-          form="task-form"
+          form="actionItem-form"
           type="submit"
           icon="i-lucide-check"
           color="primary"
@@ -57,10 +57,10 @@ defineProps<{
   open: boolean
   title: string
   submitButtonText: string
-  task: PartialTask | null
+  actionItem: PartialActionItem | null
 }>()
 
-const task: Ref<PartialTask> = defineModel<PartialTask>('task', {
+const actionItem: Ref<PartialActionItem> = defineModel<PartialActionItem>('actionItem', {
   default: { description: '', points: null, recurrenceType: 'single-use' },
 })
 
@@ -72,7 +72,7 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const taskSchema = z.object({
+const actionItemSchema = z.object({
   description: z.string().min(4, 'Must be at least 4 characters'),
   points: z.number().min(0, 'Must be at least 0').nullable(),
   recurrenceType: z.enum(['single-use', 'perpetual']),

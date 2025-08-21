@@ -49,7 +49,7 @@
 
     <ActionEntityModal
       v-model:open="showCreateTaskModal"
-      v-model:task="newTaskState"
+      v-model:actionItem="newTaskState"
       title="New Task"
       submit-button-text="Create"
       @submit="newTaskSubmit"
@@ -64,7 +64,7 @@ const toast = useToast()
 const isActionExpanded = ref(false)
 const showCreateTaskModal = ref(false)
 
-const newTaskState: Ref<PartialTask> = ref({
+const newTaskState: Ref<PartialActionItem> = ref({
   description: '',
   points: null,
   recurrenceType: 'single-use',

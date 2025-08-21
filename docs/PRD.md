@@ -15,12 +15,16 @@
 - [x] Passcode-based authentication for parents and children
 - [x] Two types of users: parents (admins) and children
 - [x] Parents can create tasks (single-use or perpetual) and define points for completion
-- [x] Parents can define rewards and their point values
-- [x] Children can redeem rewards with points (requires parent approval)
+- [x] Parents can create rewards (single-use or perpetual) and define points for redemption
+- [x] Children can mark a task as completed
+- [x] Any parent can approve or reject task completions. When approved, points for the task will be added to the child
+- [x] Children can redeem rewards with points
+- [x] Any parent can approve or reject reward redemptions. When approved, points for the reward will be deducted from the child
+- [x] Children's points can be manually added or deducted by any parent
 - [x] Points visibility for parents and children
 
 ### 2.2 Additional Features
-- [x] Notifications for task completion and reward redemption
+- [ ] Notifications for task completion and reward redemption
 - [x] Points history and activity log
 
 ## 3. User Stories
@@ -29,10 +33,13 @@
 - As a parent, I want to create tasks for my children so that they can earn points.
 - As a parent, I want to define rewards and their point values so that my children know what they can earn.
 - As a parent, I want to see all children's points so that I can track their progress.
+- As a parent, I can manually add or deduct my children's points
+- As a parent, I need to approve or reject task completions and reward redemptions.
 
 ### 3.2 Child User Stories
 - As a child, I want to see my tasks and earn points by completing them.
 - As a child, I want to see my points so that I know how many rewards I can get.
+- As a child, I want to mark my task as completed for rewards upon getting approved by a parent
 - As a child, I want to redeem points for rewards and get parent approval.
 
 ## 4. Technical Requirements
@@ -51,7 +58,9 @@
 - [x] POST /api/tasks (Create tasks for children)
 - [x] GET /api/rewards (Get available rewards)
 - [x] POST /api/rewards (Create rewards)
-- [x] POST /api/redeem (Redeem points for rewards)
+- [x] POST /api/rewards/[id]/request_redemption (Request reward redemption)
+- [x] POST /api/rewards/[id]/approve_redemption (Approve reward redemption)
+- [x] POST /api/rewards/[id]/reject_redemption (Reject reward redemption)
 - [x] GET /api/points (Get points for all children)
 - [x] POST /api/tasks/[id]/mark_complete (Mark task as completed by child)
 - [x] POST /api/tasks/[id]/approve_complete (Approve task completion by parent)
