@@ -67,7 +67,6 @@ export type RewardResponse = {
   reward: Reward
 }
 
-
 export type RewardsResponse = {
   rewards: Reward[]
 }

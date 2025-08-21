@@ -129,8 +129,11 @@ const handleRequestRedemption = async (reward: Reward) => {
     if (error.data?.message && error.data.message.includes('enough points')) {
       toast.add({
         title: 'Not enough points',
-        description: error.data.message +
-          (error.data.requiredPoints ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}` : ''),
+        description:
+          error.data.message +
+          (error.data.requiredPoints
+            ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}`
+            : ''),
         color: 'error',
         progress: false,
       })

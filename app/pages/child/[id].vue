@@ -240,7 +240,11 @@ const editTaskSubmit = async () => {
 // Handle reward redemption request from child
 const handleRequestRedemption = async (reward: Reward) => {
   // Check if the child has enough points before allowing redemption
-  if (child.value && child.value.user && child.value.user.points < reward.points) {
+  if (
+    child.value &&
+    child.value.user &&
+    child.value.user.points < reward.points
+  ) {
     toast.add({
       title: 'Not enough points',
       description: `Child needs ${reward.points} points to redeem this reward, but they only have ${child.value.user.points}`,
@@ -269,8 +273,11 @@ const handleRequestRedemption = async (reward: Reward) => {
     if (error.data?.message && error.data.message.includes('enough points')) {
       toast.add({
         title: 'Not enough points',
-        description: error.data.message +
-          (error.data.requiredPoints ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}` : ''),
+        description:
+          error.data.message +
+          (error.data.requiredPoints
+            ? ` Required: ${error.data.requiredPoints}, Available: ${error.data.availablePoints}`
+            : ''),
         color: 'error',
         progress: false,
       })

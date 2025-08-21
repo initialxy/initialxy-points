@@ -5,7 +5,9 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const rewardId = validateId(parseInt(event.context.params?.id ?? '0') as number)
+  const rewardId = validateId(
+    parseInt(event.context.params?.id ?? '0') as number
+  )
 
   if (rewardId == null) {
     return {
@@ -15,7 +17,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the reward exists
-  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [rewardId])
+  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [
+    rewardId,
+  ])
 
   if (reward == null) {
     return {

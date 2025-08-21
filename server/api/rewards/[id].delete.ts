@@ -6,7 +6,9 @@ export default defineEventHandler(async (event: H3Event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  const rewardId = validateId(parseInt(event.context.params?.id ?? '0') as number)
+  const rewardId = validateId(
+    parseInt(event.context.params?.id ?? '0') as number
+  )
   if (rewardId == null) {
     return {
       statusCode: 400,
@@ -22,9 +24,10 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Get the reward to log before deletion
-  const rewardResult = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [
-    rewardId,
-  ])
+  const rewardResult = await db.get<Reward>(
+    'SELECT * FROM rewards WHERE id = ?',
+    [rewardId]
+  )
 
   if (rewardResult == null) {
     return {

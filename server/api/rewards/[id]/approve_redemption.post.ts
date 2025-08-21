@@ -5,7 +5,9 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = await getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
-  const rewardId = validateId(parseInt(event.context.params?.id ?? '0') as number)
+  const rewardId = validateId(
+    parseInt(event.context.params?.id ?? '0') as number
+  )
 
   if (rewardId == null) {
     return {
@@ -23,7 +25,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the reward exists (any parent can approve completions)
-  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [rewardId])
+  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [
+    rewardId,
+  ])
 
   if (!reward) {
     return {
@@ -62,7 +66,7 @@ export default defineEventHandler(async (event: H3Event) => {
       body: {
         message: 'Child does not have enough points to redeem this reward',
         requiredPoints: reward.points,
-        availablePoints: child.points
+        availablePoints: child.points,
       },
     }
   }
@@ -83,6 +87,9 @@ export default defineEventHandler(async (event: H3Event) => {
 
   return {
     statusCode: 200,
-    body: { message: 'Reward completion approved', pointsEarned: reward.points },
+    body: {
+      message: 'Reward completion approved',
+      pointsEarned: reward.points,
+    },
   }
 })

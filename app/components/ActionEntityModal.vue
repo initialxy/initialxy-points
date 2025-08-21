@@ -60,9 +60,12 @@ defineProps<{
   actionItem: PartialActionItem | null
 }>()
 
-const actionItem: Ref<PartialActionItem> = defineModel<PartialActionItem>('actionItem', {
-  default: { description: '', points: null, recurrenceType: 'single-use' },
-})
+const actionItem: Ref<PartialActionItem> = defineModel<PartialActionItem>(
+  'actionItem',
+  {
+    default: { description: '', points: null, recurrenceType: 'single-use' },
+  }
+)
 
 const isOpen: Ref<boolean> = defineModel('open', {
   default: false,
