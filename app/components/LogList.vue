@@ -106,7 +106,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
           date,
           action: `created a reward`,
           description: additionalContext,
-          icon: 'i-lucide-plus-circle',
+          icon: 'i-lucide-gift',
         }
       case 'update_reward':
         return {
@@ -130,7 +130,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
           date,
           action: `requested a reward`,
           description: additionalContext,
-          icon: 'i-lucide-medal',
+          icon: 'i-lucide-thumbs-up',
         }
       case 'approve_redemption':
         return {
