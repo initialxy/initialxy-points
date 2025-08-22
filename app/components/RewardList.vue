@@ -10,11 +10,11 @@
       class="w-full"
       variant="subtle"
       :ui="{
-        root: 'ring-lime-200 dark:ring-lime-800 bg-lime-200/20 dark:bg-lime-800/20',
+        root: 'ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20',
       }"
     >
       <div class="flex justify-start items-start space-x-2">
-        <p class="truncate text-lime-500 grow min-w-0">
+        <p class="truncate text-indigo-700 dark:text-indigo-200 grow min-w-0">
           {{ reward.description }}
         </p>
         <UButton
@@ -39,10 +39,10 @@
           :variant="reward.is_redemption_requested ? 'subtle' : 'outline'"
           :color="reward.is_redemption_requested ? 'success' : 'neutral'"
           icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-lime-200 dark:ring-lime-800 bg-lime-200/20 dark:bg-lime-800/20 text-lime-500"
+          class="size-6 justify-center ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
         />
         <UBadge
-          class="ring--200 dark:ring-lime-800 bg-lime-200/20 dark:bg-lime-800/20 text-lime-500"
+          class="ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
           :icon="getRecurrenceTypeIcon(reward)"
           color="neutral"
           variant="outline"

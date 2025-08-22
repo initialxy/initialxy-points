@@ -14,7 +14,7 @@
       }"
     >
       <div class="flex justify-start items-start space-x-2">
-        <p class="truncate text-cyan-500 grow min-w-0">
+        <p class="truncate text-cyan-700 dark:text-cyan-200 grow min-w-0">
           {{ task.description }}
         </p>
         <UButton
@@ -39,10 +39,10 @@
           :variant="task.is_marked_complete ? 'subtle' : 'outline'"
           :color="task.is_marked_complete ? 'success' : 'neutral'"
           icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
+          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
         />
         <UBadge
-          class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-500"
+          class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
           :icon="getRecurrenceTypeIcon(task)"
           color="neutral"
           variant="outline"
