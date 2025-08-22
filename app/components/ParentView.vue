@@ -39,6 +39,7 @@
             @update:modelValue="
               debouncedUpdatePoints(child.id, child.points || 0)
             "
+            @click="$event.stopPropagation()"
           />
           <UButton
             icon="i-lucide-plus"

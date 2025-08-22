@@ -10,7 +10,7 @@
       class="w-full"
       variant="subtle"
       :ui="{
-        root: 'ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20',
+        root: 'ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20',
       }"
     >
       <div class="flex justify-start items-start space-x-2">
@@ -29,20 +29,20 @@
       <div class="flex justify-start items-start mt-2 space-x-2">
         <UBadge
           v-if="reward.is_redemption_requested"
-          :variant="reward.is_redemption_requested ? 'subtle' : 'outline'"
-          :color="reward.is_redemption_requested ? 'success' : 'neutral'"
-          icon="i-lucide-alarm-clock-check"
+          variant="subtle"
+          color="primary"
+          icon="i-lucide-bell-ring"
           class="size-6 justify-center"
         />
         <UBadge
           v-if="!reward.is_redemption_requested"
-          :variant="reward.is_redemption_requested ? 'subtle' : 'outline'"
-          :color="reward.is_redemption_requested ? 'success' : 'neutral'"
+          variant="outline"
+          color="neutral"
           icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
+          class="size-6 justify-center ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
         />
         <UBadge
-          class="ring-indigo-200 dark:ring-indigo-800 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
+          class="ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
           :icon="getRecurrenceTypeIcon(reward)"
           color="neutral"
           variant="outline"

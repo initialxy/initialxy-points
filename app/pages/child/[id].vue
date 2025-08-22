@@ -10,14 +10,35 @@
           {{ child?.user?.points || 0 }}
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
-        <p class="text-xl text-center text-neutral-500">
-          <UBadge variant="subtle" size="xl" icon="i-lucide-bell-ring">
-            <UIcon name="i-lucide-clipboard-list" />
+        <div class="text-xl text-center text-neutral-500 space-x-2">
+          <UBadge
+            v-if="getPendingTasksCount() > 0"
+            variant="subtle"
+            size="xl"
+            icon="i-lucide-clipboard-list"
+            class="ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+          >
             {{ getPendingTasksCount() }}
-            <UIcon name="i-lucide-gift" />
+          </UBadge>
+          <UBadge
+            v-if="getPendingRewardsCount() > 0"
+            variant="subtle"
+            size="xl"
+            icon="i-lucide-gift"
+            class="ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
+          >
             {{ getPendingRewardsCount() }}
           </UBadge>
-        </p>
+          <p
+            v-if="
+              getPendingRewardsCount() === 0 && getPendingTasksCount() === 0
+            "
+            class="inline-flex items-center space-x-1"
+          >
+            <UIcon name="i-lucide-smile" />
+            <span>All good!</span>
+          </p>
+        </div>
       </UCard>
     </div>
 

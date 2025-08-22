@@ -10,7 +10,7 @@
       class="w-full"
       variant="subtle"
       :ui="{
-        root: 'ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20',
+        root: 'ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20',
       }"
     >
       <div class="flex justify-start items-start space-x-2">
@@ -29,20 +29,20 @@
       <div class="flex justify-start items-start mt-2 space-x-2">
         <UBadge
           v-if="task.is_marked_complete"
-          :variant="task.is_marked_complete ? 'subtle' : 'outline'"
-          :color="task.is_marked_complete ? 'success' : 'neutral'"
-          icon="i-lucide-alarm-clock-check"
+          variant="subtle"
+          color="primary"
+          icon="i-lucide-bell-ring"
           class="size-6 justify-center"
         />
         <UBadge
           v-if="!task.is_marked_complete"
-          :variant="task.is_marked_complete ? 'subtle' : 'outline'"
-          :color="task.is_marked_complete ? 'success' : 'neutral'"
+          variant="outline"
+          color="neutral"
           icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
         />
         <UBadge
-          class="ring-cyan-200 dark:ring-cyan-800 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+          class="ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
           :icon="getRecurrenceTypeIcon(task)"
           color="neutral"
           variant="outline"

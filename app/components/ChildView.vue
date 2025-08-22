@@ -10,10 +10,12 @@
           {{ userData?.user?.points || 0 }}
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
-        <p class="text-xl text-center text-neutral-500">
-          <UIcon name="i-lucide-thumbs-up" />
-          Keep it up!
-        </p>
+        <div class="text-xl text-center text-neutral-500 space-x-2">
+          <p class="inline-flex items-center space-x-1">
+            <UIcon name="i-lucide-thumbs-up" />
+            <span>Keep it up!</span>
+          </p>
+        </div>
       </UCard>
     </div>
 
