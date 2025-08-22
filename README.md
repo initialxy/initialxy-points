@@ -7,7 +7,9 @@ This project was created as a personal Raspberry Pi project to help manage my ch
 **Important Security Notice**: This application is designed for use in a home network environment only. It is not intended for public access or production use and is not secure. Do not deploy this application publicly.
 
 ![Demo](demo.gif)
-![Demo Light](demo_light.jpg)
+![Demo Light](demo_light_01.jpg)
+![Demo Light](demo_light_02.jpg)
+![Demo Light](demo_light_03.jpg)
 
 ## Project Overview
 
