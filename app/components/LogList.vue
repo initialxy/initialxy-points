@@ -140,7 +140,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
           description:
             `${additionalContext}. ${recipientUsername} now has ` +
             `${log.points_after || 0} points`,
-          icon: 'i-lucide-medal',
+          icon: 'i-lucide-thumbs-up',
         }
       case 'reject_redemption':
         return {
