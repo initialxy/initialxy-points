@@ -189,8 +189,4 @@ const dismissAction = async () => {
 }
 </script>
 
-<style scoped>
-.bounce-timing {
-  transition-timing-function: cubic-bezier(0.22, 1.14, 0.69, 1.58);
-}
-</style>
+<style scoped></style>

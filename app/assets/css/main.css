@@ -116,3 +116,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.bounce-timing {
+  transition-timing-function: cubic-bezier(0.22, 1.14, 0.69, 1.58);
+}

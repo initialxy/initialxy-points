@@ -128,7 +128,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
         return {
           username,
           date,
-          action: `requested redemption of a reward`,
+          action: `requested a reward`,
           description: additionalContext,
           icon: 'i-lucide-medal',
         }
@@ -136,7 +136,7 @@ const items: Ref<TimelineItem[]> = computed(() =>
         return {
           username,
           date,
-          action: `approved reward redemption for ${recipientUsername}`,
+          action: `approved a reward for ${recipientUsername}`,
           description:
             `${additionalContext}. ${recipientUsername} now has ` +
             `${log.points_after || 0} points`,
@@ -148,8 +148,8 @@ const items: Ref<TimelineItem[]> = computed(() =>
           date,
           action:
             username === recipientUsername
-              ? `cancelled reward redemption`
-              : `rejected reward redemption for ${recipientUsername}`,
+              ? `cancelled a reward`
+              : `rejected a reward for ${recipientUsername}`,
           description: additionalContext,
           icon: 'i-lucide-thumbs-down',
         }

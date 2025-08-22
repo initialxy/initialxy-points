@@ -7,7 +7,7 @@
           <span class="text-neutral-500"> earned</span>
         </h1>
         <div class="text-6xl font-extrabold text-primary text-center mb-4">
-          {{ user?.points || 0 }}
+          {{ userData?.user?.points || 0 }}
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>
         <p class="text-xl text-center text-neutral-500">
@@ -36,6 +36,7 @@
       :rewards="rewards?.rewards || []"
       mode="child"
       @complete="handleCompleteReward"
+      @reject="handleRejectReward"
     />
   </div>
 </template>
@@ -43,6 +44,10 @@
 <script setup lang="ts">
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
+
+const { data: userData } = await useFetch<UserResponse>(
+  `/api/users/${user.value?.id || 0}`
+)
 
 const { data: tasks } = await useFetch<TasksResponse>('/api/tasks', {
   query: {
@@ -111,10 +116,9 @@ const handleRejectTask = async (task: Task) => {
 // Handle reward redemption request from child
 const handleCompleteReward = async (reward: Reward) => {
   // Check if user has enough points for the reward
-  if (!user.value || !reward || user.value.points < reward.points) {
+  if ((userData.value?.user?.points || 0) < reward.points) {
     toast.add({
       title: 'Not enough points',
-      description: `You don't have enough points to redeem this reward.`,
       color: 'error',
       progress: false,
     })
@@ -138,6 +142,31 @@ const handleCompleteReward = async (reward: Reward) => {
   } catch (error: any) {
     toast.add({
       title: 'Failed to request reward redemption',
+      color: 'error',
+      progress: false,
+    })
+  }
+}
+
+// Handle reject event from RewardList component
+const handleRejectReward = async (reward: Reward) => {
+  try {
+    await $fetch(`/api/rewards/${reward.id}/reject_redemption`, {
+      method: 'POST',
+    })
+
+    // Show success toast
+    toast.add({
+      title: 'Reward redemption cancelled',
+      color: 'success',
+      progress: false,
+    })
+
+    // Refresh data to reflect changes
+    await refreshNuxtData()
+  } catch (error: any) {
+    toast.add({
+      title: 'Failed to cancel reward redemption',
       color: 'error',
       progress: false,
     })

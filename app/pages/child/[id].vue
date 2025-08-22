@@ -262,7 +262,6 @@ const handleCompleteReward = async (reward: Reward) => {
   ) {
     toast.add({
       title: 'Not enough points',
-      description: `Child does not have enough points to redeem this reward`,
       color: 'error',
       progress: false,
     })
