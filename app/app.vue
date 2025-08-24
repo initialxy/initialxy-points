@@ -22,6 +22,9 @@ onMounted(() => {
     console.log(event);
     isNativeNavigation.value = true
   })
+
+  // So that :active would trigger on iOS
+  document.body.addEventListener('touchstart', () => {})
 })
 </script>
 

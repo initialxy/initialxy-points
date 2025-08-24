@@ -3,7 +3,7 @@
     <UCard
       v-for="child in childrenData?.users"
       :key="child.id"
-      class="mb-4"
+      class="mb-4 clickable"
       variant="subtle"
       @click="navigateTo(`/child/${child.id}`)"
     >
