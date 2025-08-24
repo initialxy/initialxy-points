@@ -43,5 +43,10 @@ export const useStore = defineStore('main', () => {
   const useRememberedUsers = () =>
     useLocalStorage<RememberedUser[]>('rememberedUsers', [])
 
-  return { login, logout, useRememberedUsers, actionableUser }
+  return {
+    login,
+    logout,
+    useRememberedUsers,
+    actionableUser,
+  }
 })

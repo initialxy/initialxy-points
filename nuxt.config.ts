@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
+    '@nuxtjs/device'
   ],
   future: {
     compatibilityVersion: 4,

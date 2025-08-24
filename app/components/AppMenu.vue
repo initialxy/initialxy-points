@@ -2,11 +2,11 @@
   <div>
     <Transition
       enter-active-class="duration-150 bounce-timing"
-      enter-from-class="transform opacity-0 translate-y-40"
+      enter-from-class="transform opacity-0 translate-y-30"
       enter-to-class="opacity-100 translate-y-0"
       leave-active-class="duration-150 ease-in-out"
       leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="transform opacity-0 translate-y-40"
+      leave-to-class="transform opacity-0 translate-y-30"
     >
       <div v-if="isMoreExpanded" key="logout-button">
         <UButton
@@ -23,11 +23,11 @@
     </Transition>
     <Transition
       enter-active-class="duration-150 bounce-timing delay-100"
-      enter-from-class="transform opacity-0 translate-y-30"
+      enter-from-class="transform opacity-0 translate-y-20"
       enter-to-class="opacity-100 translate-y-0"
       leave-active-class="duration-150 ease-in-out"
       leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="transform opacity-0 translate-y-30"
+      leave-to-class="transform opacity-0 translate-y-20"
     >
       <div v-if="isMoreExpanded" key="change-password-button">
         <UButton
@@ -44,27 +44,6 @@
     </Transition>
     <Transition
       enter-active-class="duration-150 bounce-timing delay-200"
-      enter-from-class="transform opacity-0 translate-y-20"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="duration-150 ease-in-out"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="transform opacity-0 translate-y-20"
-    >
-      <div v-if="isMoreExpanded" key="refresh-button">
-        <UButton
-          icon="i-lucide-refresh-ccw"
-          color="info"
-          variant="solid"
-          size="xl"
-          @click="refresh"
-          block
-          class="w-10 h-10 rounded-full flex"
-          :ui="{ leadingIcon: 'text-lg' }"
-        />
-      </div>
-    </Transition>
-    <Transition
-      enter-active-class="duration-150 bounce-timing delay-300"
       enter-from-class="transform opacity-0 translate-y-10"
       enter-to-class="opacity-100 translate-y-0"
       leave-active-class="duration-150 ease-in-out"
@@ -73,11 +52,11 @@
     >
       <div v-if="isMoreExpanded" key="refresh-button">
         <UButton
-          icon="i-lucide-table-properties"
+          icon="i-lucide-refresh-ccw"
           color="info"
           variant="solid"
           size="xl"
-          @click="goToDashboard"
+          @click="refresh"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
@@ -227,10 +206,6 @@ const changePasswordSubmit = async () => {
 // @click throws a type error if you don't wrap it
 const refresh = async () => {
   await refreshNuxtData()
-}
-
-const goToDashboard = async () => {
-  await navigateTo('/dashboard')
 }
 
 const dismissMenu = async () => {
