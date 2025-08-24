@@ -64,15 +64,16 @@ const emit = defineEmits<{
 
 const toast = useToast()
 
-const { data: childrenData, refresh } = await useFetch<UsersResponse>(
+const { data: childrenData, refresh } = await useLazyFetch<UsersResponse>(
   '/api/users',
   {
     query: { role: 'child' },
   }
 )
 
-const { data: tasksData } = await useFetch<TasksResponse>('/api/tasks')
-const { data: rewardsData } = await useFetch<RewardsResponse>('/api/rewards')
+const { data: tasksData } = await useLazyFetch<TasksResponse>('/api/tasks')
+const { data: rewardsData } =
+  await useLazyFetch<RewardsResponse>('/api/rewards')
 
 // Keep track of points change by child during debounce, because API requires a
 // points_change instead of updating raw points value to be more race condition

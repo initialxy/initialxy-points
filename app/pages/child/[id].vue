@@ -102,21 +102,23 @@ const store = useStore()
 const toast = useToast()
 const childId = route.params.id
 
-const { data: child } = await useFetch<UserResponse>(`/api/users/${childId}`)
-const { data: tasks } = await useFetch<TasksResponse>('/api/tasks', {
+const { data: child } = await useLazyFetch<UserResponse>(
+  `/api/users/${childId}`
+)
+const { data: tasks } = await useLazyFetch<TasksResponse>('/api/tasks', {
   query: {
     child_id: childId,
   },
 })
 
-const { data: logs } = await useFetch<LogsResponse>('/api/logs', {
+const { data: logs } = await useLazyFetch<LogsResponse>('/api/logs', {
   query: {
     limit: MAX_LOG_LIMIT,
     recipient_id: childId,
   },
 })
 
-const { data: rewards } = await useFetch<RewardsResponse>('/api/rewards', {
+const { data: rewards } = await useLazyFetch<RewardsResponse>('/api/rewards', {
   query: {
     child_id: childId,
   },

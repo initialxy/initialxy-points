@@ -47,17 +47,17 @@
 const { user: sessionUser } = useUserSession()
 const user = sessionUser as Ref<User | null>
 
-const { data: userData } = await useFetch<UserResponse>(
+const { data: userData } = await useLazyFetch<UserResponse>(
   `/api/users/${user.value?.id || 0}`
 )
 
-const { data: tasks } = await useFetch<TasksResponse>('/api/tasks', {
+const { data: tasks } = await useLazyFetch<TasksResponse>('/api/tasks', {
   query: {
     child_id: user.value?.id || 0,
   },
 })
 
-const { data: rewards } = await useFetch<RewardsResponse>('/api/rewards', {
+const { data: rewards } = await useLazyFetch<RewardsResponse>('/api/rewards', {
   query: {
     child_id: user.value?.id || 0,
   },

@@ -20,7 +20,7 @@ const query =
     ? { limit: MAX_LOG_LIMIT }
     : { limit: MAX_LOG_LIMIT, recipient_id: user.value?.id || 0 }
 
-const { data: logs, refresh: refreshLogs } = await useFetch<LogsResponse>(
+const { data: logs, refresh: refreshLogs } = await useLazyFetch<LogsResponse>(
   '/api/logs',
   { query }
 )
