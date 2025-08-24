@@ -124,8 +124,8 @@ const { data: rewards } = await useLazyFetch<RewardsResponse>('/api/rewards', {
   },
 })
 
-onMounted(() => {
-  store.actionableUser = child.value?.user || null
+watch(child, (loadedChild) => {
+  store.actionableUser = loadedChild?.user || null
 })
 
 onUnmounted(() => {
