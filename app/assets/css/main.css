@@ -121,9 +121,16 @@ input::-webkit-inner-spin-button {
   transition-timing-function: cubic-bezier(0.22, 1.14, 0.69, 1.58);
 }
 
-button, .clickable {
+button, .clickable, .clickable-ignore-child {
   transition: transform 0.1s ease-out;
 }
-button:active, .clickable:active {
+button:active {
   transform: scale(0.9);
+}
+.clickable:active, .clickable-ignore-child:active {
+  transform: scale(0.95);
+}
+.clickable:has(button:active) {
+  transition: none 0s;
+  transform: scale(1);
 }

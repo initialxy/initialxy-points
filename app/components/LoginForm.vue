@@ -22,7 +22,7 @@
             default-value
             indicator="hidden"
             :label="user.username"
-            class="bg-neutral-100 dark:bg-neutral-800 clickable"
+            class="bg-neutral-100 dark:bg-neutral-800 clickable-ignore-child"
             v-model="user.isSelected"
             @change="selectUser(user)"
             :ui="{ wrapper: 'text-left' }"
