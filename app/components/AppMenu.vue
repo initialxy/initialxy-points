@@ -204,6 +204,7 @@ const changeCredentialsSubmit = async () => {
     // Close modal and reset form
     showCredentialsModal.value = false
     await refreshSession()
+    await refreshNuxtData()
     credentialsFormState.value = {
       username: user.value?.username || '',
       currentPassword: '',
