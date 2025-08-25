@@ -128,6 +128,10 @@ watch(child, (loadedChild) => {
   store.actionableUser = loadedChild?.user || null
 })
 
+onMounted(() => {
+  store.actionableUser = child.value?.user || null
+})
+
 onUnmounted(() => {
   store.actionableUser = null
 })

@@ -28,7 +28,7 @@
           <USelect
             v-model="actionItem.recurrenceType"
             :items="recurrenceTypeItems"
-            class="w-full"
+            class="w-full clickable-lg"
           />
         </UFormField>
       </UForm>

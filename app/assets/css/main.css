@@ -121,16 +121,17 @@ input::-webkit-inner-spin-button {
   transition-timing-function: cubic-bezier(0.22, 1.14, 0.69, 1.58);
 }
 
-button, .clickable, .clickable-ignore-child {
+button, input, .clickable, .clickable-lg {
   transition: transform 0.1s ease-out;
 }
-button:active {
-  transform: scale(0.9);
+button:active, .clickable:active {
+  transform: scale(0.90);
 }
-.clickable:active, .clickable-ignore-child:active {
-  transform: scale(0.95);
+input:active, button.clickable-lg:active,.clickable-lg:active {
+  transform: scale(0.97);
 }
-.clickable:has(button:active) {
+.clickable:has(button:active:not([role="checkbox"])),
+.clickable-lg:has(button:active:not([role="checkbox"])) {
   transition: none 0s;
   transform: scale(1);
 }

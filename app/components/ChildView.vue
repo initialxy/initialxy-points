@@ -12,7 +12,7 @@
         </div>
         <div class="text-xl text-center text-neutral-500 space-x-2">
           <p class="inline-flex items-center space-x-1">
-            <UIcon name="i-lucide-thumbs-up" />
+            <UIcon name="i-lucide-rocket" />
             <span>Keep it up!</span>
           </p>
         </div>
