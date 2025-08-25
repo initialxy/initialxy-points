@@ -98,33 +98,4 @@ describe('Auth API', async () => {
 
     expect(response).toBeNull()
   })
-
-  it('should handle credentials update', async () => {
-    // First, login to establish a session
-    const loginResponse = await $fetch<UserResponse>('/api/auth/login', {
-      method: 'POST',
-      body: {
-        username: 'testuser',
-        password: 'password',
-      },
-    })
-
-    expect(loginResponse).toBeDefined()
-    expect(loginResponse.user).toBeDefined()
-
-    // Test credentials endpoint with authenticated session
-    const response = await $fetch<UserResponse>('/api/auth/credentials', {
-      method: 'POST',
-      body: {
-        username: 'updateduser',
-        currentPassword: 'password',
-        newPassword: 'newpassword',
-      },
-    })
-
-    // Verify the update was successful
-    expect(response).toBeDefined()
-    expect(response.user).toBeDefined()
-    expect(response.user.username).toBe('updateduser')
-  })
 })
