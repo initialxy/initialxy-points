@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
-import { getDb } from '../../server/database/index'
-import bcrypt from 'bcryptjs'
+import { resetDb, createDbAuthTestData } from '../utils/index'
+import { UserResponse } from '../../shared/types'
 
 describe('Auth API', async () => {
   await setup({
@@ -10,19 +10,14 @@ describe('Auth API', async () => {
     browser: false,
   })
 
-  beforeAll(async () => {
-    // Create a test user for authentication tests
-    const db = await getDb()
-    const hashedPassword = await bcrypt.hash('password', 10)
-    await db.run(
-      'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)',
-      ['testuser', hashedPassword, 'child']
-    )
+  beforeEach(async () => {
+    await resetDb()
+    await createDbAuthTestData()
   })
 
   it('should login with valid credentials', async () => {
     // Test that the endpoint exists and can be called
-    const response = await $fetch('/api/auth/login', {
+    const response = await $fetch<UserResponse>('/api/auth/login', {
       method: 'POST',
       body: {
         username: 'testuser',
@@ -32,8 +27,8 @@ describe('Auth API', async () => {
 
     // If we get a response, it means the endpoint works correctly
     expect(response).toBeDefined()
-    expect((response as any).user).toBeDefined()
-    expect((response as any).user.username).toBe('testuser')
+    expect(response.user).toBeDefined()
+    expect(response.user.username).toBe('testuser')
   })
 
   it('should reject invalid username or password', async () => {
@@ -87,8 +82,7 @@ describe('Auth API', async () => {
     }
   })
 
-  it('should handle credentials update', async () => {
-    // Test credentials endpoint - requires authenticated session
+  it('should fail credentials update without session', async () => {
     const response = await $fetch('/api/auth/credentials', {
       method: 'POST',
       body: {

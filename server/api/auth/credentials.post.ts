@@ -58,17 +58,18 @@ export default defineEventHandler(async (event) => {
     user.id
   )
 
-  user.username = username
+  const fetchedUser = await db.get(
+    'SELECT id, username, points FROM users WHERE id = ?',
+    [user.id]
+  )
+
   await setUserSession(
     event,
-    { user },
+    { user: fetchedUser },
     {
       maxAge: SESSION_MAX_AGE,
     }
   )
 
-  return {
-    message: 'Password changed successfully',
-    success: true,
-  }
+  return { user: fetchedUser } as UserResponse
 })
