@@ -3,8 +3,6 @@ import { z } from 'zod'
 import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 
-const SESSION_MAX_AGE = 60 * 60 * 24 * 14 // 2 week
-
 interface DbUser extends User {
   password: string
 }

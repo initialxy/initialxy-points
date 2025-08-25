@@ -4,6 +4,7 @@ import { getDb } from '../../database'
 import bcrypt from 'bcryptjs'
 
 const bodySchema = z.object({
+  username: z.string().min(2),
   currentPassword: z.string().min(4),
   newPassword: z.string().min(4),
 })
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
 
-  const { currentPassword, newPassword } = await readValidatedBody(
+  const { username, currentPassword, newPassword } = await readValidatedBody(
     event,
     bodySchema.parse
   )
@@ -49,11 +50,21 @@ export default defineEventHandler(async (event) => {
 
   const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-  // Update new password in database
+  // Update new username and password password in database
   await db.run(
-    'UPDATE users SET password = ? WHERE id = ?',
+    'UPDATE users SET username = ?, password = ? WHERE id = ?',
+    username,
     hashedPassword,
     user.id
+  )
+
+  user.username = username
+  await setUserSession(
+    event,
+    { user },
+    {
+      maxAge: SESSION_MAX_AGE,
+    }
   )
 
   return {

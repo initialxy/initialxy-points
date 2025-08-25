@@ -29,13 +29,13 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="transform opacity-0 translate-y-20"
     >
-      <div v-if="isMoreExpanded" key="change-password-button">
+      <div v-if="isMoreExpanded" key="change-credentials-button">
         <UButton
           icon="i-lucide-square-asterisk"
           color="info"
           variant="solid"
           size="xl"
-          @click="showPasswordModal = true"
+          @click="showCredentialsModal = true"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
@@ -76,21 +76,29 @@
     />
 
     <UModal
-      v-model:open="showPasswordModal"
-      title="Change Password"
+      v-model:open="showCredentialsModal"
+      title="Change Credentials"
       class="max-w-100"
     >
       <template #body>
         <UForm
-          id="change-password-form"
-          :schema="passwordSchema"
-          :state="passwordFormState"
+          id="change-credentials-form"
+          :schema="credentialsSchema"
+          :state="credentialsFormState"
           class="space-y-4"
-          @submit="changePasswordSubmit"
+          @submit="changeCredentialsSubmit"
         >
+          <UFormField name="username">
+            <UInput
+              v-model="credentialsFormState.username"
+              type="text"
+              placeholder="Username"
+              class="w-full"
+            />
+          </UFormField>
           <UFormField name="currentPassword">
             <UInput
-              v-model="passwordFormState.currentPassword"
+              v-model="credentialsFormState.currentPassword"
               type="password"
               placeholder="Current password"
               class="w-full"
@@ -98,7 +106,7 @@
           </UFormField>
           <UFormField name="newPassword">
             <UInput
-              v-model="passwordFormState.newPassword"
+              v-model="credentialsFormState.newPassword"
               type="password"
               placeholder="New password"
               class="w-full"
@@ -106,7 +114,7 @@
           </UFormField>
           <UFormField name="confirmNewPassword">
             <UInput
-              v-model="passwordFormState.confirmNewPassword"
+              v-model="credentialsFormState.confirmNewPassword"
               type="password"
               placeholder="Confirm new password"
               class="w-full"
@@ -117,7 +125,7 @@
       <template #footer>
         <div>
           <UButton
-            form="change-password-form"
+            form="change-credentials-form"
             type="submit"
             icon="i-lucide-check"
             color="primary"
@@ -134,19 +142,24 @@
 <script setup lang="ts">
 import * as z from 'zod'
 
+const { user: sessionUser, fetch: refreshSession } = useUserSession()
+const user = sessionUser as Ref<User | null>
+
 const store = useStore()
 const toast = useToast()
 
 const isMoreExpanded = ref(false)
-const showPasswordModal = ref(false)
+const showCredentialsModal = ref(false)
 
-const passwordFormState = ref({
+const credentialsFormState = ref({
+  username: user.value?.username || '',
   currentPassword: '',
   newPassword: '',
   confirmNewPassword: '',
 })
 
-const passwordSchema = z.object({
+const credentialsSchema = z.object({
+  username: z.string().min(2, 'Must be at least 2 characters'),
   currentPassword: z.string().min(4, 'Must be at least 4 characters'),
   newPassword: z.string().min(4, 'Must be at least 4 characters'),
   confirmNewPassword: z.string().min(4, 'Must be at least 4 characters'),
@@ -158,11 +171,11 @@ const logoutClicked = async () => {
   await navigateTo('/login')
 }
 
-const changePasswordSubmit = async () => {
+const changeCredentialsSubmit = async () => {
   // Check if new passwords match
   if (
-    passwordFormState.value.newPassword !==
-    passwordFormState.value.confirmNewPassword
+    credentialsFormState.value.newPassword !==
+    credentialsFormState.value.confirmNewPassword
   ) {
     toast.add({
       title: 'New passwords do not match',
@@ -173,23 +186,26 @@ const changePasswordSubmit = async () => {
   }
 
   try {
-    await $fetch('/api/auth/password', {
+    await $fetch('/api/auth/credentials', {
       method: 'POST',
       body: {
-        currentPassword: passwordFormState.value.currentPassword,
-        newPassword: passwordFormState.value.newPassword,
+        username: credentialsFormState.value.username,
+        currentPassword: credentialsFormState.value.currentPassword,
+        newPassword: credentialsFormState.value.newPassword,
       },
     })
 
     toast.add({
-      title: 'Password changed successfully',
+      title: 'Credentials changed successfully',
       color: 'success',
       progress: false,
     })
 
     // Close modal and reset form
-    showPasswordModal.value = false
-    passwordFormState.value = {
+    showCredentialsModal.value = false
+    await refreshSession()
+    credentialsFormState.value = {
+      username: user.value?.username || '',
       currentPassword: '',
       newPassword: '',
       confirmNewPassword: '',
