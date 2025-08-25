@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/test-utils',
+    '@nuxt/test-utils/module',
     '@nuxt/ui',
     '@pinia/nuxt',
     '@vueuse/nuxt',
