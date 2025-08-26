@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils/e2e'
+import { setup, $fetch, fetch } from '@nuxt/test-utils/e2e'
 import { resetDb, createDbAuthTestData } from '../utils/index'
 import { UserResponse } from '../../shared/types'
+import { sealSession, H3Event } from 'h3'
 
 describe('Auth API', async () => {
   await setup({
@@ -83,6 +84,7 @@ describe('Auth API', async () => {
   })
 
   it('should fail credentials update without session', async () => {
+    try {
     const response = await $fetch('/api/auth/credentials', {
       method: 'POST',
       body: {
@@ -90,12 +92,39 @@ describe('Auth API', async () => {
         currentPassword: 'password',
         newPassword: 'newpassword',
       },
-    }).catch((error) => {
+    })
+  } catch(error: any) {
       // Expected to fail with 401 since no session exists
-      expect((error as any).status).toBe(401)
+      expect((error).status).toBe(401)
       return null
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should handle credentials update', async () => {
+    // Login to get session cookie
+    const loginResponse = await fetch('/api/auth/login', {
+      method: 'POST',
+      body: 'username=testuser&password=password',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    
+    const response = await $fetch<UserResponse>('/api/auth/credentials', {
+      method: 'POST',
+      body: {
+        username: 'testuser2',
+        currentPassword: 'password',
+        newPassword: 'newpassword',
+      },
+      headers: {
+        cookie: loginResponse.headers.getSetCookie()?.join('; '),
+      },
     })
 
-    expect(response).toBeNull()
+    expect(response).toBeDefined()
+    expect(response.user).toBeDefined()
+    expect(response.user.username).toBe('testuser2')
   })
 })

@@ -18,6 +18,7 @@ type AuthUser = {
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
+  useRuntimeConfig()
 
   const { username, currentPassword, newPassword } = await readValidatedBody(
     event,
