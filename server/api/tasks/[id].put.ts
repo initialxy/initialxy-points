@@ -62,11 +62,18 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  await logTaskAction(db, 'update_task', user.id, taskResult)
-
   const updatedTask = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
     taskId,
   ])
+
+  if (updatedTask == null) {
+    throw createError({
+      statusCode: 404,
+      message: 'Task not found or not authorized',
+    })
+  }
+
+  await logTaskAction(db, 'update_task', user.id, updatedTask)
 
   return {
     task: updatedTask,

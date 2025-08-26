@@ -8,9 +8,9 @@ import {
   TEST_PARENT_USER,
   TEST_CHILD_USER,
 } from '../utils/index'
-import { TaskResponse, TasksResponse } from '../../shared/types'
+import { RewardResponse, RewardsResponse } from '../../shared/types'
 
-describe('Tasks API', async () => {
+describe('Rewards API', async () => {
   await setup({
     build: true,
     server: true,
@@ -22,14 +22,14 @@ describe('Tasks API', async () => {
     await createDbAuthTestData()
   })
 
-  it('should get all tasks with parent session', async () => {
+  it('should get all rewards with parent session', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
       TEST_PARENT_USER.password
     )
 
-    const response = await $fetch<TasksResponse>('/api/tasks', {
+    const response = await $fetch<RewardsResponse>('/api/rewards', {
       method: 'GET',
       headers: {
         cookie: cookie,
@@ -37,10 +37,10 @@ describe('Tasks API', async () => {
     })
 
     expect(response).toBeDefined()
-    expect(response.tasks).toBeDefined()
+    expect(response.rewards).toBeDefined()
   })
 
-  it('should get all tasks with child session (filtered by own tasks)', async () => {
+  it('should get all rewards with child session (filtered by own rewards)', async () => {
     // Login as child to get session cookie
     const cookie = await getSessionCookie(
       TEST_CHILD_USER.username,
@@ -57,7 +57,7 @@ describe('Tasks API', async () => {
       throw new Error('Child user not found in database')
     }
 
-    const response = await $fetch<TasksResponse>('/api/tasks', {
+    const response = await $fetch<RewardsResponse>('/api/rewards', {
       method: 'GET',
       headers: {
         cookie: cookie,
@@ -68,10 +68,10 @@ describe('Tasks API', async () => {
     })
 
     expect(response).toBeDefined()
-    expect(response.tasks).toBeDefined()
+    expect(response.rewards).toBeDefined()
   })
 
-  it('should get tasks for specific child with parent session', async () => {
+  it('should get rewards for specific child with parent session', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
@@ -88,7 +88,7 @@ describe('Tasks API', async () => {
       throw new Error('Child user not found in database')
     }
 
-    const response = await $fetch<TasksResponse>('/api/tasks', {
+    const response = await $fetch<RewardsResponse>('/api/rewards', {
       method: 'GET',
       headers: {
         cookie: cookie,
@@ -99,10 +99,10 @@ describe('Tasks API', async () => {
     })
 
     expect(response).toBeDefined()
-    expect(response.tasks).toBeDefined()
+    expect(response.rewards).toBeDefined()
   })
 
-  it('should create task with parent session', async () => {
+  it('should create reward with parent session', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
@@ -119,10 +119,10 @@ describe('Tasks API', async () => {
       throw new Error('Child user not found in database')
     }
 
-    const response = await $fetch<TaskResponse>('/api/tasks', {
+    const response = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
       body: {
-        description: 'Test task',
+        description: 'Test reward',
         points: 10,
         child_id: childUser.id,
         recurrence_type: 'single-use',
@@ -133,13 +133,13 @@ describe('Tasks API', async () => {
     })
 
     expect(response).toBeDefined()
-    expect(response.task).toBeDefined()
-    expect(response.task.description).toBe('Test task')
-    expect(response.task.points).toBe(10)
-    expect(response.task.child_id).toBe(childUser.id)
+    expect(response.reward).toBeDefined()
+    expect(response.reward.description).toBe('Test reward')
+    expect(response.reward.points).toBe(10)
+    expect(response.reward.child_id).toBe(childUser.id)
   })
 
-  it('should reject task creation without parent session', async () => {
+  it('should reject reward creation without parent session', async () => {
     // Login as child to get session cookie
     const cookie = await getSessionCookie(
       TEST_CHILD_USER.username,
@@ -147,10 +147,10 @@ describe('Tasks API', async () => {
     )
 
     try {
-      await $fetch('/api/tasks', {
+      await $fetch('/api/rewards', {
         method: 'POST',
         body: {
-          description: 'Test task',
+          description: 'Test reward',
           points: 10,
           child_id: 1,
           recurrence_type: 'single-use',
@@ -160,7 +160,7 @@ describe('Tasks API', async () => {
         },
       })
     } catch (error: any) {
-      // Should fail with 403 since child user can't create tasks
+      // Should fail with 403 since child user can't create rewards
       expect(error).toBeDefined()
       expect(error.status).toBe(403)
       return
@@ -168,7 +168,7 @@ describe('Tasks API', async () => {
     expect.fail('Should have thrown an error')
   })
 
-  it('should reject task creation with missing fields', async () => {
+  it('should reject reward creation with missing fields', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
@@ -176,10 +176,10 @@ describe('Tasks API', async () => {
     )
 
     try {
-      await $fetch('/api/tasks', {
+      await $fetch('/api/rewards', {
         method: 'POST',
         body: {
-          description: 'Test task',
+          description: 'Test reward',
           points: 10,
           // Missing child_id and recurrence_type
         },
@@ -196,14 +196,14 @@ describe('Tasks API', async () => {
     expect.fail('Should have thrown an error')
   })
 
-  it('should update task with parent session', async () => {
+  it('should update reward with parent session', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
       TEST_PARENT_USER.password
     )
 
-    // First create a task to update
+    // First create a reward to update
     const allUsers = await getAllUsers()
     const childUser = allUsers.find(
       (user) => user.username === TEST_CHILD_USER.username
@@ -213,10 +213,10 @@ describe('Tasks API', async () => {
       throw new Error('Child user not found in database')
     }
 
-    const createResponse = await $fetch<TaskResponse>('/api/tasks', {
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
       body: {
-        description: 'Original task',
+        description: 'Original reward',
         points: 10,
         child_id: childUser.id,
         recurrence_type: 'single-use',
@@ -226,12 +226,12 @@ describe('Tasks API', async () => {
       },
     })
 
-    const taskId = createResponse.task.id
+    const rewardId = createResponse.reward.id
 
-    const response = await $fetch<TaskResponse>(`/api/tasks/${taskId}`, {
+    const response = await $fetch<RewardResponse>(`/api/rewards/${rewardId}`, {
       method: 'PUT',
       body: {
-        description: 'Updated task',
+        description: 'Updated reward',
         points: 20,
         recurrence_type: 'perpetual',
       },
@@ -241,12 +241,12 @@ describe('Tasks API', async () => {
     })
 
     expect(response).toBeDefined()
-    expect(response.task).toBeDefined()
-    expect(response.task.description).toBe('Updated task')
-    expect(response.task.points).toBe(20)
+    expect(response.reward).toBeDefined()
+    expect(response.reward.description).toBe('Updated reward')
+    expect(response.reward.points).toBe(20)
   })
 
-  it('should reject task update without parent session', async () => {
+  it('should reject reward update without parent session', async () => {
     // Login as child to get session cookie
     const cookie = await getSessionCookie(
       TEST_CHILD_USER.username,
@@ -254,10 +254,10 @@ describe('Tasks API', async () => {
     )
 
     try {
-      await $fetch('/api/tasks/1', {
+      await $fetch('/api/rewards/1', {
         method: 'PUT',
         body: {
-          description: 'Updated task',
+          description: 'Updated reward',
           points: 20,
           recurrence_type: 'perpetual',
         },
@@ -266,7 +266,7 @@ describe('Tasks API', async () => {
         },
       })
     } catch (error: any) {
-      // Should fail with 403 since child user can't update tasks
+      // Should fail with 403 since child user can't update rewards
       expect(error).toBeDefined()
       expect(error.status).toBe(403)
       return
@@ -274,14 +274,14 @@ describe('Tasks API', async () => {
     expect.fail('Should have thrown an error')
   })
 
-  it('should delete task with parent session', async () => {
+  it('should delete reward with parent session', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
       TEST_PARENT_USER.password
     )
 
-    // First create a task to delete
+    // First create a reward to delete
     const allUsers = await getAllUsers()
     const childUser = allUsers.find(
       (user) => user.username === TEST_CHILD_USER.username
@@ -291,10 +291,10 @@ describe('Tasks API', async () => {
       throw new Error('Child user not found in database')
     }
 
-    const createResponse = await $fetch<TaskResponse>('/api/tasks', {
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
       body: {
-        description: 'Task to delete',
+        description: 'Reward to delete',
         points: 10,
         child_id: childUser.id,
         recurrence_type: 'single-use',
@@ -304,10 +304,10 @@ describe('Tasks API', async () => {
       },
     })
 
-    const taskId = createResponse.task.id
+    const rewardId = createResponse.reward.id
 
     const response = await $fetch<{ statusCode: number }>(
-      `/api/tasks/${taskId}`,
+      `/api/rewards/${rewardId}`,
       {
         method: 'DELETE',
         headers: {
@@ -321,7 +321,7 @@ describe('Tasks API', async () => {
     expect(response.statusCode).toBe(204)
   })
 
-  it('should reject task deletion without parent session', async () => {
+  it('should reject reward deletion without parent session', async () => {
     // Login as child to get session cookie
     const cookie = await getSessionCookie(
       TEST_CHILD_USER.username,
@@ -329,14 +329,14 @@ describe('Tasks API', async () => {
     )
 
     try {
-      await $fetch('/api/tasks/1', {
+      await $fetch('/api/rewards/1', {
         method: 'DELETE',
         headers: {
           cookie: cookie,
         },
       })
     } catch (error: any) {
-      // Should fail with 403 since child user can't delete tasks
+      // Should fail with 403 since child user can't delete rewards
       expect(error).toBeDefined()
       expect(error.status).toBe(403)
       return
@@ -344,7 +344,7 @@ describe('Tasks API', async () => {
     expect.fail('Should have thrown an error')
   })
 
-  it('should reject access to non-existent task', async () => {
+  it('should reject access to non-existent reward', async () => {
     // Login as parent to get session cookie
     const cookie = await getSessionCookie(
       TEST_PARENT_USER.username,
@@ -352,14 +352,14 @@ describe('Tasks API', async () => {
     )
 
     try {
-      await $fetch('/api/tasks/999999999', {
+      await $fetch('/api/rewards/999999999', {
         method: 'GET',
         headers: {
           cookie: cookie,
         },
       })
     } catch (error: any) {
-      // Should fail with 404 since task doesn't exist
+      // Should fail with 404 since reward doesn't exist
       expect(error).toBeDefined()
       expect(error.status).toBe(404)
       return

@@ -65,9 +65,21 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  await logRewardAction(db, 'update_reward', user.id, rewardResult)
+  const updatedReward = await db.get<Reward>(
+    'SELECT * FROM rewards WHERE id = ?',
+    [rewardId]
+  )
+
+  if (updatedReward == null) {
+    throw createError({
+      statusCode: 404,
+      message: 'Reward not found or not authorized',
+    })
+  }
+
+  await logRewardAction(db, 'update_reward', user.id, updatedReward)
 
   return {
-    reward: rewardResult,
+    reward: updatedReward,
   } as RewardResponse
 })

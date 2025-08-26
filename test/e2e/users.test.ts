@@ -191,7 +191,7 @@ describe('Users API', async () => {
     )
 
     try {
-      await $fetch<UserResponse>('/api/users/999999999999999', {
+      await $fetch<UserResponse>('/api/users/999999999', {
         method: 'GET',
         headers: {
           cookie: cookie,
