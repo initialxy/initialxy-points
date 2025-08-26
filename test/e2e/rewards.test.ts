@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
-  resetDb,
-  createDbAuthTestData,
-  getSessionCookie,
+  createAuthTestData,
+  createTestUser,
   getAllUsers,
-  TEST_PARENT_USER,
+  getSessionCookie,
+  resetDb,
+  setTestUserPoints,
   TEST_CHILD_USER,
+  TEST_PARENT_USER,
 } from '../utils/index'
 import { RewardResponse, RewardsResponse } from '../../shared/types'
 
@@ -19,7 +21,8 @@ describe('Rewards API', async () => {
 
   beforeEach(async () => {
     await resetDb()
-    await createDbAuthTestData()
+    await createAuthTestData()
+    await setTestUserPoints(TEST_CHILD_USER.username, 200)
   })
 
   it('should get all rewards with parent session', async () => {
@@ -362,6 +365,683 @@ describe('Rewards API', async () => {
       // Should fail with 404 since reward doesn't exist
       expect(error).toBeDefined()
       expect(error.status).toBe(404)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+  it('should request reward redemption with child session', async () => {
+    // Login as parent to get session cookie and create a reward
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Login as child to request redemption
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    const response = await $fetch<{
+      statusCode: number
+      body: { message: string }
+    }>(`/api/rewards/${rewardId}/request_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: childCookie,
+      },
+    })
+
+    expect(response).toBeDefined()
+    expect(response.statusCode).toBe(200)
+    expect(response.body.message).toBe(
+      'Reward redemption requested. Awaiting parent approval.'
+    )
+  })
+
+  it('should reject reward redemption request without proper authorization', async () => {
+    // Login as parent to get session cookie and create a reward
+    const parentCookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: parentCookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Create an unauthorized user (another child) to test authorization
+    await createTestUser('unauthorizedchild', 'unauthorizedpassword', 'child')
+    const unauthorizedCookie = await getSessionCookie(
+      'unauthorizedchild',
+      'unauthorizedpassword'
+    )
+
+    // Try to request redemption with unauthorized user
+    try {
+      await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: unauthorizedCookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(403)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request when already requested', async () => {
+    // Login as parent to get session cookie and create a reward
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Login as child to request redemption
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    // Request redemption first time
+    await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: childCookie,
+      },
+    })
+
+    // Try to request redemption again - should fail
+    try {
+      await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: childCookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request when insufficient points', async () => {
+    await setTestUserPoints(TEST_CHILD_USER.username, 50)
+
+    // Login as parent to get session cookie and create a reward with high points
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward with more points than the child has
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 100,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Login as child to request redemption
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    // Try to request redemption with insufficient points - should fail
+    try {
+      await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: childCookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request with non-existent reward', async () => {
+    // Login as child to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/999999999/request_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(404)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request with invalid reward ID', async () => {
+    // Login as child to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/invalid/request_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request without parent or child session', async () => {
+    try {
+      await $fetch('/api/rewards/1/request_redemption', {
+        method: 'POST',
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(401)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption request with missing session', async () => {
+    try {
+      await $fetch('/api/rewards/1/request_redemption', {
+        method: 'POST',
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(401)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should perform reward redemption rejection as parent', async () => {
+    // Login as parent to get session cookie and create a reward
+    const parentCookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: parentCookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Request redemption first
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+    await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: childCookie,
+      },
+    })
+
+    // Try to reject redemption with child session
+    const response = await $fetch<{ statusCode: number }>(
+      `/api/rewards/${rewardId}/reject_redemption`,
+      {
+        method: 'POST',
+        headers: {
+          cookie: parentCookie,
+        },
+      }
+    )
+    expect(response).toBeDefined()
+    expect(response.statusCode).toBe(200)
+  })
+
+  it('should reject reward redemption rejection when not requested', async () => {
+    // Login as parent to get session cookie and create a reward
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Try to reject redemption when none was requested - should fail
+    try {
+      await $fetch(`/api/rewards/${rewardId}/reject_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption rejection with non-existent reward', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/999999999/reject_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(404)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption rejection with invalid reward ID', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/invalid/reject_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should approve reward redemption with parent session', async () => {
+    // Login as parent to get session cookie and create a reward
+    const parentCookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: parentCookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Request redemption first
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+    await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: childCookie,
+      },
+    })
+
+    // Approve redemption with parent session
+    const response = await $fetch<{
+      statusCode: number
+      body: { message: string; pointsEarned: number }
+    }>(`/api/rewards/${rewardId}/approve_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: parentCookie,
+      },
+    })
+
+    expect(response).toBeDefined()
+    expect(response.statusCode).toBe(200)
+    expect(response.body.message).toBe('Reward completion approved')
+    expect(response.body.pointsEarned).toBe(10)
+
+    const refetchAllUsers = await getAllUsers()
+    const updatedChildUser = refetchAllUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+    expect(updatedChildUser?.points).toBe(190)
+  })
+
+  it('should reject reward redemption approval without parent session', async () => {
+    // Login as parent to get session cookie and create a reward
+    const parentCookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward first
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 10,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: parentCookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Request redemption first
+    const childCookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+    await $fetch(`/api/rewards/${rewardId}/request_redemption`, {
+      method: 'POST',
+      headers: {
+        cookie: childCookie,
+      },
+    })
+
+    // Try to approve redemption with child session - should fail
+    try {
+      await $fetch(`/api/rewards/${rewardId}/approve_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: childCookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(403)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption approval with non-existent reward', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/999999999/approve_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(404)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption approval with invalid reward ID', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    try {
+      await $fetch('/api/rewards/invalid/approve_redemption', {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject reward redemption approval when insufficient points', async () => {
+    await setTestUserPoints(TEST_CHILD_USER.username, 50)
+
+    // Login as parent to get session cookie and create a reward with high points
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Create a reward with more points than the child has
+    const createResponse = await $fetch<RewardResponse>('/api/rewards', {
+      method: 'POST',
+      body: {
+        description: 'Test reward for redemption',
+        points: 100,
+        child_id: childUser.id,
+        recurrence_type: 'single-use',
+      },
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    const rewardId = createResponse.reward.id
+
+    // Try to approve redemption with insufficient points - should fail
+    try {
+      await $fetch(`/api/rewards/${rewardId}/approve_redemption`, {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')

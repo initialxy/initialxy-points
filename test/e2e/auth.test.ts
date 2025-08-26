@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import {
   resetDb,
-  createDbAuthTestData,
+  createAuthTestData,
   getSessionCookie,
   TEST_PARENT_USER,
 } from '../utils/index'
@@ -17,7 +17,7 @@ describe('Auth API', async () => {
 
   beforeEach(async () => {
     await resetDb()
-    await createDbAuthTestData()
+    await createAuthTestData()
   })
 
   it('should login with valid credentials', async () => {

@@ -51,6 +51,12 @@ Start the development server on `http://localhost:3000`:
 npm run dev
 ```
 
+Run tests:
+
+```bash
+npm run test
+```
+
 ### Admin Console Commands
 
 The admin console provides these commands:

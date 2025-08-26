@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   resetDb,
-  createDbAuthTestData,
+  createAuthTestData,
   getSessionCookie,
   getAllUsers,
   TEST_PARENT_USER,
@@ -19,7 +19,7 @@ describe('Users API', async () => {
 
   beforeEach(async () => {
     await resetDb()
-    await createDbAuthTestData()
+    await createAuthTestData()
   })
 
   it('should get all users with parent session', async () => {
@@ -196,6 +196,206 @@ describe('Users API', async () => {
         headers: {
           cookie: cookie,
         },
+      })
+    } catch (error: any) {
+      // Should fail with 404 since user doesn't exist
+      expect(error).toBeDefined()
+      expect(error.status).toBe(404)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should update child points successfully', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    // Get initial points
+    const initialPoints = childUser.points
+
+    // Update points
+    const response = await $fetch<{ message: string }>(
+      '/api/users/' + childUser.id + '/points',
+      {
+        method: 'PUT',
+        headers: {
+          cookie: cookie,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          points_change: 10,
+        }),
+      }
+    )
+
+    expect(response).toBeDefined()
+    expect(response.message).toBe('Points updated successfully')
+
+    // Verify points were updated in database
+    const updatedUsers = await getAllUsers()
+    const updatedChildUser = updatedUsers.find(
+      (user) => user.id === childUser.id
+    )
+
+    if (updatedChildUser) {
+      expect(updatedChildUser.points).toBe(initialPoints + 10)
+    }
+  })
+
+  it('should reject points update for non-child user', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find a parent user (not child)
+    const allUsers = await getAllUsers()
+    const parentUser = allUsers.find(
+      (user) => user.username === TEST_PARENT_USER.username
+    )
+
+    if (!parentUser) {
+      throw new Error('Parent user not found in database')
+    }
+
+    try {
+      await $fetch<{ message: string }>(
+        '/api/users/' + parentUser.id + '/points',
+        {
+          method: 'PUT',
+          headers: {
+            cookie: cookie,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            points_change: 10,
+          }),
+        }
+      )
+    } catch (error: any) {
+      // Should fail with 404 since parent user is not a child
+      expect(error).toBeDefined()
+      expect(error.status).toBe(404)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject points update by child user', async () => {
+    // Login as child to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_CHILD_USER.username,
+      TEST_CHILD_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    try {
+      await $fetch<{ message: string }>(
+        '/api/users/' + childUser.id + '/points',
+        {
+          method: 'PUT',
+          headers: {
+            cookie: cookie,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            points_change: 10,
+          }),
+        }
+      )
+    } catch (error: any) {
+      // Should fail with 403 since child user is not allowed to update points
+      expect(error).toBeDefined()
+      expect(error.status).toBe(403)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject invalid points_change value', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Get all users and find the child user
+    const allUsers = await getAllUsers()
+    const childUser = allUsers.find(
+      (user) => user.username === TEST_CHILD_USER.username
+    )
+
+    if (!childUser) {
+      throw new Error('Child user not found in database')
+    }
+
+    try {
+      await $fetch<{ message: string }>(
+        '/api/users/' + childUser.id + '/points',
+        {
+          method: 'PUT',
+          headers: {
+            cookie: cookie,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            points_change: 'invalid', // Invalid type
+          }),
+        }
+      )
+    } catch (error: any) {
+      // Should fail with 400 since points_change is invalid
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject points update for non-existent user', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    try {
+      await $fetch<{ message: string }>('/api/users/999999999/points', {
+        method: 'PUT',
+        headers: {
+          cookie: cookie,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          points_change: 10,
+        }),
       })
     } catch (error: any) {
       // Should fail with 404 since user doesn't exist

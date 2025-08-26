@@ -31,6 +31,7 @@ export function validateBoolean(value: any): boolean | null {
 }
 
 export function validateId(value: any): number | null {
-  if (typeof value !== 'number' || value <= 0) return null
+  if (typeof value !== 'number' || value <= 0 || Number.isNaN(value))
+    return null
   return value
 }

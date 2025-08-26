@@ -7,13 +7,13 @@ import type { User } from '../../shared/types'
 export const TEST_PARENT_USER = {
   username: 'parentuser',
   password: 'parentpassword',
-  role: 'parent',
+  role: 'parent' as const,
 }
 
 export const TEST_CHILD_USER = {
   username: 'childuser',
   password: 'childpassword',
-  role: 'child',
+  role: 'child' as const,
 }
 
 /**
@@ -46,19 +46,16 @@ export async function resetDb() {
 /**
  * Create basic test data for auth testing
  */
-export async function createDbAuthTestData() {
-  const db = await getDb()
-
-  const parentHashedPassword = await bcrypt.hash(TEST_PARENT_USER.password, 10)
-  await db.run(
-    'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)',
-    [TEST_PARENT_USER.username, parentHashedPassword, TEST_PARENT_USER.role]
+export async function createAuthTestData() {
+  await createTestUser(
+    TEST_PARENT_USER.username,
+    TEST_PARENT_USER.password,
+    TEST_PARENT_USER.role
   )
-
-  const hashedPassword = await bcrypt.hash(TEST_CHILD_USER.password, 10)
-  await db.run(
-    'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)',
-    [TEST_CHILD_USER.username, hashedPassword, TEST_CHILD_USER.role]
+  await createTestUser(
+    TEST_CHILD_USER.username,
+    TEST_CHILD_USER.password,
+    TEST_CHILD_USER.role
   )
 }
 
@@ -70,6 +67,29 @@ export async function getAllUsers(): Promise<User[]> {
   return await db.all('SELECT id, username, role, points FROM users')
 }
 
+/**
+ * Create a new test user
+ */
+export async function createTestUser(
+  username: string,
+  password: string,
+  role: 'parent' | 'child'
+) {
+  const db = await getDb()
+  const hashedPassword = await bcrypt.hash(password, 10)
+  await db.run(
+    'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)',
+    [username, hashedPassword, role]
+  )
+}
+
+export async function setTestUserPoints(username: string, points: number) {
+  const db = await getDb()
+  await db.run('UPDATE users SET points = ? WHERE username = ?', [
+    points,
+    username,
+  ])
+}
 export async function getSessionCookie(username: string, password: string) {
   const response = await fetch('/api/auth/login', {
     method: 'POST',

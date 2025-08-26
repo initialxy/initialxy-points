@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   resetDb,
-  createDbAuthTestData,
+  createAuthTestData,
   getSessionCookie,
   getAllUsers,
   TEST_PARENT_USER,
@@ -19,7 +19,7 @@ describe('Logs API', async () => {
 
   beforeEach(async () => {
     await resetDb()
-    await createDbAuthTestData()
+    await createAuthTestData()
   })
 
   it('should get logs with parent session', async () => {
