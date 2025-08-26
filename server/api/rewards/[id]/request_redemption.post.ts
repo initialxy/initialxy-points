@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,10 +10,10 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (rewardId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid reward ID' },
-    }
+      message: 'Invalid reward ID',
+    })
   }
 
   // Check if the reward exists
@@ -22,25 +22,25 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (reward == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   // Only allowed if user is parent or child acting on their assigned reward
   if (user.role !== 'parent' && user.id !== reward.child_id) {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   if (reward.is_redemption_requested) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Reward redemption is already requested' },
-    }
+      message: 'Reward redemption is already requested',
+    })
   }
 
   // Check if the child has enough points for this reward
@@ -49,14 +49,14 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (!child || child.points < reward.points) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: {
-        message: 'Child does not have enough points to redeem this reward',
+      message: 'Child does not have enough points to redeem this reward',
+      data: {
         requiredPoints: reward.points,
         availablePoints: child ? child.points : 0,
       },
-    }
+    })
   }
 
   await db.run(

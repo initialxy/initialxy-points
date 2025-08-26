@@ -39,12 +39,13 @@ Authenticates a user with a username and password.
 - 400: Invalid input
 - 401: Invalid username or password
 
-### POST /api/auth/password
-Changes the password for the authenticated user.
+### POST /api/auth/credentials
+Changes the username and password for the authenticated user.
 
 **Request:**
 ```json
 {
+  "username": "string",
   "currentPassword": "string",
   "newPassword": "string"
 }
@@ -53,13 +54,17 @@ Changes the password for the authenticated user.
 **Response:**
 ```json
 {
-  "message": "string",
-  "success": "boolean"
+  "user": {
+    "id": "number",
+    "username": "string",
+    "role": "string",
+    "points": "number"
+  }
 }
 ```
 
 **Status Codes:**
-- 200: Password changed successfully
+- 200: Credentials changed successfully
 - 400: Invalid input or current password is incorrect
 - 401: Unauthorized
 

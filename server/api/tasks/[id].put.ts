@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event, readBody } from 'h3'
+import { defineEventHandler, H3Event, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -8,34 +8,34 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
   if (taskId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid task ID' },
-    }
+      message: 'Invalid task ID',
+    })
   }
 
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   const body = await readBody(event)
   const { description, points, recurrence_type } = body
 
   if (description == null || points == null || recurrence_type == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Missing required fields' },
-    }
+      message: 'Missing required fields',
+    })
   }
 
   if (recurrence_type !== 'single-use' && recurrence_type !== 'perpetual') {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid task type' },
-    }
+      message: 'Invalid task type',
+    })
   }
 
   // Check if task exists
@@ -44,10 +44,10 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (taskResult == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Task not found or not authorized' },
-    }
+      message: 'Task not found or not authorized',
+    })
   }
 
   const result = await db.run(
@@ -56,15 +56,19 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (result.changes === 0) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Task not found or not authorized' },
-    }
+      message: 'Task not found or not authorized',
+    })
   }
 
   await logTaskAction(db, 'update_task', user.id, taskResult)
 
+  const updatedTask = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
+    taskId,
+  ])
+
   return {
-    task: taskResult,
+    task: updatedTask,
   } as TaskResponse
 })

@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,17 +10,17 @@ export default defineEventHandler(async (event: H3Event) => {
     parseInt(event.context.params?.id ?? '0') as number
   )
   if (rewardId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid reward ID' },
-    }
+      message: 'Invalid reward ID',
+    })
   }
 
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   // Get the reward to log before deletion
@@ -30,19 +30,19 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (rewardResult == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   const result = await db.run('DELETE FROM rewards WHERE id = ?', [rewardId])
 
   if (result.changes === 0) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   await logRewardAction(db, 'delete_reward', user.id, rewardResult)

@@ -45,12 +45,14 @@ describe('Auth API', async () => {
           password: TEST_PARENT_USER.password,
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Should fail with validation error
       expect(error).toBeDefined()
       expect(error.status).toBe(400)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 
   it('should reject invalid password length', async () => {
@@ -62,12 +64,14 @@ describe('Auth API', async () => {
           password: '123', // Too short
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Should fail with validation error
       expect(error).toBeDefined()
       expect(error.status).toBe(400)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 
   it('should reject invalid credentials', async () => {
@@ -79,12 +83,14 @@ describe('Auth API', async () => {
           password: 'wrongpassword',
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Should fail with authentication error
       expect(error).toBeDefined()
       expect(error.status).toBe(401)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 
   it('should fail credentials update without session', async () => {
@@ -97,12 +103,14 @@ describe('Auth API', async () => {
           newPassword: 'newpassword',
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Expected to fail with 401 since no session exists
       expect(error).toBeDefined()
       expect(error.status).toBe(401)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 
   it('should handle credentials update', async () => {

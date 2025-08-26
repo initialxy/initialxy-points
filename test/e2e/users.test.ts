@@ -173,12 +173,14 @@ describe('Users API', async () => {
           cookie: cookie,
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Should fail with 403 since child user can't access other users
       expect(error).toBeDefined()
       expect(error.status).toBe(403)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 
   it('should reject access to non-existent user', async () => {
@@ -188,21 +190,20 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Use a non-existent user ID that's not in the database
-    const fakeUserId = 999
-
     try {
-      await $fetch<UserResponse>(`/api/users/${fakeUserId}`, {
+      await $fetch<UserResponse>('/api/users/999999999999999', {
         method: 'GET',
         headers: {
           cookie: cookie,
         },
       })
-      expect.fail('Should have thrown an error')
     } catch (error: any) {
       // Should fail with 404 since user doesn't exist
       expect(error).toBeDefined()
       expect(error.status).toBe(404)
+      return
     }
+
+    expect.fail('Should have thrown an error')
   })
 })

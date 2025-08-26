@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event, readBody } from 'h3'
+import { defineEventHandler, H3Event, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,34 +10,34 @@ export default defineEventHandler(async (event: H3Event) => {
     parseInt(event.context.params?.id ?? '0') as number
   )
   if (rewardId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid reward ID' },
-    }
+      message: 'Invalid reward ID',
+    })
   }
 
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   const body = await readBody(event)
   const { description, points, recurrence_type } = body
 
   if (description == null || points == null || recurrence_type == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Missing required fields' },
-    }
+      message: 'Missing required fields',
+    })
   }
 
   if (recurrence_type !== 'single-use' && recurrence_type !== 'perpetual') {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid reward type' },
-    }
+      message: 'Invalid reward type',
+    })
   }
 
   // Check if reward exists
@@ -47,10 +47,10 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (rewardResult == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   const result = await db.run(
@@ -59,10 +59,10 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (result.changes === 0) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   await logRewardAction(db, 'update_reward', user.id, rewardResult)

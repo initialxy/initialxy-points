@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -8,28 +8,28 @@ export default defineEventHandler(async (event: H3Event) => {
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
 
   if (taskId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid task ID' },
-    }
+      message: 'Invalid task ID',
+    })
   }
 
   // Verify user is a parent
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   // Check if the task exists (any parent can approve completions)
   const task = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [taskId])
 
   if (!task) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Task not found or not authorized' },
-    }
+      message: 'Task not found or not authorized',
+    })
   }
 
   if (task.recurrence_type === 'single-use') {
@@ -49,10 +49,10 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (!child) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Child user not found' },
-    }
+      message: 'Child user not found',
+    })
   }
 
   await db.run('UPDATE users SET points = points + ? WHERE id = ?', [

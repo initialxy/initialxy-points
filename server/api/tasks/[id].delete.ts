@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -8,17 +8,17 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
   if (taskId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid task ID' },
-    }
+      message: 'Invalid task ID',
+    })
   }
 
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   // Get the task to log before deletion
@@ -27,19 +27,19 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (taskResult == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Task not found or not authorized' },
-    }
+      message: 'Task not found or not authorized',
+    })
   }
 
   const result = await db.run('DELETE FROM tasks WHERE id = ?', [taskId])
 
   if (result.changes === 0) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Task not found or not authorized' },
-    }
+      message: 'Task not found or not authorized',
+    })
   }
 
   await logTaskAction(db, 'delete_task', user.id, taskResult)

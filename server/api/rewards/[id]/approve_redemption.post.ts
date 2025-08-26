@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,18 +10,18 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (rewardId == null) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid reward ID' },
-    }
+      message: 'Invalid reward ID',
+    })
   }
 
   // Verify user is a parent
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   // Check if the reward exists (any parent can approve completions)
@@ -30,10 +30,10 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (!reward) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Reward not found or not authorized' },
-    }
+      message: 'Reward not found or not authorized',
+    })
   }
 
   if (reward.recurrence_type === 'single-use') {
@@ -53,22 +53,22 @@ export default defineEventHandler(async (event: H3Event) => {
   ])
 
   if (!child) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'Child user not found' },
-    }
+      message: 'Child user not found',
+    })
   }
 
   // Check if the child has enough points for this reward
   if (child.points < reward.points) {
-    return {
+    throw createError({
       statusCode: 400,
-      body: {
-        message: 'Child does not have enough points to redeem this reward',
+      message: 'Child does not have enough points to redeem this reward',
+      data: {
         requiredPoints: reward.points,
         availablePoints: child.points,
       },
-    }
+    })
   }
 
   await db.run('UPDATE users SET points = points - ? WHERE id = ?', [

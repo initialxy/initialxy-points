@@ -1,4 +1,4 @@
-import { defineEventHandler, H3Event } from 'h3'
+import { defineEventHandler, H3Event, createError } from 'h3'
 import { getDb } from '../../../database'
 import { logAction } from '../../../utils/logs'
 
@@ -9,20 +9,20 @@ export default defineEventHandler(async (event: H3Event) => {
 
   // Only parents can update points
   if (user.role !== 'parent') {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   const { id } = getRouterParams(event)
   const { points_change } = await readBody(event)
 
   if (typeof points_change !== 'number') {
-    return {
+    throw createError({
       statusCode: 400,
-      body: { message: 'Invalid points change value' },
-    }
+      message: 'Invalid points change value',
+    })
   }
 
   // Check if the user exists and is a child
@@ -32,10 +32,10 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   if (!existingUser || existingUser.role !== 'child') {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'User not found or not a child' },
-    }
+      message: 'User not found or not a child',
+    })
   }
 
   const pointsBefore = existingUser.points
