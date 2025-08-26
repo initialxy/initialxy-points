@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="max-w-100 mx-auto">
+    <div class="max-w-150 mx-auto">
       <UCard class="mb-4" variant="subtle">
         <h1 class="text-3xl font-bold text-center mb-4">
           <span class="text-secondary">{{ user?.username }}</span>
@@ -20,7 +20,7 @@
     </div>
 
     <hr
-      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+      class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
     />
 
     <TaskList
@@ -31,7 +31,7 @@
     />
 
     <hr
-      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+      class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
     />
 
     <RewardList

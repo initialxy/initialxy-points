@@ -78,7 +78,7 @@
     <UModal
       v-model:open="showCredentialsModal"
       title="Change Credentials"
-      class="max-w-100"
+      class="max-w-150"
     >
       <template #body>
         <UForm

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LoginForm class="max-w-100 ml-auto mr-auto" />
+    <LoginForm class="max-w-150 ml-auto mr-auto" />
   </div>
 </template>
 

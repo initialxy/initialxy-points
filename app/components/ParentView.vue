@@ -1,5 +1,5 @@
 <template>
-  <div v-if="childrenData?.users.length ?? 0 > 0" class="max-w-100 mx-auto">
+  <div v-if="childrenData?.users.length ?? 0 > 0" class="max-w-150 mx-auto">
     <UCard
       v-for="child in childrenData?.users"
       :key="child.id"

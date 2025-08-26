@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model:open="isOpen" :title="title" class="max-w-100">
+  <UModal v-model:open="isOpen" :title="title" class="max-w-150">
     <template #body>
       <UForm
         id="action-item-form"

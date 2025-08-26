@@ -6,7 +6,7 @@
       date: 'float-end ms-1',
       description: 'px-3 py-2 ring ring-default mt-2 rounded-md text-default',
     }"
-    class="max-w-100 mx-auto"
+    class="max-w-150 mx-auto"
   >
     <template #title="{ item }">
       <span>{{ item.username }}</span>

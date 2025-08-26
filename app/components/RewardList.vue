@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4 max-w-100 mx-auto">
+  <div class="space-y-4 max-w-150 mx-auto">
     <div v-if="sortedRewards.length === 0" class="text-center">
       <p class="text-muted">No reward yet</p>
     </div>
@@ -82,7 +82,7 @@
     <UModal
       v-model:open="isDeleteConfirmationModalOpen"
       title="Confirm Deletion"
-      class="max-w-100"
+      class="max-w-150"
     >
       <template #body>
         <p>Are you sure you want to delete this reward?</p>

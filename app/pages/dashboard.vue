@@ -3,7 +3,7 @@
     <ParentView v-if="user?.role === 'parent'" @updatePoints="refresh" />
     <ChildView v-else-if="user?.role === 'child'" />
     <hr
-      class="max-w-100 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
+      class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
     />
     <LogList :logs="logs?.logs || []" v-if="user != null" />
   </div>
