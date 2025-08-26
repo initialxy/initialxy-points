@@ -8,10 +8,10 @@ export default defineEventHandler(async (event) => {
   const userId = validateId(parseInt(event.context.params?.id ?? '0') as number)
 
   if (userId == null || (user.id !== userId && user.role !== 'parent')) {
-    return {
+    throw createError({
       statusCode: 403,
-      body: { message: 'Forbidden' },
-    }
+      message: 'Forbidden',
+    })
   }
 
   const fetchedUser = await db.get(
@@ -20,10 +20,10 @@ export default defineEventHandler(async (event) => {
   )
 
   if (fetchedUser == null) {
-    return {
+    throw createError({
       statusCode: 404,
-      body: { message: 'User not found' },
-    }
+      message: 'User not found',
+    })
   }
 
   return { user: fetchedUser } as UserResponse

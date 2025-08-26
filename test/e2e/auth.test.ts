@@ -1,8 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { setup, $fetch, fetch } from '@nuxt/test-utils/e2e'
-import { resetDb, createDbAuthTestData } from '../utils/index'
+import {
+  resetDb,
+  createDbAuthTestData,
+  getSessionCookie,
+  TEST_PARENT_USER,
+} from '../utils/index'
+import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import { UserResponse } from '../../shared/types'
-import { sealSession, H3Event } from 'h3'
 
 describe('Auth API', async () => {
   await setup({
@@ -21,15 +25,15 @@ describe('Auth API', async () => {
     const response = await $fetch<UserResponse>('/api/auth/login', {
       method: 'POST',
       body: {
-        username: 'testuser',
-        password: 'password',
+        username: TEST_PARENT_USER.username,
+        password: TEST_PARENT_USER.password,
       },
     })
 
     // If we get a response, it means the endpoint works correctly
     expect(response).toBeDefined()
     expect(response.user).toBeDefined()
-    expect(response.user.username).toBe('testuser')
+    expect(response.user.username).toBe(TEST_PARENT_USER.username)
   })
 
   it('should reject invalid username or password', async () => {
@@ -38,7 +42,7 @@ describe('Auth API', async () => {
         method: 'POST',
         body: {
           username: '',
-          password: 'password',
+          password: TEST_PARENT_USER.password,
         },
       })
       expect.fail('Should have thrown an error')
@@ -54,7 +58,7 @@ describe('Auth API', async () => {
       await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
-          username: 'testuser',
+          username: TEST_PARENT_USER.username,
           password: '123', // Too short
         },
       })
@@ -71,7 +75,7 @@ describe('Auth API', async () => {
       await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
-          username: 'testuser',
+          username: TEST_PARENT_USER.username,
           password: 'wrongpassword',
         },
       })
@@ -85,41 +89,38 @@ describe('Auth API', async () => {
 
   it('should fail credentials update without session', async () => {
     try {
-    const response = await $fetch('/api/auth/credentials', {
-      method: 'POST',
-      body: {
-        username: 'testuser',
-        currentPassword: 'password',
-        newPassword: 'newpassword',
-      },
-    })
-  } catch(error: any) {
+      const response = await $fetch('/api/auth/credentials', {
+        method: 'POST',
+        body: {
+          username: TEST_PARENT_USER.username,
+          currentPassword: TEST_PARENT_USER.password,
+          newPassword: 'newpassword',
+        },
+      })
+      expect.fail('Should have thrown an error')
+    } catch (error: any) {
       // Expected to fail with 401 since no session exists
-      expect((error).status).toBe(401)
-      return null
+      expect(error).toBeDefined()
+      expect(error.status).toBe(401)
     }
-    expect.fail('Should have thrown an error')
   })
 
   it('should handle credentials update', async () => {
     // Login to get session cookie
-    const loginResponse = await fetch('/api/auth/login', {
-      method: 'POST',
-      body: 'username=testuser&password=password',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-    
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
     const response = await $fetch<UserResponse>('/api/auth/credentials', {
       method: 'POST',
       body: {
         username: 'testuser2',
-        currentPassword: 'password',
+        currentPassword: TEST_PARENT_USER.password,
         newPassword: 'newpassword',
       },
       headers: {
-        cookie: loginResponse.headers.getSetCookie()?.join('; '),
+        cookie: cookie,
       },
     })
 
