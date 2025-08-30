@@ -65,7 +65,7 @@ Changes the username and password for the authenticated user.
 
 **Status Codes:**
 - 200: Credentials changed successfully
-- 400: Invalid input or current password is incorrect
+- 400: Invalid input, current password is incorrect, or username is already taken
 - 401: Unauthorized
 
 ## Users

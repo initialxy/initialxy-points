@@ -136,4 +136,64 @@ describe('Auth API', async () => {
     expect(response.user).toBeDefined()
     expect(response.user.username).toBe('testuser2')
   })
+
+  it('should reject username change if username is already taken', async () => {
+    // Login as parent to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Try to change username to one that's already taken
+    try {
+      await $fetch('/api/auth/credentials', {
+        method: 'POST',
+        body: {
+          username: 'childuser', // This username is already taken by child user
+          currentPassword: TEST_PARENT_USER.password,
+          newPassword: 'newpassword',
+        },
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      // Should fail with 400 since username is already taken
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
+
+  it('should reject credentials update with incorrect current password', async () => {
+    // Login to get session cookie
+    const cookie = await getSessionCookie(
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Try to change credentials with incorrect current password
+    try {
+      await $fetch('/api/auth/credentials', {
+        method: 'POST',
+        body: {
+          username: 'newusername',
+          currentPassword: 'wrongpassword', // Incorrect password
+          newPassword: 'newpassword',
+        },
+        headers: {
+          cookie: cookie,
+        },
+      })
+    } catch (error: any) {
+      // Should fail with 400 since current password is incorrect
+      expect(error).toBeDefined()
+      expect(error.status).toBe(400)
+      return
+    }
+
+    expect.fail('Should have thrown an error')
+  })
 })

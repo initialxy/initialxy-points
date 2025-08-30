@@ -51,6 +51,19 @@ export default defineEventHandler(async (event) => {
 
   const hashedPassword = await bcrypt.hash(newPassword, 10)
 
+  // Check if the new username is already taken by another user
+  const existingUserWithUsername: { id: number } | undefined = await db.get(
+    'SELECT id FROM users WHERE username = ? AND id != ?',
+    [username, user.id]
+  )
+
+  if (existingUserWithUsername != null) {
+    throw createError({
+      statusCode: 400,
+      message: 'Username is already taken',
+    })
+  }
+
   // Update new username and password password in database
   await db.run(
     'UPDATE users SET username = ?, password = ? WHERE id = ?',
