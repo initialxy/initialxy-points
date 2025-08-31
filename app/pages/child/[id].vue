@@ -6,7 +6,10 @@
           <span class="text-secondary">{{ child?.user?.username }}</span>
           <span class="text-neutral-500"> earned</span>
         </h1>
-        <div class="text-6xl font-extrabold text-primary text-center mb-4">
+        <div
+          class="text-6xl font-extrabold text-primary text-center mb-4"
+          data-testid="child-points-display"
+        >
           {{ child?.user?.points || 0 }}
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>

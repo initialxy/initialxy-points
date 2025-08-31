@@ -11,8 +11,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "e2e": "vitest run --no-file-parallelism",
-    "playwright": "dotenv -e .env.test playwright test --workers 1",
-    "test": "vitest run --no-file-parallelism && dotenv -e .env.test playwright test --workers 1",
+    "playwright": "dotenv -e .env.test playwright test",
+    "test": "vitest run --no-file-parallelism && dotenv -e .env.test playwright test",
     "format": "prettier --write \"{app/components,app/composables,app/layouts,app/middleware,app/pages,app/utils,server,stores,shared,test}/**/*.{ts,vue}\"",
     "tsc": "tsc --noEmit",
     "admin": "tsx ./server/database/admin.ts"

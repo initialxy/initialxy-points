@@ -14,6 +14,7 @@
             type="text"
             placeholder="Description"
             class="w-full"
+            data-testid="description-input"
           />
         </UFormField>
         <UFormField name="points">
@@ -22,6 +23,7 @@
             type="number"
             placeholder="Points"
             class="w-full"
+            data-testid="points-input"
           />
         </UFormField>
         <UFormField name="recurrenceType">
@@ -42,6 +44,7 @@
           color="primary"
           variant="solid"
           class="w-full"
+          data-testid="submit-item-button"
         >
           {{ submitButtonText }}
         </UButton>

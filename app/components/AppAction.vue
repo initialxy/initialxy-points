@@ -21,6 +21,7 @@
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
+          data-testid="create-task-button"
         />
       </div>
     </Transition>
@@ -45,6 +46,7 @@
           block
           class="w-10 h-10 rounded-full flex mt-2"
           :ui="{ leadingIcon: 'text-lg' }"
+          data-testid="create-reward-button"
         />
       </div>
     </Transition>
@@ -67,6 +69,7 @@
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
+          data-testid="app-action-button"
         />
       </div>
     </Transition>

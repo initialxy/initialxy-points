@@ -96,6 +96,42 @@ export async function setTestUserPoints(username: string, points: number) {
 }
 
 /**
+ * Create a test task for a child user
+ */
+export async function createTestTask(
+  parentId: number,
+  childId: number,
+  description: string,
+  points: number,
+  recurrenceType: 'single-use' | 'perpetual' = 'single-use'
+) {
+  const db = await getDb()
+  const result = await db.run(
+    'INSERT INTO tasks (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)',
+    [description, points, parentId, childId, recurrenceType]
+  )
+  return result.lastID
+}
+
+/**
+ * Create a test reward for a child user
+ */
+export async function createTestReward(
+  parentId: number,
+  childId: number,
+  description: string,
+  points: number,
+  recurrenceType: 'single-use' | 'perpetual' = 'single-use'
+) {
+  const db = await getDb()
+  const result = await db.run(
+    'INSERT INTO rewards (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)',
+    [description, points, parentId, childId, recurrenceType]
+  )
+  return result.lastID
+}
+
+/**
  * Perform a login then return the session cookie, which can be used in
  * subsequent requests to keep the same session.
  */

@@ -14,7 +14,10 @@
       }"
     >
       <div class="flex justify-start items-start space-x-2">
-        <p class="truncate text-cyan-700 dark:text-cyan-200 grow min-w-0">
+        <p
+          class="truncate text-cyan-700 dark:text-cyan-200 grow min-w-0"
+          data-testid="task-description"
+        >
           {{ task.description }}
         </p>
         <UButton
@@ -23,6 +26,7 @@
           icon="i-lucide-x"
           color="error"
           variant="soft"
+          data-testid="delete-task-button"
           @click="confirmDelete(task)"
         />
       </div>
@@ -56,6 +60,7 @@
             icon="i-lucide-thumbs-down"
             color="error"
             variant="soft"
+            data-testid="reject-task-button"
             @click="emit('reject', task)"
           />
           <UButton
@@ -64,6 +69,7 @@
             icon="i-lucide-thumbs-up"
             color="success"
             variant="soft"
+            data-testid="complete-task-button"
             @click="emit('complete', task)"
           />
           <UButton
@@ -72,6 +78,7 @@
             icon="i-lucide-pencil"
             color="neutral"
             variant="soft"
+            data-testid="edit-task-button"
             @click="emit('edit', task)"
           />
         </div>
@@ -88,7 +95,12 @@
         <p>Are you sure you want to delete this task?</p>
       </template>
       <template #footer>
-        <UButton @click="deleteConfirmed" color="error" icon="i-lucide-trash">
+        <UButton
+          :data-testid="'confirm-delete-button'"
+          @click="deleteConfirmed"
+          color="error"
+          icon="i-lucide-trash"
+        >
           Delete
         </UButton>
       </template>

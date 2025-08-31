@@ -14,7 +14,10 @@
       }"
     >
       <div class="flex justify-start items-start space-x-2">
-        <p class="truncate text-indigo-700 dark:text-indigo-200 grow min-w-0">
+        <p
+          class="truncate text-indigo-700 dark:text-indigo-200 grow min-w-0"
+          data-testid="reward-description"
+        >
           {{ reward.description }}
         </p>
         <UButton
@@ -24,6 +27,7 @@
           color="error"
           variant="soft"
           @click="confirmDelete(reward)"
+          data-testid="delete-reward-button"
         />
       </div>
       <div class="flex justify-start items-start mt-2 space-x-2">
@@ -57,6 +61,7 @@
             color="error"
             variant="soft"
             @click="emit('reject', reward)"
+            data-testid="reject-reward-button"
           />
           <UButton
             v-if="props.mode === 'parent' || !reward.is_redemption_requested"
@@ -65,6 +70,7 @@
             color="success"
             variant="soft"
             @click="emit('complete', reward)"
+            data-testid="complete-reward-button"
           />
           <UButton
             v-if="props.mode === 'parent'"
@@ -73,6 +79,7 @@
             color="neutral"
             variant="soft"
             @click="emit('edit', reward)"
+            data-testid="edit-reward-button"
           />
         </div>
       </div>
@@ -88,7 +95,12 @@
         <p>Are you sure you want to delete this reward?</p>
       </template>
       <template #footer>
-        <UButton @click="deleteConfirmed" color="error" icon="i-lucide-trash">
+        <UButton
+          @click="deleteConfirmed"
+          color="error"
+          icon="i-lucide-trash"
+          data-testid="confirm-delete-button"
+        >
           Delete
         </UButton>
       </template>
