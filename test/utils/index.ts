@@ -90,6 +90,7 @@ export async function setTestUserPoints(username: string, points: number) {
     username,
   ])
 }
+
 export async function getSessionCookie(username: string, password: string) {
   const response = await fetch('/api/auth/login', {
     method: 'POST',

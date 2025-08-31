@@ -40,7 +40,7 @@ export const useStore = defineStore('main', () => {
     await clearSession()
   }
 
-  const useRememberedUsers = () =>
+  const useRememberedUsers = (): Ref<RememberedUser[]> =>
     useLocalStorage<RememberedUser[]>('rememberedUsers', [])
 
   return {

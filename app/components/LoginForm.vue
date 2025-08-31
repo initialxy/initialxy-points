@@ -1,8 +1,9 @@
 <template>
-  <UCard variant="subtle" data-testid="login_card">
+  <UCard variant="subtle">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
       <UFormField name="username" v-if="!isAnyUserSelected">
         <UInput
+          data-testid="username"
           placeholder="Who?"
           type="text"
           v-model="state.username"
@@ -32,6 +33,7 @@
 
       <UFormField name="password">
         <UInput
+          data-testid="password"
           placeholder="Password"
           v-model="state.password"
           type="password"
@@ -40,6 +42,7 @@
       </UFormField>
       <div>
         <UButton
+          data-testid="login_button"
           type="submit"
           icon="i-lucide-log-in"
           size="md"
