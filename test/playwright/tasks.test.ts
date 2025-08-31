@@ -167,11 +167,15 @@ test.describe('Task management', () => {
 
     await expect(page.getByTestId('complete-task-button')).not.toBeVisible()
     await expect(page.getByTestId('reject-task-button')).toBeVisible()
+    await expect(page.getByTestId('pending-state-badge')).not.toBeVisible()
+    await expect(page.getByTestId('alerted-state-badge')).toBeVisible()
 
     // Click on reject button
     await page.getByTestId('reject-task-button').click()
 
     await expect(page.getByTestId('reject-task-button')).not.toBeVisible()
     await expect(page.getByTestId('complete-task-button')).toBeVisible()
+    await expect(page.getByTestId('pending-state-badge')).toBeVisible()
+    await expect(page.getByTestId('alerted-state-badge')).not.toBeVisible()
   })
 })

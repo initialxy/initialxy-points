@@ -37,6 +37,7 @@
           color="primary"
           icon="i-lucide-bell-ring"
           class="size-6 justify-center"
+          data-testid="alerted-state-badge"
         />
         <UBadge
           v-if="!task.is_marked_complete"
@@ -44,6 +45,7 @@
           color="neutral"
           icon="i-lucide-circle-dashed"
           class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+          data-testid="pending-state-badge"
         />
         <UBadge
           class="ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"

@@ -7,6 +7,7 @@
       description: 'px-3 py-2 ring ring-default mt-2 rounded-md text-default',
     }"
     class="max-w-150 mx-auto"
+    data-testid="log-list"
   >
     <template #title="{ item }">
       <span>{{ item.username }}</span>

@@ -37,6 +37,7 @@
           color="primary"
           icon="i-lucide-bell-ring"
           class="size-6 justify-center"
+          data-testid="alerted-state-badge"
         />
         <UBadge
           v-if="!reward.is_redemption_requested"
@@ -44,6 +45,7 @@
           color="neutral"
           icon="i-lucide-circle-dashed"
           class="size-6 justify-center ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"
+          data-testid="pending-state-badge"
         />
         <UBadge
           class="ring-indigo-200 dark:ring-indigo-800/50 bg-indigo-200/20 dark:bg-indigo-800/20 text-indigo-700 dark:text-indigo-200"

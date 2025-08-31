@@ -173,11 +173,15 @@ test.describe('Reward management', () => {
 
     await expect(page.getByTestId('complete-reward-button')).not.toBeVisible()
     await expect(page.getByTestId('reject-reward-button')).toBeVisible()
+    await expect(page.getByTestId('pending-state-badge')).not.toBeVisible()
+    await expect(page.getByTestId('alerted-state-badge')).toBeVisible()
 
     // Click on reject button
     await page.getByTestId('reject-reward-button').click()
 
     await expect(page.getByTestId('reject-reward-button')).not.toBeVisible()
     await expect(page.getByTestId('complete-reward-button')).toBeVisible()
+    await expect(page.getByTestId('pending-state-badge')).toBeVisible()
+    await expect(page.getByTestId('alerted-state-badge')).not.toBeVisible()
   })
 })
