@@ -3,7 +3,7 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   createAuthTestData,
   createTestUser,
-  getAllUsers,
+  getUserByUsername,
   getSessionCookie,
   resetDb,
   TEST_CHILD_USER,
@@ -48,11 +48,8 @@ describe('Tasks API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -79,11 +76,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -110,11 +104,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -205,10 +196,7 @@ describe('Tasks API', async () => {
     )
 
     // First create a task to update
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -283,10 +271,7 @@ describe('Tasks API', async () => {
     )
 
     // First create a task to delete
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -374,11 +359,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -430,11 +412,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -486,11 +465,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -593,11 +569,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -663,11 +636,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -740,11 +710,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -801,10 +768,7 @@ describe('Tasks API', async () => {
     expect(response.body.message).toBe('Task completion approved')
     expect(response.body.pointsEarned).toBe(10)
 
-    const refetchAllUsers = await getAllUsers()
-    const updatedChildUser = refetchAllUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    const updatedChildUser = await getUserByUsername(TEST_CHILD_USER.username)
     expect(updatedChildUser?.points).toBe(10)
   })
 
@@ -815,11 +779,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -900,11 +861,8 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')

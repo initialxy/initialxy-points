@@ -69,6 +69,21 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 /**
+ * Get a user by their username
+ */
+export async function getUserByUsername(username: string): Promise<User> {
+  const db = await getDb()
+  const user = await db.get<User>(
+    'SELECT id, username, role, points FROM users WHERE username = ?',
+    [username]
+  )
+  if (user == null) {
+    throw new Error(`User ${username} not found`)
+  }
+  return user
+}
+
+/**
  * Create a new test user
  */
 export async function createTestUser(

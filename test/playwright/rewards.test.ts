@@ -2,7 +2,7 @@ import { expect, test } from '@nuxt/test-utils/playwright'
 import {
   createAuthTestData,
   createTestReward,
-  getAllUsers,
+  getUserByUsername,
   playwrightLogin,
   resetDb,
   setTestUserPoints,
@@ -24,13 +24,7 @@ test.describe('Reward management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    if (!childUser) {
-      throw new Error('Child user not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Navigate to child profile page
     await goto(`/child/${childUser.id}`, { waitUntil: 'hydration' })
@@ -64,16 +58,8 @@ test.describe('Reward management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test reward first
     await createTestReward(
@@ -116,16 +102,8 @@ test.describe('Reward management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test reward first
     await createTestReward(parentUser.id, childUser.id, 'Reward to delete', 5)
@@ -155,16 +133,8 @@ test.describe('Reward management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test reward first
     await createTestReward(parentUser.id, childUser.id, 'Reward to redeem', 5)
@@ -183,16 +153,8 @@ test.describe('Reward management', () => {
   })
 
   test('Child user can request reward redemption', async ({ page, goto }) => {
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test reward first
     await createTestReward(parentUser.id, childUser.id, 'Reward to complete', 5)

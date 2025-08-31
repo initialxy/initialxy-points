@@ -4,7 +4,7 @@ import {
   resetDb,
   createAuthTestData,
   getSessionCookie,
-  getAllUsers,
+  getUserByUsername,
   TEST_PARENT_USER,
   TEST_CHILD_USER,
 } from '../utils/index'
@@ -47,15 +47,8 @@ describe('Logs API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<LogsResponse>('/api/logs', {
       method: 'GET',
@@ -78,15 +71,8 @@ describe('Logs API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<LogsResponse>('/api/logs', {
       method: 'GET',

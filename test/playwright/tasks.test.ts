@@ -2,7 +2,7 @@ import { expect, test } from '@nuxt/test-utils/playwright'
 import {
   createAuthTestData,
   createTestTask,
-  getAllUsers,
+  getUserByUsername,
   playwrightLogin,
   resetDb,
   TEST_CHILD_USER,
@@ -23,13 +23,7 @@ test.describe('Task management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    if (!childUser) {
-      throw new Error('Child user not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Navigate to child profile page
     await goto(`/child/${childUser.id}`, { waitUntil: 'hydration' })
@@ -62,16 +56,8 @@ test.describe('Task management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test task first
     await createTestTask(
@@ -112,16 +98,8 @@ test.describe('Task management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test task first
     await createTestTask(parentUser.id, childUser.id, 'Task to delete', 5)
@@ -148,16 +126,8 @@ test.describe('Task management', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test task first
     await createTestTask(parentUser.id, childUser.id, 'Task to approve', 5)
@@ -178,16 +148,8 @@ test.describe('Task management', () => {
     page,
     goto,
   }) => {
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    const parentUser = users.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
-    if (childUser == null || parentUser == null) {
-      throw new Error('Users not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     // Create a test task first
     await createTestTask(parentUser.id, childUser.id, 'Task to complete', 5)

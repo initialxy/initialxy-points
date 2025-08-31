@@ -115,9 +115,9 @@ const onSubmit = async () => {
   try {
     await store.login(state.username, state.password)
     await navigateTo('/dashboard')
-  } catch (error) {
+  } catch (error: any) {
     toast.add({
-      title: 'Something went wrong',
+      title: getAPIErrorMessage(error),
       progress: false,
       color: 'error',
     })

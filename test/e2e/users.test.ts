@@ -4,7 +4,7 @@ import {
   resetDb,
   createAuthTestData,
   getSessionCookie,
-  getAllUsers,
+  getUserByUsername,
   TEST_PARENT_USER,
   TEST_CHILD_USER,
 } from '../utils/index'
@@ -98,11 +98,8 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -128,10 +125,7 @@ describe('Users API', async () => {
     )
 
     // Get the child user ID from database to ensure it exists
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -156,11 +150,8 @@ describe('Users API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get all users and find a user that is NOT the child user (to test forbidden access)
-    const allUsers = await getAllUsers()
-    const otherUser = allUsers.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
+    // Get a user that is NOT the child user (to test forbidden access)
+    const otherUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     if (!otherUser) {
       throw new Error('Parent user not found in database')
@@ -214,11 +205,8 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -246,10 +234,7 @@ describe('Users API', async () => {
     expect(response.message).toBe('Points updated successfully')
 
     // Verify points were updated in database
-    const updatedUsers = await getAllUsers()
-    const updatedChildUser = updatedUsers.find(
-      (user) => user.id === childUser.id
-    )
+    const updatedChildUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (updatedChildUser) {
       expect(updatedChildUser.points).toBe(initialPoints + 10)
@@ -263,11 +248,8 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find a parent user (not child)
-    const allUsers = await getAllUsers()
-    const parentUser = allUsers.find(
-      (user) => user.username === TEST_PARENT_USER.username
-    )
+    // Get a parent user (not child)
+    const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
 
     if (!parentUser) {
       throw new Error('Parent user not found in database')
@@ -304,11 +286,8 @@ describe('Users API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')
@@ -345,11 +324,8 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    // Get the child user
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     if (!childUser) {
       throw new Error('Child user not found in database')

@@ -3,7 +3,7 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   createAuthTestData,
   createTestUser,
-  getAllUsers,
+  getUserByUsername,
   getSessionCookie,
   resetDb,
   setTestUserPoints,
@@ -50,15 +50,8 @@ describe('Rewards API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<RewardsResponse>('/api/rewards', {
       method: 'GET',
@@ -81,15 +74,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<RewardsResponse>('/api/rewards', {
       method: 'GET',
@@ -112,15 +98,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
@@ -207,14 +186,7 @@ describe('Rewards API', async () => {
     )
 
     // First create a reward to update
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
@@ -285,14 +257,7 @@ describe('Rewards API', async () => {
     )
 
     // First create a reward to delete
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
       method: 'POST',
@@ -376,15 +341,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -432,15 +390,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -488,15 +439,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -553,15 +497,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward with more points than the child has
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -678,15 +615,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -737,15 +667,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -830,15 +753,8 @@ describe('Rewards API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    // Get the child user by username
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -884,10 +800,7 @@ describe('Rewards API', async () => {
     expect(response.body.message).toBe('Reward completion approved')
     expect(response.body.pointsEarned).toBe(10)
 
-    const refetchAllUsers = await getAllUsers()
-    const updatedChildUser = refetchAllUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
+    const updatedChildUser = await getUserByUsername(TEST_CHILD_USER.username)
     expect(updatedChildUser?.points).toBe(190)
   })
 
@@ -899,14 +812,7 @@ describe('Rewards API', async () => {
     )
 
     // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward first
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {
@@ -1006,14 +912,7 @@ describe('Rewards API', async () => {
     )
 
     // Get all users and find the child user
-    const allUsers = await getAllUsers()
-    const childUser = allUsers.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     // Create a reward with more points than the child has
     const createResponse = await $fetch<RewardResponse>('/api/rewards', {

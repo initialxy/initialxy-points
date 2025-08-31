@@ -24,6 +24,7 @@ node_modules
 
 # Don't submit DB file
 *.sqlite
+*.sqlite-journal
 
 # VS Code file
 .vscode

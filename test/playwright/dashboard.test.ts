@@ -5,7 +5,7 @@ import {
   TEST_PARENT_USER,
   TEST_CHILD_USER,
   playwrightLogin,
-  getAllUsers,
+  getUserByUsername,
   setTestUserPoints,
 } from '../utils/index'
 
@@ -25,14 +25,6 @@ test.describe('Dashboard page', () => {
       TEST_PARENT_USER.username,
       TEST_PARENT_USER.password
     )
-
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    if (!childUser) {
-      throw new Error('Child user not found')
-    }
 
     // Add points - find the plus button and click it
     await page.getByTestId('child-points-increase').click()
@@ -59,13 +51,7 @@ test.describe('Dashboard page', () => {
       TEST_PARENT_USER.password
     )
 
-    const users = await getAllUsers()
-    const childUser = users.find(
-      (user) => user.username === TEST_CHILD_USER.username
-    )
-    if (!childUser) {
-      throw new Error('Child user not found')
-    }
+    const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     await page.getByTestId('child-card').first().click()
 
