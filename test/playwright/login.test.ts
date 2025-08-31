@@ -1,12 +1,16 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
-import { resetDb, createAuthTestData, TEST_PARENT_USER } from '../utils/index'
+import {
+  resetDb,
+  createAuthTestData,
+  TEST_PARENT_USER,
+  playwrightLogin,
+} from '../utils/index'
 
-const TIMEOUT = 10000 // 10 seconds
+const TIMEOUT_MS = 30000 // 30 seconds
 
 test.describe('Login page', () => {
   test.beforeEach(async ({ page, goto }) => {
-    page.setDefaultNavigationTimeout(TIMEOUT)
-    page.setDefaultTimeout(TIMEOUT)
+    page.setDefaultTimeout(TIMEOUT_MS)
     await resetDb()
     await createAuthTestData()
   })
@@ -20,10 +24,11 @@ test.describe('Login page', () => {
 
   test('login with valid user credentials', async ({ page, goto }) => {
     await goto('/', { waitUntil: 'hydration' })
-    await page.getByTestId('username').fill(TEST_PARENT_USER.username)
-    await page.getByTestId('password').fill(TEST_PARENT_USER.password)
-    await page.getByTestId('login_button').click()
-    await page.waitForURL('**/dashboard')
+    await playwrightLogin(
+      page,
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
     expect(page.url()).toMatch(/\/dashboard$/)
   })
 

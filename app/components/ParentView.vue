@@ -6,9 +6,13 @@
       class="mb-4 clickable-lg"
       variant="subtle"
       @click="navigateTo(`/child/${child.id}`)"
+      data-testid="child-card"
     >
       <div class="flex items-center justify-start">
-        <h2 class="text-xl font-semibold grow min-w-0 truncate">
+        <h2
+          class="text-xl font-semibold grow min-w-0 truncate"
+          data-testid="child-username"
+        >
           {{ child.username }}
         </h2>
         <UBadge
@@ -17,6 +21,7 @@
           size="xl"
           icon="i-lucide-bell-ring"
           class="mx-2"
+          data-testid="child-notification-badge"
         >
           {{ getNotificationsCount(child.id) }}
         </UBadge>
@@ -28,6 +33,7 @@
             size="xl"
             class="m-0 touch-manipulation"
             @click="changePoints(child, -1, $event)"
+            data-testid="child-points-decrease"
           />
           <UInput
             v-model="child.points"
@@ -40,6 +46,7 @@
               debouncedUpdatePoints(child.id, child.points || 0)
             "
             @click="$event.stopPropagation()"
+            data-testid="child-points-input"
           />
           <UButton
             icon="i-lucide-plus"
@@ -48,6 +55,7 @@
             size="xl"
             class="ml-0 touch-manipulation"
             @click="changePoints(child, 1, $event)"
+            data-testid="child-points-increase"
           />
         </div>
       </div>

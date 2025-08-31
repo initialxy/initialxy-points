@@ -1,12 +1,15 @@
 <template>
   <div>
     <div class="max-w-150 mx-auto">
-      <UCard class="mb-4" variant="subtle">
+      <UCard class="mb-4" variant="subtle" data-testid="child-points-card">
         <h1 class="text-3xl font-bold text-center mb-4">
           <span class="text-secondary">{{ user?.username }}</span>
           <span class="text-neutral-500"> earned</span>
         </h1>
-        <div class="text-6xl font-extrabold text-primary text-center mb-4">
+        <div
+          class="text-6xl font-extrabold text-primary text-center mb-4"
+          data-testid="child-points-display"
+        >
           {{ userData?.user?.points || 0 }}
           <span class="text-neutral-500 text-base absolute ml-2 mt-8">pts</span>
         </div>

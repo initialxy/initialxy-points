@@ -20,7 +20,7 @@ const devicesToTest = [
 export default defineConfig<ConfigOptions>({
   testDir: './test/playwright',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!isCI,
   /* Retry on CI only */

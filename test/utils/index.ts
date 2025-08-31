@@ -3,6 +3,7 @@ import { getDb } from '../../server/database/index'
 import { initializeDatabase } from '../../server/database'
 import bcrypt from 'bcryptjs'
 import type { User } from '../../shared/types'
+import type { Page } from '@playwright/test'
 
 export const TEST_PARENT_USER = {
   username: 'parentuser',
@@ -83,6 +84,9 @@ export async function createTestUser(
   )
 }
 
+/**
+ * Set points for a test user
+ */
 export async function setTestUserPoints(username: string, points: number) {
   const db = await getDb()
   await db.run('UPDATE users SET points = ? WHERE username = ?', [
@@ -91,6 +95,10 @@ export async function setTestUserPoints(username: string, points: number) {
   ])
 }
 
+/**
+ * Perform a login then return the session cookie, which can be used in
+ * subsequent requests to keep the same session.
+ */
 export async function getSessionCookie(username: string, password: string) {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
@@ -101,4 +109,18 @@ export async function getSessionCookie(username: string, password: string) {
   })
 
   return response.headers.getSetCookie()?.join('; ')
+}
+
+/**
+ * Perform a login using Playwright
+ */
+export async function playwrightLogin(
+  page: Page,
+  username: string,
+  password: string
+) {
+  await page.getByTestId('username').fill(username)
+  await page.getByTestId('password').fill(password)
+  await page.getByTestId('login_button').click()
+  await page.waitForURL('**/dashboard')
 }
