@@ -9,11 +9,8 @@ import {
   setTestUserPoints,
 } from '../utils/index'
 
-const TIMEOUT_MS = 30000 // 30 seconds
-
 test.describe('Dashboard page', () => {
   test.beforeEach(async ({ page, goto }) => {
-    page.setDefaultTimeout(TIMEOUT_MS)
     await resetDb()
     await createAuthTestData()
   })

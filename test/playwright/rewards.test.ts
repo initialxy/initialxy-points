@@ -10,11 +10,8 @@ import {
   TEST_PARENT_USER,
 } from '../utils/index'
 
-const TIMEOUT_MS = 30000 // 30 seconds
-
 test.describe('Reward management', () => {
   test.beforeEach(async ({ page, goto }) => {
-    page.setDefaultTimeout(TIMEOUT_MS)
     await resetDb()
     await createAuthTestData()
   })

@@ -26,7 +26,7 @@ export default defineConfig<ConfigOptions>({
   /* Retry on CI only */
   retries: isCI ? 2 : 0,
   workers: 1,
-  timeout: isWindows ? 60000 : undefined,
+  timeout: 30000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
