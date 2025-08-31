@@ -1,5 +1,5 @@
 <template>
-  <UCard variant="subtle">
+  <UCard variant="subtle" data-testid="login_card">
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
       <UFormField name="username" v-if="!isAnyUserSelected">
         <UInput
