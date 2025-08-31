@@ -11,7 +11,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "e2e": "vitest run --no-file-parallelism",
-    "test": "vitest run --no-file-parallelism && playwright test --workers 1",
+    "playwright": "dotenv -e .env.test playwright test --workers 1",
+    "test": "vitest run --no-file-parallelism && dotenv -e .env.test playwright test --workers 1",
     "format": "prettier --write \"{app/components,app/composables,app/layouts,app/middleware,app/pages,app/utils,server,stores,shared,test}/**/*.{ts,vue}\"",
     "tsc": "tsc --noEmit",
     "admin": "tsx ./server/database/admin.ts"
@@ -49,6 +50,7 @@
     "@types/validator": "^13.15.1",
     "@vitest/ui": "^3.2.4",
     "@vue/test-utils": "^2.4.6",
+    "dotenv-cli": "^10.0.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
     "happy-dom": "^18.0.1",

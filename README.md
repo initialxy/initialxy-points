@@ -1,6 +1,6 @@
 # initialxy-points
 
-[![Node.js CI](https://github.com/initialxy/initialxy-points/actions/workflows/node.js.yml/badge.svg)](https://github.com/initialxy/initialxy-points/actions/workflows/node.js.yml)
+[![Node.js CI](https://github.com/initialxy/initialxy-points/actions/workflows/node.js.yml/badge.svg)](https://github.com/initialxy/initialxy-points/actions/workflows/node.js.yml) [![Playwright Tests](https://github.com/initialxy/initialxy-points/actions/workflows/playwright.yml/badge.svg)](https://github.com/initialxy/initialxy-points/actions/workflows/playwright.yml)
 
 A simple web app that helps track points earned by kids and allows them to redeem points for rewards.
 
