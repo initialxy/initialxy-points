@@ -141,7 +141,7 @@ const newTaskSubmit = async () => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: error.data?.message || 'Failed to create task',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -177,7 +177,7 @@ const newRewardSubmit = async () => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: error.data?.message || 'Failed to create reward',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })

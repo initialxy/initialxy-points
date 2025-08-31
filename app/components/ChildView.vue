@@ -86,7 +86,7 @@ const handleCompleteTask = async (task: Task) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to mark task as completed',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -111,7 +111,7 @@ const handleRejectTask = async (task: Task) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to mark task as incomplete',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -146,7 +146,7 @@ const handleCompleteReward = async (reward: Reward) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to request reward redemption',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -171,7 +171,7 @@ const handleRejectReward = async (reward: Reward) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to cancel reward redemption',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })

@@ -213,7 +213,7 @@ const changeCredentialsSubmit = async () => {
     }
   } catch (error: any) {
     toast.add({
-      title: error.data?.message || 'Failed to change password',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })

@@ -115,7 +115,7 @@ const debouncedUpdatePoints = debounce(async (child: User, delta: number) => {
     emit('updatePoints', { childId: child.id, points: child.points })
   } catch (err) {
     console.error('Error updating points:', err)
-    toast.add({ title: 'Failed to update points', progress: false })
+    toast.add({ title: getApiErrorMessage(err), progress: false })
   }
 }, DEBOUNCE_WAIT_MS)
 

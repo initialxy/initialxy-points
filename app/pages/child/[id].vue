@@ -187,7 +187,7 @@ const handleCompleteTask = async (task: Task) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to approve task completion',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -212,7 +212,7 @@ const handleRejectTask = async (task: Task) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to reject task completion',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -237,7 +237,7 @@ const handleDeleteTask = async (task: Task) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to delete task',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -275,7 +275,7 @@ const editTaskSubmit = async () => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to update task',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -314,7 +314,7 @@ const handleCompleteReward = async (reward: Reward) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to approve reward redemption',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -374,7 +374,7 @@ const editRewardSubmit = async () => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to update reward',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -399,7 +399,7 @@ const handleRejectReward = async (reward: Reward) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to reject reward redemption',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })
@@ -424,7 +424,7 @@ const handleDeleteReward = async (reward: Reward) => {
     await refreshNuxtData()
   } catch (error: any) {
     toast.add({
-      title: 'Failed to delete reward',
+      title: getApiErrorMessage(error),
       color: 'error',
       progress: false,
     })

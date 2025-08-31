@@ -117,7 +117,7 @@ const onSubmit = async () => {
     await navigateTo('/dashboard')
   } catch (error: any) {
     toast.add({
-      title: getAPIErrorMessage(error),
+      title: getApiErrorMessage(error),
       progress: false,
       color: 'error',
     })

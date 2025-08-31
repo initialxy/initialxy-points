@@ -23,6 +23,6 @@ export function capitalize(str: string): string {
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
 }
 
-export function getAPIErrorMessage(error: any): string {
+export function getApiErrorMessage(error: any): string {
   return error?.data?.message || 'Something went wrong'
 }
