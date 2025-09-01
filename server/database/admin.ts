@@ -112,8 +112,13 @@ async function main() {
   let db: Database | null = null
 
   console.log('Welcome to the Admin Console')
-  console.log('Enter database file path to get started')
 
+  if (process.env.DB_PATH == null) {
+    console.log('Enter database file path to get started')
+  } else {
+    db = await getDb(process.env.DB_PATH)
+    showHelp()
+  }
   rl.setPrompt('admin> ')
   rl.prompt()
 

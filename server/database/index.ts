@@ -8,7 +8,9 @@ export async function getDb(dbPath = process.env.DB_PATH): Promise<Database> {
     throw new Error('DB_PATH environment variable is not set')
   }
 
-  if (db) return db
+  if (db != null) {
+    return db
+  }
 
   db = await open({
     filename: dbPath,
