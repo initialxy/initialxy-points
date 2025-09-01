@@ -1,91 +1,103 @@
 <template>
-  <div class="space-y-4 max-w-150 mx-auto">
+  <div class="max-w-150 mx-auto relative">
     <div v-if="sortedTasks.length === 0" class="text-center">
       <p class="text-muted">No task yet</p>
     </div>
-    <UCard
-      v-else
-      v-for="task in sortedTasks"
-      :key="task.id"
-      class="w-full"
-      variant="subtle"
-      :ui="{
-        root: 'ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20',
-      }"
+    <TransitionGroup
+      name="task-list"
+      tag="div"
+      class="space-y-4 w-full"
+      move-class="duration-300 bounce-timing"
+      enter-active-class="duration-300 bounce-timing"
+      enter-from-class="transform opacity-0 scale-90"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="duration-300 ease-in-out absolute"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="transform opacity-0 scale-90"
     >
-      <div class="flex justify-start items-start space-x-2">
-        <p
-          class="truncate text-cyan-700 dark:text-cyan-200 grow min-w-0"
-          data-testid="task-description"
-        >
-          {{ task.description }}
-        </p>
-        <UButton
-          v-if="props.mode === 'parent'"
-          size="sm"
-          icon="i-lucide-x"
-          color="error"
-          variant="soft"
-          data-testid="delete-task-button"
-          @click="confirmDelete(task)"
-        />
-      </div>
-      <div class="flex justify-start items-start mt-2 space-x-2">
-        <UBadge
-          v-if="task.is_marked_complete"
-          variant="subtle"
-          color="primary"
-          icon="i-lucide-bell-ring"
-          class="size-6 justify-center"
-          data-testid="alerted-state-badge"
-        />
-        <UBadge
-          v-if="!task.is_marked_complete"
-          variant="outline"
-          color="neutral"
-          icon="i-lucide-circle-dashed"
-          class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
-          data-testid="pending-state-badge"
-        />
-        <UBadge
-          class="ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
-          :icon="getRecurrenceTypeIcon(task)"
-          color="neutral"
-          variant="outline"
-        >
-          Points: {{ task.points }}
-        </UBadge>
-        <div class="grow min-w-0 space-x-2 flex justify-end">
-          <UButton
-            v-if="task.is_marked_complete"
-            size="sm"
-            icon="i-lucide-thumbs-down"
-            color="error"
-            variant="soft"
-            data-testid="reject-task-button"
-            @click="emit('reject', task)"
-          />
-          <UButton
-            v-if="props.mode === 'parent' || !task.is_marked_complete"
-            size="sm"
-            icon="i-lucide-thumbs-up"
-            color="success"
-            variant="soft"
-            data-testid="complete-task-button"
-            @click="emit('complete', task)"
-          />
+      <UCard
+        v-for="task in sortedTasks"
+        :key="task.id"
+        class="w-full"
+        variant="subtle"
+        :ui="{
+          root: 'ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20',
+        }"
+      >
+        <div class="flex justify-start items-start space-x-2">
+          <p
+            class="truncate text-cyan-700 dark:text-cyan-200 grow min-w-0"
+            data-testid="task-description"
+          >
+            {{ task.description }}
+          </p>
           <UButton
             v-if="props.mode === 'parent'"
             size="sm"
-            icon="i-lucide-pencil"
-            color="neutral"
+            icon="i-lucide-x"
+            color="error"
             variant="soft"
-            data-testid="edit-task-button"
-            @click="emit('edit', task)"
+            data-testid="delete-task-button"
+            @click="confirmDelete(task)"
           />
         </div>
-      </div>
-    </UCard>
+        <div class="flex justify-start items-start mt-2 space-x-2">
+          <UBadge
+            v-if="task.is_marked_complete"
+            variant="subtle"
+            color="primary"
+            icon="i-lucide-bell-ring"
+            class="size-6 justify-center"
+            data-testid="alerted-state-badge"
+          />
+          <UBadge
+            v-if="!task.is_marked_complete"
+            variant="outline"
+            color="neutral"
+            icon="i-lucide-circle-dashed"
+            class="size-6 justify-center ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+            data-testid="pending-state-badge"
+          />
+          <UBadge
+            class="ring-cyan-200 dark:ring-cyan-800/50 bg-cyan-200/20 dark:bg-cyan-800/20 text-cyan-700 dark:text-cyan-200"
+            :icon="getRecurrenceTypeIcon(task)"
+            color="neutral"
+            variant="outline"
+          >
+            Points: {{ task.points }}
+          </UBadge>
+          <div class="grow min-w-0 space-x-2 flex justify-end">
+            <UButton
+              v-if="task.is_marked_complete"
+              size="sm"
+              icon="i-lucide-thumbs-down"
+              color="error"
+              variant="soft"
+              data-testid="reject-task-button"
+              @click="emit('reject', task)"
+            />
+            <UButton
+              v-if="props.mode === 'parent' || !task.is_marked_complete"
+              size="sm"
+              icon="i-lucide-thumbs-up"
+              color="success"
+              variant="soft"
+              data-testid="complete-task-button"
+              @click="emit('complete', task)"
+            />
+            <UButton
+              v-if="props.mode === 'parent'"
+              size="sm"
+              icon="i-lucide-pencil"
+              color="neutral"
+              variant="soft"
+              data-testid="edit-task-button"
+              @click="emit('edit', task)"
+            />
+          </div>
+        </div>
+      </UCard>
+    </TransitionGroup>
 
     <!-- Confirmation Modal -->
     <UModal

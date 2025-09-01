@@ -7,10 +7,14 @@
 dist
 
 .env
-.output
 package-lock.json
 node_modules
 
 *.log
 *.sqlite
 *.sqlite-journal
+
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
