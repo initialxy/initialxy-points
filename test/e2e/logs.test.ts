@@ -47,7 +47,6 @@ describe('Logs API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<LogsResponse>('/api/logs', {
@@ -71,7 +70,6 @@ describe('Logs API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
     const response = await $fetch<LogsResponse>('/api/logs', {

@@ -48,12 +48,7 @@ describe('Tasks API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const response = await $fetch<TasksResponse>('/api/tasks', {
       method: 'GET',
@@ -76,12 +71,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const response = await $fetch<TasksResponse>('/api/tasks', {
       method: 'GET',
@@ -104,12 +94,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const response = await $fetch<TaskResponse>('/api/tasks', {
       method: 'POST',
@@ -195,12 +180,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // First create a task to update
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
       method: 'POST',
@@ -270,12 +250,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // First create a task to delete
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
       method: 'POST',
@@ -359,12 +334,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -412,12 +382,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -465,12 +430,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -569,12 +529,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -636,12 +591,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -710,12 +660,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -779,12 +724,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {
@@ -861,12 +801,7 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     // Create a perpetual task first
     const createResponse = await $fetch<TaskResponse>('/api/tasks', {

@@ -98,12 +98,7 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user by username
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const response = await $fetch<UserResponse>(`/api/users/${childUser.id}`, {
       method: 'GET',
@@ -124,12 +119,7 @@ describe('Users API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get the child user ID from database to ensure it exists
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     const response = await $fetch<UserResponse>(`/api/users/${childUser.id}`, {
       method: 'GET',
@@ -152,10 +142,6 @@ describe('Users API', async () => {
 
     // Get a user that is NOT the child user (to test forbidden access)
     const otherUser = await getUserByUsername(TEST_PARENT_USER.username)
-
-    if (!otherUser) {
-      throw new Error('Parent user not found in database')
-    }
 
     try {
       await $fetch<UserResponse>(`/api/users/${otherUser.id}`, {
@@ -205,14 +191,8 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
 
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
-
-    // Get initial points
     const initialPoints = childUser.points
 
     // Update points
@@ -235,10 +215,7 @@ describe('Users API', async () => {
 
     // Verify points were updated in database
     const updatedChildUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (updatedChildUser) {
-      expect(updatedChildUser.points).toBe(initialPoints + 10)
-    }
+    expect(updatedChildUser.points).toBe(initialPoints + 10)
   })
 
   it('should reject points update for non-child user', async () => {
@@ -248,12 +225,7 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get a parent user (not child)
     const parentUser = await getUserByUsername(TEST_PARENT_USER.username)
-
-    if (!parentUser) {
-      throw new Error('Parent user not found in database')
-    }
 
     try {
       await $fetch<{ message: string }>(
@@ -286,12 +258,7 @@ describe('Users API', async () => {
       TEST_CHILD_USER.password
     )
 
-    // Get the child user
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     try {
       await $fetch<{ message: string }>(
@@ -324,12 +291,7 @@ describe('Users API', async () => {
       TEST_PARENT_USER.password
     )
 
-    // Get the child user
     const childUser = await getUserByUsername(TEST_CHILD_USER.username)
-
-    if (!childUser) {
-      throw new Error('Child user not found in database')
-    }
 
     try {
       await $fetch<{ message: string }>(
