@@ -8,10 +8,10 @@
       tag="div"
       class="space-y-4 w-full"
       move-class="duration-300 bounce-timing"
-      enter-active-class="duration-300 bounce-timing"
+      enter-active-class="duration-300 ease-out"
       enter-from-class="transform opacity-0 scale-90"
       enter-to-class="opacity-100 scale-100"
-      leave-active-class="duration-300 ease-in-out absolute"
+      leave-active-class="duration-300 ease-in absolute"
       leave-from-class="opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-90"
     >
