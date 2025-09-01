@@ -82,7 +82,7 @@ export default defineEventHandler(async (event: H3Event) => {
     user.id,
     reward,
     child.points,
-    child.points + reward.points
+    child.points - reward.points
   )
 
   return {
