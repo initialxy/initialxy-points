@@ -20,7 +20,7 @@
           variant="subtle"
           size="xl"
           icon="i-lucide-bell-ring"
-          class="mx-2"
+          class="mx-2 py-2"
           data-testid="child-notification-badge"
         >
           {{ getNotificationsCount(child.id) }}
