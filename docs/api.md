@@ -119,7 +119,7 @@ Updates points for a specific child user (parent-only endpoint).
 **Request:**
 ```json
 {
-  "points": "number"
+  "points_change": "number" // positive to add, negative to deduct; the balance is clamped at 0
 }
 ```
 
@@ -132,7 +132,7 @@ Updates points for a specific child user (parent-only endpoint).
 
 **Status Codes:**
 - 200: Points updated successfully
-- 400: Invalid points value
+- 400: Invalid user ID or points change value
 - 403: Forbidden (not a parent user)
 - 404: User not found or not a child
 

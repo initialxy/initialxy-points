@@ -61,7 +61,7 @@
 - [x] POST /api/rewards/[id]/request_redemption (Request reward redemption)
 - [x] POST /api/rewards/[id]/approve_redemption (Approve reward redemption)
 - [x] POST /api/rewards/[id]/reject_redemption (Reject reward redemption)
-- [x] GET /api/points (Get points for all children)
+- [x] GET /api/users (Get all users, including their points)
 - [x] POST /api/tasks/[id]/mark_complete (Mark task as completed by child)
 - [x] POST /api/tasks/[id]/approve_complete (Approve task completion by parent)
 - [x] POST /api/tasks/[id]/reject_complete (Reject task completion by parent)
