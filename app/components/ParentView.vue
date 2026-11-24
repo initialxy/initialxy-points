@@ -36,16 +36,14 @@
             @click="changePoints(child, -1, $event)"
           />
           <UInput
-            v-model="child.points"
+            :model-value="child.points"
             type="number"
             variant="none"
             class="w-15 m-0"
             size="xl"
             :ui="{ base: 'text-center' }"
             data-testid="child-points-input"
-            @update:model-value="
-              debouncedUpdatePoints(child.id, child.points || 0)
-            "
+            @update:model-value="(value) => onPointsInput(child, value)"
             @click="$event.stopPropagation()"
           />
           <UButton
@@ -83,10 +81,54 @@ const { data: tasksData } = await useLazyFetch<TasksResponse>('/api/tasks')
 const { data: rewardsData } =
   await useLazyFetch<RewardsResponse>('/api/rewards')
 
-// Keep track of points change by child during debounce, because API requires a
-// points_change instead of updating raw points value to be more race condition
+// Keep track of the pending points change per child, because the API requires a
+// points_change (delta) instead of a raw points value to be more race condition
 // resistant.
 const pointsDeltaByUserId = new Map<number, number>()
+
+// One debounced updater per child, so rapid changes on different children are
+// each flushed instead of cancelling each other out.
+const pointsUpdateByUserId = new Map<
+  number,
+  (userId: number, delta: number) => void
+>()
+
+const schedulePointsUpdate = (child: User, pendingDelta: number) => {
+  let send = pointsUpdateByUserId.get(child.id)
+  if (!send) {
+    send = debounce(
+      async (userId: number, delta: number) => {
+        try {
+          await $fetch(`/api/users/${userId}/points`, {
+            method: 'PUT',
+            body: { points_change: delta },
+          })
+          pointsDeltaByUserId.delete(userId)
+          await refresh()
+          const refreshedChild = childrenData.value?.users.find(
+            (user) => user.id === userId
+          )
+          emit('updatePoints', {
+            childId: userId,
+            points: refreshedChild?.points ?? 0,
+          })
+        } catch (err) {
+          console.error('Error updating points:', err)
+          toast.add({
+            title: getApiErrorMessage(err),
+            progress: false,
+            color: 'error',
+          })
+        } finally {
+          pointsUpdateByUserId.delete(userId)
+        }
+      },
+      DEBOUNCE_WAIT_MS
+    )
+    pointsUpdateByUserId.set(child.id, send)
+  }
+  send(child.id, pendingDelta)
+}
 
 const getNotificationsCount = (childId: number) => {
   // Sum tasks and rewards that's awaiting parental approval
@@ -101,32 +143,33 @@ const getNotificationsCount = (childId: number) => {
   return tasksCount + rewardsCount
 }
 
-const debouncedUpdatePoints = debounce(async (child: User, delta: number) => {
-  try {
-    await $fetch(`/api/users/${child.id}/points`, {
-      method: 'PUT',
-      body: { points_change: delta },
-    })
-    pointsDeltaByUserId.clear()
-    await refresh()
-
-    emit('updatePoints', { childId: child.id, points: child.points })
-  } catch (err) {
-    console.error('Error updating points:', err)
-    toast.add({ title: getApiErrorMessage(err), progress: false })
+// Update points from a direct input: the value typed is an absolute points
+// value, so translate it to a delta against the last server-confirmed value.
+const onPointsInput = (child: User, newValue: number | string | null) => {
+  const newPoints = Math.max(Math.trunc(Number(newValue)) || 0, 0)
+  if (newPoints === (child.points ?? 0)) {
+    return
   }
-}, DEBOUNCE_WAIT_MS)
 
-const changePoints = async (child: User, delta: number, event: Event) => {
+  const pendingDelta = pointsDeltaByUserId.get(child.id) || 0
+  const serverPoints = (child.points ?? 0) - pendingDelta
+  const newPendingDelta = newPoints - serverPoints
+
+  child.points = newPoints
+  pointsDeltaByUserId.set(child.id, newPendingDelta)
+  schedulePointsUpdate(child, newPendingDelta)
+}
+
+const changePoints = (child: User, delta: number, event: Event) => {
   event.stopPropagation()
-  const updatedPoints = Math.max((child.points || 0) + delta, 0)
-  const normalizedDelta = updatedPoints - (child.points || 0)
+  const updatedPoints = Math.max((child.points ?? 0) + delta, 0)
+  const normalizedDelta = updatedPoints - (child.points ?? 0)
   child.points = updatedPoints
 
-  const accumulatedDelta =
+  const newPendingDelta =
     (pointsDeltaByUserId.get(child.id) || 0) + normalizedDelta
-  pointsDeltaByUserId.set(child.id, accumulatedDelta)
-  debouncedUpdatePoints(child, accumulatedDelta)
+  pointsDeltaByUserId.set(child.id, newPendingDelta)
+  schedulePointsUpdate(child, newPendingDelta)
 }
 </script>
 
