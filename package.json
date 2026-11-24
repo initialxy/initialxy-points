@@ -1,6 +1,6 @@
 {
   "name": "nuxt-app",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -14,8 +14,16 @@
     "playwright": "dotenv -e .env.test playwright test",
     "test": "vitest run --no-file-parallelism && dotenv -e .env.test playwright test",
     "format": "prettier --write \"{app/components,app/composables,app/layouts,app/middleware,app/pages,app/utils,server,stores,shared,test}/**/*.{ts,vue}\"",
+    "lint": "eslint .",
     "tsc": "tsc --noEmit",
-    "admin": "dotenv tsx ./server/database/admin.ts"
+    "admin": "dotenv tsx ./server/database/admin.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,vue,mjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@nuxt/eslint": "^1.17.0",
@@ -55,6 +63,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.7",
     "happy-dom": "^21.0.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.2",
     "playwright-core": "^1.65.1",
     "prettier": "^3.10.1",
     "tsx": "^4.23.15",

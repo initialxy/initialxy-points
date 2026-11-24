@@ -1,0 +1,16 @@
+set -e
+
+# 1. Auto-format staged files (+ auto-fix lint issues on them)
+npx lint-staged
+
+# 2. Type check
+npm run tsc
+
+# 3. Lint check
+npm run lint
+
+# 4. Vitest (unit + API e2e)
+npm run e2e
+
+# 5. Playwright (browser e2e)
+npm run playwright

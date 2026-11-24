@@ -37,6 +37,10 @@ npm run build       # production build
 - `npm run test` / `npm run playwright` load `.env.test` (e.g. the test DB path). `NUXT_APP_SECRET` for tests is set programmatically in `vitest.config.ts` and the Playwright nuxt fixture in `playwright.config.ts`.
 - CI (GitHub Actions) runs on Node 22 (npm 10). Keep `package-lock.json` in sync in a way npm 10 accepts — an npm 12-generated lock can break `npm ci` in CI (optional-peer placement differences). If in doubt, regenerate the lock in a `node:22` container and verify `npm ci` locally.
 
+## Commit hooks
+
+A `husky` pre-commit hook (`.husky/pre-commit`) runs on every commit: lint-staged (`prettier --write` + `eslint --fix` on staged files), then `npm run tsc`, `npm run lint`, `npm run e2e` (vitest), and `npm run playwright`. The hook blocks the commit on any failure. Skip it in a pinch with `HUSKY=0 git commit ...` (avoid — CI re-runs the checks).
+
 ## Conventions
 
 - **Explicit booleans only.** Never rely on truthiness/falsiness: `if (value !== 0)` for numbers, `x == null` / `x != null` for null/undefined checks.
