@@ -1,4 +1,5 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
+import type { UsersResponse } from '../../shared/types'
 import {
   resetDb,
   createAuthTestData,
@@ -38,6 +39,37 @@ test.describe('Dashboard page', () => {
 
     // Verify points were reduced (should be 0 again)
     await expect(pointsElement).toHaveValue('0')
+  })
+
+  test('Parent user can update points by typing into the points input', async ({
+    page,
+    goto,
+  }) => {
+    await goto('/', { waitUntil: 'hydration' })
+    await playwrightLogin(
+      page,
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    const pointsElement = page.getByTestId('child-points-input')
+    await pointsElement.fill('5')
+    await expect(pointsElement).toHaveValue('5')
+
+    // Wait for the debounced update to be persisted on the server.
+    // Regression: the input used to send PUT /api/users/undefined/points.
+    await expect
+      .poll(async () => {
+        const res = await page.request.get('/api/users?role=child')
+        const data = (await res.json()) as UsersResponse
+        return data.users.find(
+          (user) => user.username === TEST_CHILD_USER.username
+        )?.points
+      })
+      .toBe(5)
+
+    // The refreshed server value is still shown in the input
+    await expect(pointsElement).toHaveValue('5')
   })
 
   test('Parent user can navigate to child profile by clicking on child card', async ({
