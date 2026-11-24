@@ -14,10 +14,10 @@
           color="error"
           variant="solid"
           size="xl"
-          @click="logoutClicked"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
+          @click="logoutClicked"
         />
       </div>
     </Transition>
@@ -35,10 +35,10 @@
           color="info"
           variant="solid"
           size="xl"
-          @click="showCredentialsModal = true"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
+          @click="showCredentialsModal = true"
         />
       </div>
     </Transition>
@@ -56,10 +56,10 @@
           color="info"
           variant="solid"
           size="xl"
-          @click="refresh"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
+          @click="refresh"
         />
       </div>
     </Transition>
@@ -68,11 +68,11 @@
       color="secondary"
       variant="solid"
       size="xl"
-      @click="isMoreExpanded = !isMoreExpanded"
-      @blur="dismissMenu"
       block
       class="w-10 h-10 rounded-full flex"
       :ui="{ leadingIcon: 'text-lg' }"
+      @click="isMoreExpanded = !isMoreExpanded"
+      @blur="dismissMenu"
     />
 
     <UModal
@@ -211,7 +211,7 @@ const changeCredentialsSubmit = async () => {
       newPassword: '',
       confirmNewPassword: '',
     }
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',

@@ -111,9 +111,9 @@
       <template #footer>
         <UButton
           :data-testid="'confirm-delete-button'"
-          @click="deleteConfirmed"
           color="error"
           icon="i-lucide-trash"
+          @click="deleteConfirmed"
         >
           Delete
         </UButton>
@@ -126,10 +126,7 @@
 import { computed, ref } from 'vue'
 
 const emit = defineEmits<{
-  (e: 'reject', task: Task): void
-  (e: 'complete', task: Task): void
-  (e: 'edit', task: Task): void
-  (e: 'delete', task: Task): void
+  (e: 'reject' | 'complete' | 'edit' | 'delete', task: Task): void
 }>()
 
 const props = defineProps<{

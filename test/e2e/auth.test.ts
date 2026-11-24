@@ -2,11 +2,12 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import {
   resetDb,
   createAuthTestData,
+  getFetchErrorStatus,
   getSessionCookie,
   TEST_PARENT_USER,
 } from '../utils/index'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
-import { UserResponse } from '../../shared/types'
+import type { UserResponse } from '../../shared/types'
 
 describe('Auth API', async () => {
   await setup({
@@ -45,10 +46,10 @@ describe('Auth API', async () => {
           password: TEST_PARENT_USER.password,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with validation error
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
 
@@ -64,10 +65,10 @@ describe('Auth API', async () => {
           password: '123', // Too short
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with validation error
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
 
@@ -83,10 +84,10 @@ describe('Auth API', async () => {
           password: 'wrongpassword',
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with authentication error
       expect(error).toBeDefined()
-      expect(error.status).toBe(401)
+      expect(getFetchErrorStatus(error)).toBe(401)
       return
     }
 
@@ -95,7 +96,7 @@ describe('Auth API', async () => {
 
   it('should fail credentials update without session', async () => {
     try {
-      const response = await $fetch('/api/auth/credentials', {
+      await $fetch('/api/auth/credentials', {
         method: 'POST',
         body: {
           username: TEST_PARENT_USER.username,
@@ -103,10 +104,10 @@ describe('Auth API', async () => {
           newPassword: 'newpassword',
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Expected to fail with 401 since no session exists
       expect(error).toBeDefined()
-      expect(error.status).toBe(401)
+      expect(getFetchErrorStatus(error)).toBe(401)
       return
     }
 
@@ -157,10 +158,10 @@ describe('Auth API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 400 since username is already taken
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
 
@@ -187,10 +188,10 @@ describe('Auth API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 400 since current password is incorrect
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
 

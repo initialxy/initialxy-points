@@ -57,10 +57,8 @@
 import * as z from 'zod'
 
 defineProps<{
-  open: boolean
   title: string
   submitButtonText: string
-  actionItem: PartialActionItem | null
 }>()
 
 const actionItem: Ref<PartialActionItem> = defineModel<PartialActionItem>(
@@ -70,7 +68,7 @@ const actionItem: Ref<PartialActionItem> = defineModel<PartialActionItem>(
   }
 )
 
-const isOpen: Ref<boolean> = defineModel('open', {
+const isOpen: Ref<boolean> = defineModel<boolean>('open', {
   default: false,
 })
 

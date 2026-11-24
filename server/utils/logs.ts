@@ -1,4 +1,4 @@
-import { Database } from 'sqlite'
+import type { Database } from 'sqlite'
 
 const MAX_NUM_LOGS_RETENTION = 1000
 const LOG_CHANGE_POINTS_DEBOUNCE_SECONDS = 30

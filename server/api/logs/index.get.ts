@@ -1,4 +1,5 @@
-import { defineEventHandler, H3Event, getQuery } from 'h3'
+import type { H3Event} from 'h3';
+import { defineEventHandler, getQuery } from 'h3'
 import { getDb } from '../../database'
 
 const DEFAULT_LIMIT = '50'

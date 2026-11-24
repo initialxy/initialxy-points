@@ -7,7 +7,7 @@ import {
 } from '../utils/index'
 
 test.describe('Login page', () => {
-  test.beforeEach(async ({ page, goto }) => {
+  test.beforeEach(async () => {
     await resetDb()
     await createAuthTestData()
   })
@@ -34,7 +34,8 @@ test.describe('Login page', () => {
     await page.getByTestId('username').fill(TEST_PARENT_USER.username)
     await page.getByTestId('password').fill('wrongpassword')
     await page.getByTestId('login_button').click()
-    await page.waitForSelector('li[role="alert"]') // wait for toast to pop up
+    // Nuxt UI v4 renders toasts as li items in a data-slot="viewport" list
+    await page.waitForSelector('[data-slot="viewport"] li[data-state="open"]')
     expect(page.url()).toMatch(/\/login$/)
   })
 })

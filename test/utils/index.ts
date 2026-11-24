@@ -163,6 +163,13 @@ export async function getSessionCookie(username: string, password: string) {
 }
 
 /**
+ * Safely extract the HTTP status code from a thrown $fetch/ofetch error
+ */
+export function getFetchErrorStatus(error: unknown): number | undefined {
+  return (error as { status?: number } | null | undefined)?.status
+}
+
+/**
  * Perform a login using Playwright
  */
 export async function playwrightLogin(

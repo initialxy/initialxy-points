@@ -1,4 +1,5 @@
-import { defineEventHandler, H3Event, readBody, createError } from 'h3'
+import type { H3Event} from 'h3';
+import { defineEventHandler, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {

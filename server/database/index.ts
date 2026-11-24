@@ -1,4 +1,5 @@
-import { open, Database } from 'sqlite'
+import type { Database } from 'sqlite';
+import { open } from 'sqlite'
 import sqlite3 from 'sqlite3'
 
 let db: Database | null = null
@@ -25,7 +26,7 @@ export async function initializeDatabase(db: Database): Promise<Database> {
   const tables = await db.all(
     'SELECT name FROM sqlite_master WHERE type="table"'
   )
-  const tableNames = tables.map((t: any) => t.name)
+  const tableNames = (tables as { name: string }[]).map((t) => t.name)
 
   if (
     !tableNames.includes('users') ||

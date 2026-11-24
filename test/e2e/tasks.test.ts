@@ -3,13 +3,14 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   createAuthTestData,
   createTestUser,
+  getFetchErrorStatus,
   getUserByUsername,
   getSessionCookie,
   resetDb,
   TEST_CHILD_USER,
   TEST_PARENT_USER,
 } from '../utils/index'
-import { TaskResponse, TasksResponse } from '../../shared/types'
+import type { TaskResponse, TasksResponse } from '../../shared/types'
 
 describe('Tasks API', async () => {
   await setup({
@@ -136,10 +137,10 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't create tasks
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -164,10 +165,10 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 400 due to missing fields
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -234,10 +235,10 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't update tasks
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -296,10 +297,10 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't delete tasks
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -319,10 +320,10 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 404 since task doesn't exist
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -415,9 +416,9 @@ describe('Tasks API', async () => {
           cookie: unauthorizedCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -470,9 +471,9 @@ describe('Tasks API', async () => {
           cookie: childCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -492,9 +493,9 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -514,9 +515,9 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -576,9 +577,9 @@ describe('Tasks API', async () => {
           cookie: unauthorizedCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -623,9 +624,9 @@ describe('Tasks API', async () => {
           cookie: childCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -645,9 +646,9 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -764,9 +765,9 @@ describe('Tasks API', async () => {
           cookie: childCookie, // Using child's cookie
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -786,9 +787,9 @@ describe('Tasks API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')

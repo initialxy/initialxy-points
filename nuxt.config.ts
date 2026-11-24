@@ -72,7 +72,8 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   pinia: {
-    storesDirs: ['./stores/**'],
+    // @pinia/nuxt v1 resolves storesDirs relative to each layer's app dir
+    storesDirs: ['../stores'],
   },
   features: {
     // Enable inline styles for better performance

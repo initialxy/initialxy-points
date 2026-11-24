@@ -24,7 +24,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    />
+    >
 
     <TaskList
       mode="child"
@@ -35,7 +35,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    />
+    >
 
     <RewardList
       :rewards="rewards?.rewards || []"
@@ -84,7 +84,7 @@ const handleCompleteTask = async (task: Task) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -109,7 +109,7 @@ const handleRejectTask = async (task: Task) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -144,7 +144,7 @@ const handleCompleteReward = async (reward: Reward) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -169,7 +169,7 @@ const handleRejectReward = async (reward: Reward) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',

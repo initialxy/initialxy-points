@@ -5,8 +5,8 @@
       :key="child.id"
       class="mb-4 clickable-lg"
       variant="subtle"
-      @click="navigateTo(`/child/${child.id}`)"
       data-testid="child-card"
+      @click="navigateTo(`/child/${child.id}`)"
     >
       <div class="flex items-center justify-start">
         <h2
@@ -32,8 +32,8 @@
             variant="soft"
             size="xl"
             class="m-0 touch-manipulation"
-            @click="changePoints(child, -1, $event)"
             data-testid="child-points-decrease"
+            @click="changePoints(child, -1, $event)"
           />
           <UInput
             v-model="child.points"
@@ -42,11 +42,11 @@
             class="w-15 m-0"
             size="xl"
             :ui="{ base: 'text-center' }"
-            @update:modelValue="
+            data-testid="child-points-input"
+            @update:model-value="
               debouncedUpdatePoints(child.id, child.points || 0)
             "
             @click="$event.stopPropagation()"
-            data-testid="child-points-input"
           />
           <UButton
             icon="i-lucide-plus"
@@ -54,8 +54,8 @@
             variant="soft"
             size="xl"
             class="ml-0 touch-manipulation"
-            @click="changePoints(child, 1, $event)"
             data-testid="child-points-increase"
+            @click="changePoints(child, 1, $event)"
           />
         </div>
       </div>
@@ -89,8 +89,6 @@ const { data: rewardsData } =
 const pointsDeltaByUserId = new Map<number, number>()
 
 const getNotificationsCount = (childId: number) => {
-  let count = 0
-
   // Sum tasks and rewards that's awaiting parental approval
   const tasksCount = (tasksData.value?.tasks || []).filter(
     (task) => task.child_id === childId && task.is_marked_complete

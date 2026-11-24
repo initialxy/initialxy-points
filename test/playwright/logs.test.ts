@@ -8,7 +8,7 @@ import {
 } from '../utils/index'
 
 test.describe('Logs rendering', () => {
-  test.beforeEach(async ({ page, goto }) => {
+  test.beforeEach(async () => {
     await resetDb()
     await createAuthTestData()
   })

@@ -2,7 +2,7 @@ import validator from 'validator'
 import sanitizeHtml from 'sanitize-html'
 
 export function validateString(
-  value: any,
+  value: unknown,
   minLength = 1,
   maxLength = 255
 ): string | null {
@@ -16,7 +16,7 @@ export function validateString(
 }
 
 export function validateNumber(
-  value: any,
+  value: unknown,
   min = 0,
   max = Number.MAX_SAFE_INTEGER
 ): number | null {
@@ -25,12 +25,12 @@ export function validateNumber(
   return value
 }
 
-export function validateBoolean(value: any): boolean | null {
+export function validateBoolean(value: unknown): boolean | null {
   if (typeof value !== 'boolean') return null
   return value
 }
 
-export function validateId(value: any): number | null {
+export function validateId(value: unknown): number | null {
   if (typeof value !== 'number' || value <= 0 || Number.isNaN(value))
     return null
   return value

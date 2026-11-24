@@ -37,8 +37,8 @@
             icon="i-lucide-x"
             color="error"
             variant="soft"
-            @click="confirmDelete(reward)"
             data-testid="delete-reward-button"
+            @click="confirmDelete(reward)"
           />
         </div>
         <div class="flex justify-start items-start mt-2 space-x-2">
@@ -73,8 +73,8 @@
               icon="i-lucide-thumbs-down"
               color="error"
               variant="soft"
-              @click="emit('reject', reward)"
               data-testid="reject-reward-button"
+              @click="emit('reject', reward)"
             />
             <UButton
               v-if="props.mode === 'parent' || !reward.is_redemption_requested"
@@ -82,8 +82,8 @@
               icon="i-lucide-thumbs-up"
               color="success"
               variant="soft"
-              @click="emit('complete', reward)"
               data-testid="complete-reward-button"
+              @click="emit('complete', reward)"
             />
             <UButton
               v-if="props.mode === 'parent'"
@@ -91,8 +91,8 @@
               icon="i-lucide-pencil"
               color="neutral"
               variant="soft"
-              @click="emit('edit', reward)"
               data-testid="edit-reward-button"
+              @click="emit('edit', reward)"
             />
           </div>
         </div>
@@ -110,10 +110,10 @@
       </template>
       <template #footer>
         <UButton
-          @click="deleteConfirmed"
           color="error"
           icon="i-lucide-trash"
           data-testid="confirm-delete-button"
+          @click="deleteConfirmed"
         >
           Delete
         </UButton>
@@ -126,10 +126,7 @@
 import { computed, ref } from 'vue'
 
 const emit = defineEmits<{
-  (e: 'reject', reward: Reward): void
-  (e: 'complete', reward: Reward): void
-  (e: 'edit', reward: Reward): void
-  (e: 'delete', reward: Reward): void
+  (e: 'reject' | 'complete' | 'edit' | 'delete', reward: Reward): void
 }>()
 
 const props = defineProps<{

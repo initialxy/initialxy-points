@@ -17,11 +17,11 @@
           color="info"
           variant="solid"
           size="xl"
-          @click="showCreateTaskModal = true"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
           data-testid="create-task-button"
+          @click="showCreateTaskModal = true"
         />
       </div>
     </Transition>
@@ -42,11 +42,11 @@
           color="info"
           variant="solid"
           size="xl"
-          @click="showCreateRewardModal = true"
           block
           class="w-10 h-10 rounded-full flex mt-2"
           :ui="{ leadingIcon: 'text-lg' }"
           data-testid="create-reward-button"
+          @click="showCreateRewardModal = true"
         />
       </div>
     </Transition>
@@ -64,19 +64,19 @@
           color="primary"
           variant="solid"
           size="xl"
-          @click="isActionExpanded = !isActionExpanded"
-          @blur="dismissAction"
           block
           class="w-10 h-10 rounded-full flex"
           :ui="{ leadingIcon: 'text-lg' }"
           data-testid="app-action-button"
+          @click="isActionExpanded = !isActionExpanded"
+          @blur="dismissAction"
         />
       </div>
     </Transition>
 
     <ActionEntityModal
       v-model:open="showCreateTaskModal"
-      v-model:actionItem="newTaskState"
+      v-model:action-item="newTaskState"
       title="New Task"
       submit-button-text="Create"
       @submit="newTaskSubmit"
@@ -84,7 +84,7 @@
 
     <ActionEntityModal
       v-model:open="showCreateRewardModal"
-      v-model:actionItem="newRewardState"
+      v-model:action-item="newRewardState"
       title="New Reward"
       submit-button-text="Create"
       @submit="newRewardSubmit"
@@ -139,7 +139,7 @@ const newTaskSubmit = async () => {
     }
 
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -175,7 +175,7 @@ const newRewardSubmit = async () => {
     }
 
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',

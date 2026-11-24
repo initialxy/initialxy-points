@@ -3,12 +3,13 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   resetDb,
   createAuthTestData,
+  getFetchErrorStatus,
   getSessionCookie,
   getUserByUsername,
   TEST_PARENT_USER,
   TEST_CHILD_USER,
 } from '../utils/index'
-import { UserResponse, UsersResponse } from '../../shared/types'
+import type { UserResponse, UsersResponse } from '../../shared/types'
 
 describe('Users API', async () => {
   await setup({
@@ -150,10 +151,10 @@ describe('Users API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't access other users
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
 
@@ -174,10 +175,10 @@ describe('Users API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 404 since user doesn't exist
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
 
@@ -241,10 +242,10 @@ describe('Users API', async () => {
           }),
         }
       )
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 404 since parent user is not a child
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
 
@@ -274,10 +275,10 @@ describe('Users API', async () => {
           }),
         }
       )
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user is not allowed to update points
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
 
@@ -307,10 +308,10 @@ describe('Users API', async () => {
           }),
         }
       )
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 400 since points_change is invalid
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
 
@@ -335,10 +336,10 @@ describe('Users API', async () => {
           points_change: 10,
         }),
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 404 since user doesn't exist
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
 

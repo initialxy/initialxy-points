@@ -3,6 +3,7 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import {
   createAuthTestData,
   createTestUser,
+  getFetchErrorStatus,
   getUserByUsername,
   getSessionCookie,
   resetDb,
@@ -10,7 +11,7 @@ import {
   TEST_CHILD_USER,
   TEST_PARENT_USER,
 } from '../utils/index'
-import { RewardResponse, RewardsResponse } from '../../shared/types'
+import type { RewardResponse, RewardsResponse } from '../../shared/types'
 
 describe('Rewards API', async () => {
   await setup({
@@ -141,10 +142,10 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't create rewards
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -169,10 +170,10 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 400 due to missing fields
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -240,10 +241,10 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't update rewards
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -303,10 +304,10 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 403 since child user can't delete rewards
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -326,10 +327,10 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 404 since reward doesn't exist
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -424,9 +425,9 @@ describe('Rewards API', async () => {
           cookie: unauthorizedCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -480,9 +481,9 @@ describe('Rewards API', async () => {
           cookie: childCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -530,9 +531,9 @@ describe('Rewards API', async () => {
           cookie: childCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -552,9 +553,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -574,9 +575,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -587,9 +588,9 @@ describe('Rewards API', async () => {
       await $fetch('/api/rewards/1/request_redemption', {
         method: 'POST',
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(401)
+      expect(getFetchErrorStatus(error)).toBe(401)
       return
     }
     expect.fail('Should have thrown an error')
@@ -600,9 +601,9 @@ describe('Rewards API', async () => {
       await $fetch('/api/rewards/1/request_redemption', {
         method: 'POST',
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(401)
+      expect(getFetchErrorStatus(error)).toBe(401)
       return
     }
     expect.fail('Should have thrown an error')
@@ -694,9 +695,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -716,9 +717,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -738,9 +739,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -850,9 +851,9 @@ describe('Rewards API', async () => {
           cookie: childCookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(403)
+      expect(getFetchErrorStatus(error)).toBe(403)
       return
     }
     expect.fail('Should have thrown an error')
@@ -872,9 +873,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(404)
+      expect(getFetchErrorStatus(error)).toBe(404)
       return
     }
     expect.fail('Should have thrown an error')
@@ -894,9 +895,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')
@@ -938,9 +939,9 @@ describe('Rewards API', async () => {
           cookie: cookie,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBeDefined()
-      expect(error.status).toBe(400)
+      expect(getFetchErrorStatus(error)).toBe(400)
       return
     }
     expect.fail('Should have thrown an error')

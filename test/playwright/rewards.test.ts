@@ -11,7 +11,7 @@ import {
 } from '../utils/index'
 
 test.describe('Reward management', () => {
-  test.beforeEach(async ({ page, goto }) => {
+  test.beforeEach(async () => {
     await resetDb()
     await createAuthTestData()
   })

@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery } from 'h3'
+import { defineEventHandler } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event) => {

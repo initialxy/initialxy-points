@@ -4,6 +4,7 @@ import {
   createAuthTestData,
   createTestReward,
   createTestTask,
+  getFetchErrorStatus,
   getSessionCookie,
   getUserByUsername,
   resetDb,
@@ -11,7 +12,7 @@ import {
   TEST_CHILD_USER,
   TEST_PARENT_USER,
 } from '../utils/index'
-import { LogsResponse } from '../../shared/types'
+import type { LogsResponse } from '../../shared/types'
 
 describe('Logs API', async () => {
   await setup({
@@ -127,10 +128,10 @@ describe('Logs API', async () => {
           recipient_id: 999999999,
         },
       })
-    } catch (error: any) {
+    } catch (error) {
       // Should fail with 401 since child user can't query other users' logs
       expect(error).toBeDefined()
-      expect(error.status).toBe(401)
+      expect(getFetchErrorStatus(error)).toBe(401)
       return
     }
     expect.fail('Should have thrown an error')
@@ -175,15 +176,18 @@ describe('Logs API', async () => {
     )
 
     // Approve the task completion
-    const response = await $fetch(`/api/tasks/${taskId}/approve_complete`, {
-      method: 'POST',
-      headers: {
-        cookie: cookie,
-      },
-    })
+    const response = await $fetch<{ statusCode: number }>(
+      `/api/tasks/${taskId}/approve_complete`,
+      {
+        method: 'POST',
+        headers: {
+          cookie: cookie,
+        },
+      }
+    )
 
     expect(response).toBeDefined()
-    expect((response as any).statusCode).toBe(200)
+    expect(response.statusCode).toBe(200)
 
     const logsResponse = await $fetch<LogsResponse>('/api/logs', {
       method: 'GET',
@@ -226,7 +230,7 @@ describe('Logs API', async () => {
     )
 
     // Approve the redemption
-    const response = await $fetch(
+    const response = await $fetch<{ statusCode: number }>(
       `/api/rewards/${rewardId}/approve_redemption`,
       {
         method: 'POST',
@@ -237,7 +241,7 @@ describe('Logs API', async () => {
     )
 
     expect(response).toBeDefined()
-    expect((response as any).statusCode).toBe(200)
+    expect(response.statusCode).toBe(200)
 
     const logsResponse = await $fetch<LogsResponse>('/api/logs', {
       method: 'GET',

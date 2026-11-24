@@ -10,7 +10,7 @@ import {
 } from '../utils/index'
 
 test.describe('Dashboard page', () => {
-  test.beforeEach(async ({ page, goto }) => {
+  test.beforeEach(async () => {
     await resetDb()
     await createAuthTestData()
   })

@@ -47,7 +47,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    />
+    >
 
     <TaskList
       mode="parent"
@@ -60,7 +60,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    />
+    >
 
     <RewardList
       :rewards="rewards?.rewards || []"
@@ -73,14 +73,14 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    />
+    >
 
     <LogList :logs="logs?.logs || []" />
 
     <!-- Edit Task Modal -->
     <ActionEntityModal
       v-model:open="showEditTaskModal"
-      v-model:actionItem="editTaskState"
+      v-model:action-item="editTaskState"
       title="Edit Task"
       submit-button-text="Update"
       @submit="editTaskSubmit"
@@ -89,7 +89,7 @@
     <!-- Edit Reward Modal -->
     <ActionEntityModal
       v-model:open="showEditRewardModal"
-      v-model:actionItem="editRewardState"
+      v-model:action-item="editRewardState"
       title="Edit Reward"
       submit-button-text="Update"
       @submit="editRewardSubmit"
@@ -185,7 +185,7 @@ const handleCompleteTask = async (task: Task) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -210,7 +210,7 @@ const handleRejectTask = async (task: Task) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -235,7 +235,7 @@ const handleDeleteTask = async (task: Task) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -273,7 +273,7 @@ const editTaskSubmit = async () => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -312,7 +312,7 @@ const handleCompleteReward = async (reward: Reward) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -372,7 +372,7 @@ const editRewardSubmit = async () => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -397,7 +397,7 @@ const handleRejectReward = async (reward: Reward) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',
@@ -422,7 +422,7 @@ const handleDeleteReward = async (reward: Reward) => {
 
     // Refresh data to reflect changes
     await refreshNuxtData()
-  } catch (error: any) {
+  } catch (error) {
     toast.add({
       title: getApiErrorMessage(error),
       color: 'error',

@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url'
+import { randomBytes } from 'node:crypto'
 import { defineConfig, devices } from '@playwright/test'
 import type { ConfigOptions } from '@nuxt/test-utils/playwright'
-import { isCI, isWindows } from 'std-env'
+import { isCI } from 'std-env'
 
 const devicesToTest = [
   'Desktop Chrome',
@@ -15,6 +16,13 @@ const devicesToTest = [
   // { ...devices['Desktop Edge'], channel: 'msedge' },
   // { ...devices['Desktop Chrome'], channel: 'chrome' },
 ] satisfies Array<string | typeof devices[string]>
+
+// nuxt-auth-utils >= 0.6 seals sessions with a secret derived from
+// `appSecret`. The test server is a production build (which does not
+// generate a development secret), so provide one here. A value from the
+// test environment (e.g. .env.test) takes precedence when present.
+const testAppSecret =
+  process.env.NUXT_APP_SECRET ?? randomBytes(32).toString('hex')
 
 /* See https://playwright.dev/docs/test-configuration. */
 export default defineConfig<ConfigOptions>({
@@ -36,6 +44,7 @@ export default defineConfig<ConfigOptions>({
     /* Nuxt configuration options */
     nuxt: {
       rootDir: fileURLToPath(new URL('.', import.meta.url)),
+      env: { NUXT_APP_SECRET: testAppSecret },
     },
   },
   projects: devicesToTest.map(p => typeof p === 'string' ? ({ name: p, use: devices[p] }) : p),

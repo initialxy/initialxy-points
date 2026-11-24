@@ -5,13 +5,16 @@ export const sleep = (ms: number) =>
     }, ms)
   )
 
-export function debounce(cb: Function, waitMs: number) {
+export function debounce<Args extends unknown[]>(
+  cb: (...args: Args) => unknown,
+  waitMs: number
+): (...args: Args) => void {
   let timeout: ReturnType<typeof setTimeout>
-  return function (this: any, ...args: any[]) {
+  return (...args: Args) => {
     if (timeout != null) {
       clearTimeout(timeout)
     }
-    timeout = setTimeout(() => cb.apply(this, args), waitMs)
+    timeout = setTimeout(() => cb(...args), waitMs)
   }
 }
 
@@ -23,6 +26,13 @@ export function capitalize(str: string): string {
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
 }
 
-export function getApiErrorMessage(error: any): string {
-  return error?.data?.message || 'Something went wrong'
+interface ApiError {
+  data?: { message?: unknown }
+}
+
+export function getApiErrorMessage(error: unknown): string {
+  const message = (error as ApiError | null | undefined)?.data?.message
+  return typeof message === 'string' && message !== ''
+    ? message
+    : 'Something went wrong'
 }

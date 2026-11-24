@@ -1,12 +1,14 @@
-import { Database } from 'sqlite'
+import type { Database } from 'sqlite'
 import readline from 'readline'
 import { getDb, initializeDatabase } from './index'
 import bcrypt from 'bcryptjs'
 
 async function listUsers(db: Database) {
-  const users = await db.all('SELECT id, username, role FROM users')
+  const users = await db.all<{ id: number; username: string; role: string }>(
+    'SELECT id, username, role FROM users'
+  )
   console.log('Users:')
-  users.forEach((user: any) => {
+  users.forEach((user) => {
     console.log(`- ${user.id}: ${user.username} (${user.role})`)
   })
 }
@@ -59,7 +61,15 @@ async function setPassword(db: Database, username: string, password: string) {
 }
 
 async function showLogs(db: Database, count: number) {
-  const logs = await db.all(
+  const logs = await db.all<{
+    id: number
+    timestamp: string
+    actor: string | null
+    action_type: string
+    recipient: string | null
+    points_before: number | null
+    points_after: number | null
+  }>(
     `
     SELECT l.id, l.timestamp, u.username as actor, l.action_type,
            r.username as recipient, l.points_before, l.points_after
@@ -79,7 +89,7 @@ async function showLogs(db: Database, count: number) {
   console.log(
     '---|-----------|-------|-------------|-----------|---------------|-------------'
   )
-  logs.forEach((log: any) => {
+  logs.forEach((log) => {
     console.log(
       `${log.id} | ${log.timestamp} | ${log.actor} | ${log.action_type} | ${log.recipient || '-'} | ${log.points_before || '-'} | ${log.points_after || '-'}`
     )
@@ -139,7 +149,7 @@ async function main() {
           showHelp()
           break
         case 'init-db':
-          const initDb = await initializeDatabase(db)
+          await initializeDatabase(db)
           console.log('Database initialized')
           break
         case 'list':
@@ -200,6 +210,7 @@ async function main() {
         case 'exit':
           rl.close()
           process.exit(0)
+          break
         default:
           console.log(`Unknown command: ${command}`)
           showHelp()
