@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils/e2e'
+import { setup, $fetch, fetch } from '@nuxt/test-utils/e2e'
 import {
   createAuthTestData,
   createTestUser,
@@ -313,20 +313,16 @@ describe('Tasks API', async () => {
       TEST_PARENT_USER.password
     )
 
-    try {
-      await $fetch('/api/tasks/999999999', {
-        method: 'GET',
-        headers: {
-          cookie: cookie,
-        },
-      })
-    } catch (error) {
-      // Should fail with 404 since task doesn't exist
-      expect(error).toBeDefined()
-      expect(getFetchErrorStatus(error)).toBe(404)
-      return
-    }
-    expect.fail('Should have thrown an error')
+    // No GET handler exists for this route, so use the plain fetch rather
+    // than the typed $fetch, which only allows the registered methods.
+    const response = await fetch('/api/tasks/999999999', {
+      headers: {
+        cookie: cookie,
+      },
+    })
+
+    // Should be 404 since no GET endpoint exists for this route
+    expect(response.status).toBe(404)
   })
   it('should mark task as complete with child session', async () => {
     // Login as parent to get session cookie and create a task

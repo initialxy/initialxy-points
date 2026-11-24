@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
-    '@nuxtjs/device'
+    '@nuxtjs/device',
   ],
   future: {
     compatibilityVersion: 4,
@@ -31,9 +31,9 @@ export default defineNuxtConfig({
     // Enable shallow function reactivity (default in Nuxt 4)
     defaults: {
       useAsyncData: {
-        deep: true
-      }
-    }
+        deep: true,
+      },
+    },
   },
   app: {
     head: {
@@ -44,31 +44,65 @@ export default defineNuxtConfig({
       viewport: 'width=device-width,initial-scale=1.0,user-scalable=no',
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'apple-touch-icon', type: 'image/png', href: '/apple-touch-icon-152x152.png' },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/png',
+          href: '/apple-touch-icon-152x152.png',
+        },
         { rel: 'manifest', href: '/manifest.json' },
       ],
       meta: [
-        { name: 'mobile-web-app-capable', content: 'yes'},
-        { name: 'apple-touch-fullscreen', content: 'yes'},
-        { name: 'apple-mobile-web-app-capable', content: 'yes'},
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
-        { name: 'application-name', content: 'initialxy-points'},
-        { name: 'apple-mobile-web-app-title', content: 'Points!'},
-        { name: 'msapplication-starturl', content: '/'},
-        { name: 'msapplication-TileImage', content: '/mstile-144x144.png'},
-        { name: 'msapplication-square310x310logo', content: '/mstile-310x310.png'},
-        { name: 'msapplication-TileColor', media: '(prefers-color-scheme: light)', content: '#ffffff'},
-        { name: 'msapplication-TileColor', media: '(prefers-color-scheme: dark)', content: '#061b2b'},
-        { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#ffffff'},
-        { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#061b2b'},
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-touch-fullscreen', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        {
+          name: 'apple-mobile-web-app-status-bar-style',
+          content: 'black-translucent',
+        },
+        { name: 'application-name', content: 'initialxy-points' },
+        { name: 'apple-mobile-web-app-title', content: 'Points!' },
+        { name: 'msapplication-starturl', content: '/' },
+        { name: 'msapplication-TileImage', content: '/mstile-144x144.png' },
+        {
+          name: 'msapplication-square310x310logo',
+          content: '/mstile-310x310.png',
+        },
+        {
+          name: 'msapplication-TileColor',
+          media: '(prefers-color-scheme: light)',
+          content: '#ffffff',
+        },
+        {
+          name: 'msapplication-TileColor',
+          media: '(prefers-color-scheme: dark)',
+          content: '#061b2b',
+        },
+        {
+          name: 'theme-color',
+          media: '(prefers-color-scheme: light)',
+          content: '#ffffff',
+        },
+        {
+          name: 'theme-color',
+          media: '(prefers-color-scheme: dark)',
+          content: '#061b2b',
+        },
       ],
     },
     pageTransition: { name: 'page', mode: 'in-out' },
     // SPA loading template location (Nuxt 4 default)
     spaLoaderTag: 'div',
     spaLoaderAttrs: {
-      id: '__nuxt'
-    }
+      id: '__nuxt',
+    },
+  },
+  typescript: {
+    // Nuxt's generated tsconfig only includes a `test/nuxt` directory, so add
+    // the top-level `test/` dir to make sure `npm run tsc` checks test files
+    // too (paths are relative to the generated .nuxt/tsconfig.json).
+    tsConfig: {
+      include: ['../test/**/*'],
+    },
   },
   css: ['~/assets/css/main.css'],
   pinia: {
@@ -77,6 +111,6 @@ export default defineNuxtConfig({
   },
   features: {
     // Enable inline styles for better performance
-    inlineStyles: false
-  }
+    inlineStyles: false,
+  },
 })

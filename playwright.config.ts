@@ -15,7 +15,7 @@ const devicesToTest = [
   // Test against branded browsers.
   // { ...devices['Desktop Edge'], channel: 'msedge' },
   // { ...devices['Desktop Chrome'], channel: 'chrome' },
-] satisfies Array<string | typeof devices[string]>
+] satisfies Array<string | (typeof devices)[string]>
 
 // nuxt-auth-utils >= 0.6 seals sessions with a secret derived from
 // `appSecret`. The test server is a production build (which does not
@@ -47,5 +47,7 @@ export default defineConfig<ConfigOptions>({
       env: { NUXT_APP_SECRET: testAppSecret },
     },
   },
-  projects: devicesToTest.map(p => typeof p === 'string' ? ({ name: p, use: devices[p] }) : p),
+  projects: devicesToTest.map((p) =>
+    typeof p === 'string' ? { name: p, use: devices[p] } : p
+  ),
 })

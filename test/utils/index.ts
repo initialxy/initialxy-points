@@ -114,7 +114,7 @@ export function setTestUserPoints(username: string, points: number): void {
 /**
  * Create a test task for a child user
  */
-export async function createTestTask(
+export function createTestTask(
   parentId: number,
   childId: number,
   description: string,
@@ -133,7 +133,7 @@ export async function createTestTask(
 /**
  * Create a test reward for a child user
  */
-export async function createTestReward(
+export function createTestReward(
   parentId: number,
   childId: number,
   description: string,
