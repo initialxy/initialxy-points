@@ -3,7 +3,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -40,9 +40,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if task exists
-  const taskResult = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
-    taskId,
-  ])
+  const taskResult: Task | undefined = db
+    .prepare<[number], Task>('SELECT * FROM tasks WHERE id = ?')
+    .get(taskId)
 
   if (taskResult == null) {
     throw createError({
@@ -51,30 +51,37 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run(
-    'UPDATE tasks SET description = ?, points = ?, recurrence_type = ? WHERE id = ?',
-    [description, points, recurrence_type, taskId]
-  )
+  const updateTaskAndLog = db.transaction((task: Task) => {
+    const result = db
+      .prepare<[string, number, string, number]>(
+        'UPDATE tasks SET description = ?, points = ?, recurrence_type = ? WHERE id = ?'
+      )
+      .run(description, points, recurrence_type, task.id)
 
-  if (result.changes === 0) {
-    throw createError({
-      statusCode: 404,
-      message: 'Task not found or not authorized',
-    })
-  }
+    if (result.changes === 0) {
+      throw createError({
+        statusCode: 404,
+        message: 'Task not found or not authorized',
+      })
+    }
 
-  const updatedTask = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
-    taskId,
-  ])
+    const updatedTask: Task | undefined = db
+      .prepare<[number], Task>('SELECT * FROM tasks WHERE id = ?')
+      .get(task.id)
 
-  if (updatedTask == null) {
-    throw createError({
-      statusCode: 404,
-      message: 'Task not found or not authorized',
-    })
-  }
+    if (updatedTask == null) {
+      throw createError({
+        statusCode: 404,
+        message: 'Task not found or not authorized',
+      })
+    }
 
-  await logTaskAction(db, 'update_task', user.id, updatedTask)
+    logTaskAction(db, 'update_task', user.id, updatedTask)
+
+    return updatedTask
+  })
+
+  const updatedTask = updateTaskAndLog(taskResult)
 
   return {
     task: updatedTask,

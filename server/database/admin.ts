@@ -1,12 +1,14 @@
-import type { Database } from 'sqlite'
+import type { Database } from 'better-sqlite3'
 import readline from 'readline'
 import { getDb, initializeDatabase } from './index'
 import bcrypt from 'bcryptjs'
 
-async function listUsers(db: Database) {
-  const users = await db.all<{ id: number; username: string; role: string }>(
-    'SELECT id, username, role FROM users'
-  )
+function listUsers(db: Database): void {
+  const users = db
+    .prepare<unknown[], { id: number; username: string; role: string }>(
+      'SELECT id, username, role FROM users'
+    )
+    .all()
   console.log('Users:')
   users.forEach((user) => {
     console.log(`- ${user.id}: ${user.username} (${user.role})`)
@@ -21,56 +23,59 @@ async function addUser(
 ) {
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10)
-  await db.run(
-    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
-    [username, hashedPassword, role]
-  )
+  db.prepare(
+    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)'
+  ).run(username, hashedPassword, role)
   console.log(`User ${username} added with role ${role}`)
 }
 
-async function deleteUser(db: Database, username: string) {
-  await db.run('DELETE FROM users WHERE username = ?', [username])
+function deleteUser(db: Database, username: string): void {
+  db.prepare('DELETE FROM users WHERE username = ?').run(username)
   console.log(`User ${username} deleted`)
 }
 
-async function renameUser(
+function renameUser(
   db: Database,
   oldUsername: string,
   newUsername: string
-) {
-  await db.run('UPDATE users SET username = ? WHERE username = ?', [
+): void {
+  db.prepare('UPDATE users SET username = ? WHERE username = ?').run(
     newUsername,
-    oldUsername,
-  ])
+    oldUsername
+  )
   console.log(`User ${oldUsername} renamed to ${newUsername}`)
 }
 
-async function changeUserRole(db: Database, username: string, role: string) {
-  await db.run('UPDATE users SET role = ? WHERE username = ?', [role, username])
+function changeUserRole(db: Database, username: string, role: string): void {
+  db.prepare('UPDATE users SET role = ? WHERE username = ?').run(role, username)
   console.log(`User ${username}'s role changed to ${role}`)
 }
 
 async function setPassword(db: Database, username: string, password: string) {
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10)
-  await db.run('UPDATE users SET password = ? WHERE username = ?', [
+  db.prepare('UPDATE users SET password = ? WHERE username = ?').run(
     hashedPassword,
-    username,
-  ])
+    username
+  )
   console.log(`User ${username}'s password updated`)
 }
 
-async function showLogs(db: Database, count: number) {
-  const logs = await db.all<{
-    id: number
-    timestamp: string
-    actor: string | null
-    action_type: string
-    recipient: string | null
-    points_before: number | null
-    points_after: number | null
-  }>(
-    `
+function showLogs(db: Database, count: number): void {
+  const logs = db
+    .prepare<
+      unknown[],
+      {
+        id: number
+        timestamp: string
+        actor: string | null
+        action_type: string
+        recipient: string | null
+        points_before: number | null
+        points_after: number | null
+      }
+    >(
+      `
     SELECT l.id, l.timestamp, u.username as actor, l.action_type,
            r.username as recipient, l.points_before, l.points_after
     FROM logs l
@@ -78,9 +83,9 @@ async function showLogs(db: Database, count: number) {
     LEFT JOIN users r ON l.recipient_id = r.id
     ORDER BY l.timestamp DESC
     LIMIT ?
-  `,
-    [count]
-  )
+  `
+    )
+    .all(count)
 
   console.log(`\nTop ${count} log entries:`)
   console.log(
@@ -126,7 +131,7 @@ async function main() {
   if (process.env.DB_PATH == null) {
     console.log('Enter database file path to get started')
   } else {
-    db = await getDb(process.env.DB_PATH)
+    db = getDb(process.env.DB_PATH)
     showHelp()
   }
   rl.setPrompt('admin> ')
@@ -135,7 +140,7 @@ async function main() {
   rl.on('line', async (input) => {
     try {
       if (db == null) {
-        db = await getDb(input.trim())
+        db = getDb(input.trim())
         showHelp()
         rl.prompt()
 
@@ -149,11 +154,11 @@ async function main() {
           showHelp()
           break
         case 'init-db':
-          await initializeDatabase(db)
+          initializeDatabase(db)
           console.log('Database initialized')
           break
         case 'list':
-          await listUsers(db)
+          listUsers(db)
           break
         case 'add-user':
           if (args.length < 2) {
@@ -168,7 +173,7 @@ async function main() {
             console.log('Usage: delete-user <username>')
           } else {
             const [username] = args
-            await deleteUser(db, username)
+            deleteUser(db, username)
           }
           break
         case 'rename-user':
@@ -176,7 +181,7 @@ async function main() {
             console.log('Usage: rename-user <oldUsername> <newUsername>')
           } else {
             const [oldUsername, newUsername] = args
-            await renameUser(db, oldUsername, newUsername)
+            renameUser(db, oldUsername, newUsername)
           }
           break
         case 'change-user-role':
@@ -184,7 +189,7 @@ async function main() {
             console.log('Usage: change-user-role <username> <role>')
           } else {
             const [username, role] = args
-            await changeUserRole(db, username, role)
+            changeUserRole(db, username, role)
           }
           break
         case 'set-password':
@@ -203,7 +208,7 @@ async function main() {
             if (isNaN(count) || count <= 0) {
               console.log('Please provide a valid positive number')
             } else {
-              await showLogs(db, count)
+              showLogs(db, count)
             }
           }
           break

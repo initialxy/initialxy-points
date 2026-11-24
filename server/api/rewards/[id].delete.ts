@@ -3,7 +3,7 @@ import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -25,10 +25,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Get the reward to log before deletion
-  const rewardResult = await db.get<Reward>(
-    'SELECT * FROM rewards WHERE id = ?',
-    [rewardId]
-  )
+  const rewardResult: Reward | undefined = db
+    .prepare<[number], Reward>('SELECT * FROM rewards WHERE id = ?')
+    .get(rewardId)
 
   if (rewardResult == null) {
     throw createError({
@@ -37,16 +36,22 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run('DELETE FROM rewards WHERE id = ?', [rewardId])
+  const deleteRewardAndLog = db.transaction((reward: Reward) => {
+    const result = db
+      .prepare<[number]>('DELETE FROM rewards WHERE id = ?')
+      .run(reward.id)
 
-  if (result.changes === 0) {
-    throw createError({
-      statusCode: 404,
-      message: 'Reward not found or not authorized',
-    })
-  }
+    if (result.changes === 0) {
+      throw createError({
+        statusCode: 404,
+        message: 'Reward not found or not authorized',
+      })
+    }
 
-  await logRewardAction(db, 'delete_reward', user.id, rewardResult)
+    logRewardAction(db, 'delete_reward', user.id, reward)
+  })
+
+  deleteRewardAndLog(rewardResult)
 
   return {
     statusCode: 204,

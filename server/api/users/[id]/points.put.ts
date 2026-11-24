@@ -3,8 +3,10 @@ import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../../database'
 import { logAction } from '../../../utils/logs'
 
+type ChildSummary = Pick<User, 'id' | 'username' | 'role' | 'points'>
+
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -17,6 +19,14 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const { id } = getRouterParams(event)
+  const userId = validateId(parseInt(id ?? '0'))
+  if (userId == null) {
+    throw createError({
+      statusCode: 400,
+      message: 'Invalid user ID',
+    })
+  }
+
   const { points_change } = await readBody(event)
 
   if (typeof points_change !== 'number') {
@@ -27,12 +37,13 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the user exists and is a child
-  const existingUser: User | undefined = await db.get(
-    'SELECT id, username, role, points FROM users WHERE id = ?',
-    id
-  )
+  const existingUser: ChildSummary | undefined = db
+    .prepare<[number], ChildSummary>(
+      'SELECT id, username, role, points FROM users WHERE id = ?'
+    )
+    .get(userId)
 
-  if (!existingUser || existingUser.role !== 'child') {
+  if (existingUser == null || existingUser.role !== 'child') {
     throw createError({
       statusCode: 404,
       message: 'User not found or not a child',
@@ -45,18 +56,24 @@ export default defineEventHandler(async (event: H3Event) => {
     newPoints = 0
   }
 
-  await db.run('UPDATE users SET points = ? WHERE id = ?', newPoints, id)
+  const applyPointsChange = db.transaction(
+    (recipientId: number, pointsAfter: number) => {
+      db.prepare<[number, number]>(
+        'UPDATE users SET points = ? WHERE id = ?'
+      ).run(pointsAfter, recipientId)
 
-  const log = {
-    actor_id: user.id,
-    action_type: 'change_points',
-    recipient_id: existingUser.id,
-    points_before: pointsBefore,
-    points_after: newPoints,
-    additional_context: null,
-  }
+      logAction(db, {
+        actor_id: user.id,
+        action_type: 'change_points',
+        recipient_id: recipientId,
+        points_before: pointsBefore,
+        points_after: pointsAfter,
+        additional_context: null,
+      })
+    }
+  )
 
-  await logAction(db, log)
+  applyPointsChange(existingUser.id, newPoints)
 
   return { message: 'Points updated successfully' }
 })

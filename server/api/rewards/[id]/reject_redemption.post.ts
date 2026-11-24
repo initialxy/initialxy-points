@@ -3,7 +3,7 @@ import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const rewardId = validateId(
@@ -18,9 +18,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the reward exists
-  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [
-    rewardId,
-  ])
+  const reward: Reward | undefined = db
+    .prepare<[number], Reward>('SELECT * FROM rewards WHERE id = ?')
+    .get(rewardId)
 
   if (reward == null) {
     throw createError({
@@ -44,12 +44,15 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  await db.run(
-    'UPDATE rewards SET is_redemption_requested = FALSE WHERE id = ?',
-    rewardId
-  )
+  const rejectRedemption = db.transaction((r: Reward) => {
+    db.prepare<[number]>(
+      'UPDATE rewards SET is_redemption_requested = FALSE WHERE id = ?'
+    ).run(r.id)
 
-  await logRewardAction(db, 'reject_redemption', user.id, reward)
+    logRewardAction(db, 'reject_redemption', user.id, r)
+  })
+
+  rejectRedemption(reward)
 
   return {
     statusCode: 200,

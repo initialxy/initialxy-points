@@ -3,18 +3,24 @@ import { defineEventHandler, getQuery } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
   const { role } = getQuery(event)
 
-  const cond = role === 'all' ? '1=1' : 'role = ?'
+  const roleFilter = (typeof role === 'string' ? role : 'child') || 'child'
 
-  const fetchedUsers: User[] = await db.all(
-    `SELECT id, username, role, points FROM users WHERE ${cond}`,
-    role === 'all' ? [] : [role || 'child']
-  )
+  const fetchedUsers: User[] =
+    roleFilter === 'all'
+      ? db
+          .prepare<[], User>('SELECT id, username, role, points FROM users')
+          .all()
+      : db
+          .prepare<[string], User>(
+            'SELECT id, username, role, points FROM users WHERE role = ?'
+          )
+          .all(roleFilter)
 
   // If child user, sanitize points.
   const users =

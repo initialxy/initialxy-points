@@ -5,7 +5,7 @@ import { getDb } from '../../database'
 const DEFAULT_LIMIT = '50'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const { limit, recipient_id } = getQuery(event)
@@ -22,8 +22,9 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const cond = numRecipientId > 0 ? 'recipient_id = ?' : '? >= 0' // dummy condition
 
-  const logs: Log[] = await db.all(
-    `
+  const logs: Log[] = db
+    .prepare<[number, number], Log>(
+      `
       SELECT
         logs.id AS id,
         CAST(strftime('%s', timestamp) AS INTEGER) * 1000 AS timestamp,
@@ -41,9 +42,9 @@ export default defineEventHandler(async (event: H3Event) => {
       WHERE ${cond}
       ORDER BY timestamp DESC
       LIMIT ?
-      `,
-    [numRecipientId, numLimit]
-  )
+      `
+    )
+    .all(numRecipientId, numLimit)
 
   return { logs } as LogsResponse
 })

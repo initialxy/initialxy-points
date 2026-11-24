@@ -13,7 +13,7 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const db = await getDb()
+  const db = getDb()
   const { username, password } = await readValidatedBody(
     event,
     bodySchema.parse
@@ -30,10 +30,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const dbUser: DbUser | null =
-    (await db.get(
-      'SELECT * FROM users WHERE username = ?',
-      validatedUsername
-    )) || null
+    db
+      .prepare<[string], DbUser>('SELECT * FROM users WHERE username = ?')
+      .get(validatedUsername) ?? null
 
   if (dbUser == null) {
     throw createError({

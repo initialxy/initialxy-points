@@ -20,28 +20,28 @@ export const TEST_CHILD_USER = {
 /**
  * Reset the database by dropping all tables and indices, then reinitializing the schema
  */
-export async function resetDb() {
-  const db = await getDb()
+export function resetDb(): void {
+  const db = getDb()
 
-  // Get all tables and indices. Careful not to delete SQLite's internal tables
-  const tables = await db.all(
-    "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
-  )
-
-  const indices = await db.all(
-    "SELECT name FROM sqlite_master WHERE type = 'index' AND name NOT LIKE 'sqlite_%'"
-  )
-
-  // Drop all tables and indices
-  for (const table of tables) {
-    await db.exec(`DROP TABLE IF EXISTS ${table.name}`)
-  }
+  // Drop all indices. Careful not to delete SQLite's internal tables
+  const indices = db
+    .prepare<[], { name: string }>(
+      "SELECT name FROM sqlite_master WHERE type = 'index' AND name NOT LIKE 'sqlite_%'"
+    )
+    .all()
 
   for (const index of indices) {
-    await db.exec(`DROP INDEX IF EXISTS ${index.name}`)
+    db.exec(`DROP INDEX IF EXISTS ${index.name}`)
   }
 
-  await initializeDatabase(db)
+  // Drop tables child-first so the foreign key constraints (which
+  // better-sqlite3 enforces) are satisfied
+  const dropOrder = ['logs', 'rewards', 'tasks', 'users']
+  for (const table of dropOrder) {
+    db.exec(`DROP TABLE IF EXISTS ${table}`)
+  }
+
+  initializeDatabase(db)
 }
 
 /**
@@ -63,20 +63,23 @@ export async function createAuthTestData() {
 /**
  * Get all users from the current database state
  */
-export async function getAllUsers(): Promise<User[]> {
-  const db = await getDb()
-  return await db.all('SELECT id, username, role, points FROM users')
+export function getAllUsers(): User[] {
+  const db = getDb()
+  return db
+    .prepare<[], User>('SELECT id, username, role, points FROM users')
+    .all()
 }
 
 /**
  * Get a user by their username
  */
-export async function getUserByUsername(username: string): Promise<User> {
-  const db = await getDb()
-  const user = await db.get<User>(
-    'SELECT id, username, role, points FROM users WHERE username = ?',
-    [username]
-  )
+export function getUserByUsername(username: string): User {
+  const db = getDb()
+  const user = db
+    .prepare<[string], User>(
+      'SELECT id, username, role, points FROM users WHERE username = ?'
+    )
+    .get(username)
   if (user == null) {
     throw new Error(`User ${username} not found`)
   }
@@ -90,24 +93,22 @@ export async function createTestUser(
   username: string,
   password: string,
   role: 'parent' | 'child'
-) {
-  const db = await getDb()
+): Promise<void> {
+  const db = getDb()
   const hashedPassword = await bcrypt.hash(password, 10)
-  await db.run(
-    'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)',
-    [username, hashedPassword, role]
-  )
+  db.prepare<[string, string, 'parent' | 'child']>(
+    'INSERT OR REPLACE INTO users (username, password, role) VALUES (?, ?, ?)'
+  ).run(username, hashedPassword, role)
 }
 
 /**
  * Set points for a test user
  */
-export async function setTestUserPoints(username: string, points: number) {
-  const db = await getDb()
-  await db.run('UPDATE users SET points = ? WHERE username = ?', [
-    points,
-    username,
-  ])
+export function setTestUserPoints(username: string, points: number): void {
+  const db = getDb()
+  db.prepare<[number, string]>(
+    'UPDATE users SET points = ? WHERE username = ?'
+  ).run(points, username)
 }
 
 /**
@@ -119,13 +120,14 @@ export async function createTestTask(
   description: string,
   points: number,
   recurrenceType: 'single-use' | 'perpetual' = 'single-use'
-) {
-  const db = await getDb()
-  const result = await db.run(
-    'INSERT INTO tasks (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)',
-    [description, points, parentId, childId, recurrenceType]
-  )
-  return result.lastID
+): number {
+  const db = getDb()
+  const result = db
+    .prepare<[string, number, number, number, 'single-use' | 'perpetual']>(
+      'INSERT INTO tasks (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)'
+    )
+    .run(description, points, parentId, childId, recurrenceType)
+  return Number(result.lastInsertRowid)
 }
 
 /**
@@ -137,13 +139,14 @@ export async function createTestReward(
   description: string,
   points: number,
   recurrenceType: 'single-use' | 'perpetual' = 'single-use'
-) {
-  const db = await getDb()
-  const result = await db.run(
-    'INSERT INTO rewards (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)',
-    [description, points, parentId, childId, recurrenceType]
-  )
-  return result.lastID
+): number {
+  const db = getDb()
+  const result = db
+    .prepare<[string, number, number, number, 'single-use' | 'perpetual']>(
+      'INSERT INTO rewards (description, points, parent_id, child_id, recurrence_type) VALUES (?, ?, ?, ?, ?)'
+    )
+    .run(description, points, parentId, childId, recurrenceType)
+  return Number(result.lastInsertRowid)
 }
 
 /**

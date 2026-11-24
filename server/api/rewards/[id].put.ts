@@ -3,7 +3,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -42,10 +42,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if reward exists
-  const rewardResult = await db.get<Reward>(
-    'SELECT * FROM rewards WHERE id = ?',
-    [rewardId]
-  )
+  const rewardResult: Reward | undefined = db
+    .prepare<[number], Reward>('SELECT * FROM rewards WHERE id = ?')
+    .get(rewardId)
 
   if (rewardResult == null) {
     throw createError({
@@ -54,31 +53,37 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run(
-    'UPDATE rewards SET description = ?, points = ?, recurrence_type = ? WHERE id = ?',
-    [description, points, recurrence_type, rewardId]
-  )
+  const updateRewardAndLog = db.transaction((reward: Reward) => {
+    const result = db
+      .prepare<[string, number, string, number]>(
+        'UPDATE rewards SET description = ?, points = ?, recurrence_type = ? WHERE id = ?'
+      )
+      .run(description, points, recurrence_type, reward.id)
 
-  if (result.changes === 0) {
-    throw createError({
-      statusCode: 404,
-      message: 'Reward not found or not authorized',
-    })
-  }
+    if (result.changes === 0) {
+      throw createError({
+        statusCode: 404,
+        message: 'Reward not found or not authorized',
+      })
+    }
 
-  const updatedReward = await db.get<Reward>(
-    'SELECT * FROM rewards WHERE id = ?',
-    [rewardId]
-  )
+    const updatedReward: Reward | undefined = db
+      .prepare<[number], Reward>('SELECT * FROM rewards WHERE id = ?')
+      .get(reward.id)
 
-  if (updatedReward == null) {
-    throw createError({
-      statusCode: 404,
-      message: 'Reward not found or not authorized',
-    })
-  }
+    if (updatedReward == null) {
+      throw createError({
+        statusCode: 404,
+        message: 'Reward not found or not authorized',
+      })
+    }
 
-  await logRewardAction(db, 'update_reward', user.id, updatedReward)
+    logRewardAction(db, 'update_reward', user.id, updatedReward)
+
+    return updatedReward
+  })
+
+  const updatedReward = updateRewardAndLog(rewardResult)
 
   return {
     reward: updatedReward,

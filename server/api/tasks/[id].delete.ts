@@ -3,7 +3,7 @@ import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -23,9 +23,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Get the task to log before deletion
-  const taskResult = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [
-    taskId,
-  ])
+  const taskResult: Task | undefined = db
+    .prepare<[number], Task>('SELECT * FROM tasks WHERE id = ?')
+    .get(taskId)
 
   if (taskResult == null) {
     throw createError({
@@ -34,16 +34,22 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run('DELETE FROM tasks WHERE id = ?', [taskId])
+  const deleteTaskAndLog = db.transaction((task: Task) => {
+    const result = db
+      .prepare<[number]>('DELETE FROM tasks WHERE id = ?')
+      .run(task.id)
 
-  if (result.changes === 0) {
-    throw createError({
-      statusCode: 404,
-      message: 'Task not found or not authorized',
-    })
-  }
+    if (result.changes === 0) {
+      throw createError({
+        statusCode: 404,
+        message: 'Task not found or not authorized',
+      })
+    }
 
-  await logTaskAction(db, 'delete_task', user.id, taskResult)
+    logTaskAction(db, 'delete_task', user.id, task)
+  })
+
+  deleteTaskAndLog(taskResult)
 
   return {
     statusCode: 204,

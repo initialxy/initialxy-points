@@ -1,8 +1,10 @@
 import { defineEventHandler } from 'h3'
 import { getDb } from '../../database'
 
+type ChildSummary = Pick<User, 'id' | 'username' | 'points'>
+
 export default defineEventHandler(async (event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const userId = validateId(parseInt(event.context.params?.id ?? '0') as number)
@@ -14,10 +16,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const fetchedUser = await db.get(
-    'SELECT id, username, points FROM users WHERE id = ? AND role = ?',
-    [userId, 'child']
-  )
+  const fetchedUser: ChildSummary | undefined = db
+    .prepare<[number, string], ChildSummary>(
+      'SELECT id, username, points FROM users WHERE id = ? AND role = ?'
+    )
+    .get(userId, 'child')
 
   if (fetchedUser == null) {
     throw createError({

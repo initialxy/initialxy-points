@@ -8,7 +8,7 @@ initialxy-points is a full-stack Nuxt app that lets parents track points their k
 
 - Nuxt 4 (Vue 3, full-stack mode), TypeScript, Tailwind CSS 4
 - Nuxt UI v4, Pinia, @vueuse
-- SQLite via `sqlite3` (access through `server/database/`)
+- SQLite via `better-sqlite3` (synchronous API, access through `server/database/`; multi-write API flows run inside `db.transaction()`)
 - zod for API input validation; nuxt-auth-utils for session auth
 - Tests: vitest (unit + API e2e) and Playwright (browser e2e via @nuxt/test-utils)
 

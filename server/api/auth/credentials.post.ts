@@ -15,6 +15,8 @@ type AuthUser = {
   password: string
 }
 
+type AuthUserPublic = Pick<User, 'id' | 'username' | 'points'>
+
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   const user = session.user as User
@@ -25,13 +27,14 @@ export default defineEventHandler(async (event) => {
     bodySchema.parse
   )
 
-  const db = await getDb()
+  const db = getDb()
 
   // Verify existing user
-  const dbUser: AuthUser | undefined = await db.get(
-    'SELECT id, username, password FROM users WHERE id = ?',
-    user.id
-  )
+  const dbUser: AuthUser | undefined = db
+    .prepare<[number], AuthUser>(
+      'SELECT id, username, password FROM users WHERE id = ?'
+    )
+    .get(user.id)
 
   if (dbUser == null) {
     throw createError({
@@ -52,10 +55,11 @@ export default defineEventHandler(async (event) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10)
 
   // Check if the new username is already taken by another user
-  const existingUserWithUsername: { id: number } | undefined = await db.get(
-    'SELECT id FROM users WHERE username = ? AND id != ?',
-    [username, user.id]
-  )
+  const existingUserWithUsername: { id: number } | undefined = db
+    .prepare<[string, number], { id: number }>(
+      'SELECT id FROM users WHERE username = ? AND id != ?'
+    )
+    .get(username, user.id)
 
   if (existingUserWithUsername != null) {
     throw createError({
@@ -65,17 +69,15 @@ export default defineEventHandler(async (event) => {
   }
 
   // Update new username and password password in database
-  await db.run(
-    'UPDATE users SET username = ?, password = ? WHERE id = ?',
-    username,
-    hashedPassword,
-    user.id
-  )
+  db.prepare<[string, string, number]>(
+    'UPDATE users SET username = ?, password = ? WHERE id = ?'
+  ).run(username, hashedPassword, user.id)
 
-  const fetchedUser = await db.get(
-    'SELECT id, username, points FROM users WHERE id = ?',
-    [user.id]
-  )
+  const fetchedUser: AuthUserPublic | undefined = db
+    .prepare<[number], AuthUserPublic>(
+      'SELECT id, username, points FROM users WHERE id = ?'
+    )
+    .get(user.id)
 
   await setUserSession(
     event,

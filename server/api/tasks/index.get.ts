@@ -3,7 +3,7 @@ import { defineEventHandler, getQuery } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const { child_id } = getQuery(event)
@@ -19,14 +19,13 @@ export default defineEventHandler(async (event: H3Event) => {
 
   if (numChildId > 0) {
     // Parent can filter by specific child_id
-    const tasks: Task[] = await db.all(
-      'SELECT * FROM tasks WHERE child_id = ?',
-      numChildId
-    )
+    const tasks: Task[] = db
+      .prepare<[number], Task>('SELECT * FROM tasks WHERE child_id = ?')
+      .all(numChildId)
     return { tasks } as TasksResponse
   } else {
     // Parent can also query all tasks if no child_id is specified
-    const tasks: Task[] = await db.all('SELECT * FROM tasks')
+    const tasks: Task[] = db.prepare<[], Task>('SELECT * FROM tasks').all()
     return { tasks } as TasksResponse
   }
 })

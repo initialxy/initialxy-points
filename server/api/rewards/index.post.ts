@@ -3,7 +3,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -31,24 +31,29 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run(
-    'INSERT INTO rewards (description, points, child_id, recurrence_type, parent_id) VALUES (?, ?, ?, ?, ?)',
-    [description, points, child_id, recurrence_type, user.id]
-  )
+  const insertRewardAndLog = db.transaction(() => {
+    const result = db
+      .prepare<[string, number, number, string, number]>(
+        'INSERT INTO rewards (description, points, child_id, recurrence_type, parent_id) VALUES (?, ?, ?, ?, ?)'
+      )
+      .run(description, points, child_id, recurrence_type, user.id)
 
-  const rewardId = result.lastID as number
+    const reward: Reward = {
+      id: Number(result.lastInsertRowid),
+      description,
+      points,
+      child_id,
+      recurrence_type,
+      parent_id: user.id,
+      is_redemption_requested: false,
+    }
 
-  const reward = {
-    id: rewardId,
-    description,
-    points,
-    child_id,
-    recurrence_type,
-    parent_id: user.id,
-    is_redemption_requested: false,
-  }
+    logRewardAction(db, 'create_reward', user.id, reward)
 
-  await logRewardAction(db, 'create_reward', user.id, reward)
+    return reward
+  })
+
+  const reward = insertRewardAndLog()
 
   return {
     reward,

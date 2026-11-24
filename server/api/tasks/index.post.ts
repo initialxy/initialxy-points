@@ -3,7 +3,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { getDb } from '../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
 
@@ -31,24 +31,29 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  const result = await db.run(
-    'INSERT INTO tasks (description, points, child_id, recurrence_type, parent_id) VALUES (?, ?, ?, ?, ?)',
-    [description, points, child_id, recurrence_type, user.id]
-  )
+  const insertTaskAndLog = db.transaction(() => {
+    const result = db
+      .prepare<[string, number, number, string, number]>(
+        'INSERT INTO tasks (description, points, child_id, recurrence_type, parent_id) VALUES (?, ?, ?, ?, ?)'
+      )
+      .run(description, points, child_id, recurrence_type, user.id)
 
-  const taskId = result.lastID as number
+    const task: Task = {
+      id: Number(result.lastInsertRowid),
+      description,
+      points,
+      child_id,
+      recurrence_type,
+      parent_id: user.id,
+      is_marked_complete: false,
+    }
 
-  const task = {
-    id: taskId,
-    description,
-    points,
-    child_id,
-    recurrence_type,
-    parent_id: user.id,
-    is_marked_complete: false,
-  }
+    logTaskAction(db, 'create_task', user.id, task)
 
-  await logTaskAction(db, 'create_task', user.id, task)
+    return task
+  })
+
+  const task = insertTaskAndLog()
 
   return {
     task,

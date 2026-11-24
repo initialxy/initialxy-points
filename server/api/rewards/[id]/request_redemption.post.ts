@@ -2,8 +2,10 @@ import type { H3Event } from 'h3'
 import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../../database'
 
+type ChildPoints = Pick<User, 'points'>
+
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const rewardId = validateId(
@@ -18,9 +20,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the reward exists
-  const reward = await db.get<Reward>('SELECT * FROM rewards WHERE id = ?', [
-    rewardId,
-  ])
+  const reward: Reward | undefined = db
+    .prepare<[number], Reward>('SELECT * FROM rewards WHERE id = ?')
+    .get(rewardId)
 
   if (reward == null) {
     throw createError({
@@ -45,27 +47,30 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the child has enough points for this reward
-  const child = await db.get<User>('SELECT points FROM users WHERE id = ?', [
-    reward.child_id,
-  ])
+  const child: ChildPoints | undefined = db
+    .prepare<[number], ChildPoints>('SELECT points FROM users WHERE id = ?')
+    .get(reward.child_id)
 
-  if (!child || child.points < reward.points) {
+  if (child == null || child.points < reward.points) {
     throw createError({
       statusCode: 400,
       message: 'Child does not have enough points to redeem this reward',
       data: {
         requiredPoints: reward.points,
-        availablePoints: child ? child.points : 0,
+        availablePoints: child == null ? 0 : child.points,
       },
     })
   }
 
-  await db.run(
-    'UPDATE rewards SET is_redemption_requested = TRUE WHERE id = ?',
-    rewardId
-  )
+  const requestRedemption = db.transaction((r: Reward) => {
+    db.prepare<[number]>(
+      'UPDATE rewards SET is_redemption_requested = TRUE WHERE id = ?'
+    ).run(r.id)
 
-  await logRewardAction(db, 'request_redemption', user.id, reward)
+    logRewardAction(db, 'request_redemption', user.id, r)
+  })
+
+  requestRedemption(reward)
 
   return {
     statusCode: 200,

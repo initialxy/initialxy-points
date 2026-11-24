@@ -1,10 +1,10 @@
-import type { Database } from 'sqlite'
-import { open } from 'sqlite'
-import sqlite3 from 'sqlite3'
+import Database from 'better-sqlite3'
 
-let db: Database | null = null
+type SqliteDatabase = InstanceType<typeof Database>
 
-export async function getDb(dbPath = process.env.DB_PATH): Promise<Database> {
+let db: SqliteDatabase | null = null
+
+export function getDb(dbPath = process.env.DB_PATH): SqliteDatabase {
   if (dbPath == null) {
     throw new Error('DB_PATH environment variable is not set')
   }
@@ -13,20 +13,20 @@ export async function getDb(dbPath = process.env.DB_PATH): Promise<Database> {
     return db
   }
 
-  db = await open({
-    filename: dbPath,
-    driver: sqlite3.Database,
-  })
+  db = new Database(dbPath)
 
   return db
 }
 
-export async function initializeDatabase(db: Database): Promise<Database> {
+export function initializeDatabase(db: SqliteDatabase): SqliteDatabase {
   // Check if tables exist, if not initialize them
-  const tables = await db.all(
-    'SELECT name FROM sqlite_master WHERE type="table"'
-  )
-  const tableNames = (tables as { name: string }[]).map((t) => t.name)
+  const tables = db
+    .prepare<[], { name: string }>(
+      "SELECT name FROM sqlite_master WHERE type = 'table'"
+    )
+    .all()
+
+  const tableNames = tables.map((t) => t.name)
 
   if (
     !tableNames.includes('users') ||
@@ -34,7 +34,7 @@ export async function initializeDatabase(db: Database): Promise<Database> {
     !tableNames.includes('logs') ||
     !tableNames.includes('rewards')
   ) {
-    await db.exec(`
+    db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,

@@ -3,7 +3,7 @@ import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../../database'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const db = await getDb()
+  const db = getDb()
   const session = await requireUserSession(event)
   const user = session.user as User
   const taskId = validateId(parseInt(event.context.params?.id ?? '0') as number)
@@ -16,7 +16,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // Check if the task exists
-  const task = await db.get<Task>('SELECT * FROM tasks WHERE id = ?', [taskId])
+  const task: Task | undefined = db
+    .prepare<[number], Task>('SELECT * FROM tasks WHERE id = ?')
+    .get(taskId)
 
   if (task == null) {
     throw createError({
@@ -40,12 +42,15 @@ export default defineEventHandler(async (event: H3Event) => {
     })
   }
 
-  await db.run(
-    'UPDATE tasks SET is_marked_complete = FALSE WHERE id = ?',
-    taskId
-  )
+  const rejectCompletionAndLog = db.transaction((t: Task) => {
+    db.prepare<[number]>(
+      'UPDATE tasks SET is_marked_complete = FALSE WHERE id = ?'
+    ).run(t.id)
 
-  await logTaskAction(db, 'reject_task_complete', user.id, task)
+    logTaskAction(db, 'reject_task_complete', user.id, t)
+  })
+
+  rejectCompletionAndLog(task)
 
   return {
     statusCode: 200,
