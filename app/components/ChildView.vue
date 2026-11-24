@@ -24,7 +24,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    >
+    />
 
     <TaskList
       mode="child"
@@ -35,7 +35,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    >
+    />
 
     <RewardList
       :rewards="rewards?.rewards || []"

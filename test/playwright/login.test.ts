@@ -62,8 +62,8 @@ test.describe('Login page', () => {
     await deleteButton.click()
 
     await expect(deleteButton).toBeHidden()
-    const remembered = await page.evaluate(
-      () => JSON.parse(localStorage.getItem('rememberedUsers') ?? '[]')
+    const remembered = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('rememberedUsers') ?? '[]')
     )
     expect(remembered).toHaveLength(0)
   })

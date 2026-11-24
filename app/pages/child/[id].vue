@@ -47,7 +47,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    >
+    />
 
     <TaskList
       mode="parent"
@@ -60,7 +60,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    >
+    />
 
     <RewardList
       :rewards="rewards?.rewards || []"
@@ -73,7 +73,7 @@
 
     <hr
       class="max-w-150 mx-auto bg-neutral-200 dark:bg-neutral-800 border-none h-px my-6"
-    >
+    />
 
     <LogList :logs="logs?.logs || []" />
 

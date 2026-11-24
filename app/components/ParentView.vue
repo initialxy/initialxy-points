@@ -96,35 +96,32 @@ const pointsUpdateByUserId = new Map<
 const schedulePointsUpdate = (child: User, pendingDelta: number) => {
   let send = pointsUpdateByUserId.get(child.id)
   if (!send) {
-    send = debounce(
-      async (userId: number, delta: number) => {
-        try {
-          await $fetch(`/api/users/${userId}/points`, {
-            method: 'PUT',
-            body: { points_change: delta },
-          })
-          pointsDeltaByUserId.delete(userId)
-          await refresh()
-          const refreshedChild = childrenData.value?.users.find(
-            (user) => user.id === userId
-          )
-          emit('updatePoints', {
-            childId: userId,
-            points: refreshedChild?.points ?? 0,
-          })
-        } catch (err) {
-          console.error('Error updating points:', err)
-          toast.add({
-            title: getApiErrorMessage(err),
-            progress: false,
-            color: 'error',
-          })
-        } finally {
-          pointsUpdateByUserId.delete(userId)
-        }
-      },
-      DEBOUNCE_WAIT_MS
-    )
+    send = debounce(async (userId: number, delta: number) => {
+      try {
+        await $fetch(`/api/users/${userId}/points`, {
+          method: 'PUT',
+          body: { points_change: delta },
+        })
+        pointsDeltaByUserId.delete(userId)
+        await refresh()
+        const refreshedChild = childrenData.value?.users.find(
+          (user) => user.id === userId
+        )
+        emit('updatePoints', {
+          childId: userId,
+          points: refreshedChild?.points ?? 0,
+        })
+      } catch (err) {
+        console.error('Error updating points:', err)
+        toast.add({
+          title: getApiErrorMessage(err),
+          progress: false,
+          color: 'error',
+        })
+      } finally {
+        pointsUpdateByUserId.delete(userId)
+      }
+    }, DEBOUNCE_WAIT_MS)
     pointsUpdateByUserId.set(child.id, send)
   }
   send(child.id, pendingDelta)

@@ -1,4 +1,4 @@
-import type { H3Event} from 'h3';
+import type { H3Event } from 'h3'
 import { defineEventHandler, createError } from 'h3'
 import { getDb } from '../../../database'
 import { logAction } from '../../../utils/logs'
