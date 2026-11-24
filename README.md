@@ -44,7 +44,7 @@ This will launch an admin console for managing users. Enter a SQLite database fi
 
 During development, you can create a `.env` file with the following variables:
 
-* `NUXT_SESSION_PASSWORD` - A secret password for session encryption. When you run the development server for the first time, one will be generated for you.
+* `NUXT_APP_SECRET` - A secret used to encrypt session cookies. When you run the development server for the first time, one will be generated for you.
 * `DB_PATH` - Path to the SQLite database file that you just created and initialized (e.g., `database.sqlite`).
 
 Start the development server on `http://localhost:3000`:
@@ -82,7 +82,7 @@ The admin console provides these commands:
 npm run build
 ```
 
-Make sure you set `NUXT_SESSION_PASSWORD` and `DB_PATH` environment variables before running the node server. You can generate a new session password with:
+Make sure you set `NUXT_APP_SECRET` and `DB_PATH` environment variables before running the node server. You can generate a new app secret with:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
