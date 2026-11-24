@@ -113,6 +113,7 @@
           :data-testid="'confirm-delete-button'"
           color="error"
           icon="i-lucide-trash"
+          class="ms-auto"
           @click="deleteConfirmed"
         >
           Delete

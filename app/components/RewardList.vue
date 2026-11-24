@@ -113,6 +113,7 @@
           color="error"
           icon="i-lucide-trash"
           data-testid="confirm-delete-button"
+          class="ms-auto"
           @click="deleteConfirmed"
         >
           Delete

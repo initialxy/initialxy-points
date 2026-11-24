@@ -40,27 +40,27 @@
           class="w-full"
         />
       </UFormField>
-      <div>
-        <UButton
-          data-testid="login_button"
-          type="submit"
-          icon="i-lucide-log-in"
-          size="md"
-          :disabled="state.isLoading"
-          loading-auto
-        >
-          Login
-        </UButton>
+      <div class="flex items-center">
         <UButton
           v-if="isAnyUserSelected"
           icon="i-lucide-skip-back"
           color="secondary"
           variant="soft"
           size="md"
-          class="float-right"
           @click="back"
         >
           Back
+        </UButton>
+        <UButton
+          data-testid="login_button"
+          type="submit"
+          icon="i-lucide-log-in"
+          size="md"
+          class="ms-auto"
+          :disabled="state.isLoading"
+          loading-auto
+        >
+          Login
         </UButton>
       </div>
     </UForm>

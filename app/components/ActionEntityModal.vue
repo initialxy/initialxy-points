@@ -36,14 +36,13 @@
       </UForm>
     </template>
     <template #footer>
-      <div>
+      <div class="flex w-full justify-end">
         <UButton
           form="action-item-form"
           type="submit"
           icon="i-lucide-check"
           color="primary"
           variant="solid"
-          class="w-full"
           data-testid="submit-item-button"
         >
           {{ submitButtonText }}

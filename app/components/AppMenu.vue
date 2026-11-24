@@ -123,14 +123,13 @@
         </UForm>
       </template>
       <template #footer>
-        <div>
+        <div class="flex w-full justify-end">
           <UButton
             form="change-credentials-form"
             type="submit"
             icon="i-lucide-check"
             color="primary"
             variant="solid"
-            class="w-full"
             >Confirm</UButton
           >
         </div>
