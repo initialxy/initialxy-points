@@ -38,4 +38,33 @@ test.describe('Login page', () => {
     await page.waitForSelector('[data-slot="viewport"] li[data-state="open"]')
     expect(page.url()).toMatch(/\/login$/)
   })
+
+  test('remembered user can be deleted from the login page', async ({
+    page,
+    goto,
+  }) => {
+    await goto('/', { waitUntil: 'hydration' })
+    await playwrightLogin(
+      page,
+      TEST_PARENT_USER.username,
+      TEST_PARENT_USER.password
+    )
+
+    // Drop the session so the login page is shown again, keeping localStorage
+    await page.context().clearCookies()
+    await goto('/', { waitUntil: 'hydration' })
+
+    const deleteButton = page.getByTestId(
+      `delete-remembered-user-${TEST_PARENT_USER.username}`
+    )
+    await expect(deleteButton).toBeVisible()
+
+    await deleteButton.click()
+
+    await expect(deleteButton).toBeHidden()
+    const remembered = await page.evaluate(
+      () => JSON.parse(localStorage.getItem('rememberedUsers') ?? '[]')
+    )
+    expect(remembered).toHaveLength(0)
+  })
 })

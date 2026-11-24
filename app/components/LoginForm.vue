@@ -23,11 +23,24 @@
             variant="card"
             default-value
             indicator="hidden"
-            :label="user.username"
             class="bg-neutral-100 dark:bg-neutral-800 clickable-lg"
-            :ui="{ wrapper: 'text-left' }"
+            :ui="{ wrapper: 'items-stretch text-left' }"
             @change="selectUser(user)"
-          />
+          >
+            <template #label>
+              <div class="flex items-center">
+                <span class="grow">{{ user.username }}</span>
+                <UButton
+                  size="sm"
+                  icon="i-lucide-x"
+                  color="error"
+                  variant="soft"
+                  :data-testid="`delete-remembered-user-${user.username}`"
+                  @click.stop="removeRememberedUser(user)"
+                />
+              </div>
+            </template>
+          </UCheckbox>
         </li>
       </ul>
 
@@ -124,6 +137,16 @@ const onSubmit = async () => {
   } finally {
     state.isLoading = false
   }
+}
+
+// Remove a remembered user from the list (and from localStorage)
+const removeRememberedUser = (user: RememberedUserState) => {
+  rememberedUsers.value = rememberedUsers.value.filter(
+    (u) => u.username !== user.username
+  )
+  rememberedUsersState.value = rememberedUsersState.value.filter(
+    (u) => u.username !== user.username
+  )
 }
 
 const back = () => {
